@@ -1,0 +1,104 @@
+AICpls                  AIC functions for plsR models
+aze                     Microsat Dataset
+aze_compl               As aze without missing values
+bootpls                 Non-parametric Bootstrap for PLS models
+bootplsglm              Non-parametric Bootstrap for PLS generalized
+                        linear models
+bordeaux                Quality of wine dataset
+boxplots.bootpls        Boxplot bootstrap distributions
+coefs.plsR              Coefficients for bootstrap computations
+coefs.plsRglm           Coefficients for bootstrap computations
+confints.bootpls        Bootstrap confidence intervals
+CorMat                  Correlation matrix for simulating plsR datasets
+Cornell                 Cornell dataset
+dicho                   Dichotomization
+fowlkes                 Fowlkes dataset
+kfolds2Chisq            Computes Predicted Chisquare for kfold cross
+                        validated partial least squares regression
+                        models.
+kfolds2Chisqind         Computes individual Predicted Chisquare for
+                        kfold cross validated partial least squares
+                        regression models.
+kfolds2coeff            Extracts coefficients from kfold cross
+                        validated partial least squares regression
+                        models
+kfolds2CVinfos_glm      Extracts and computes information criteria and
+                        fits statistics for kfold cross validated
+                        partial least squares glm models
+kfolds2CVinfos_v2       Extracts and computes information criteria and
+                        fits statistics for kfold cross validated
+                        partial least squares glm models
+kfolds2Mclassed         Number of missclassified individuals for kfold
+                        cross validated partial least squares
+                        regression models.
+kfolds2Mclassedind      Number of missclassified individuals per group
+                        for kfold cross validated partial least squares
+                        regression models.
+kfolds2Press            Computes PRESS for kfold cross validated
+                        partial least squares regression models.
+kfolds2Pressind         Computes individual PRESS for kfold cross
+                        validated partial least squares regression
+                        models.
+loglikpls               loglikelihood functions for plsR models
+permcoefs.plsR          Coefficients computation for permutation
+                        bootstrap
+permcoefs.plsRglm       Coefficients computation for permutation
+                        bootstrap
+pine                    Pine dataset
+pine_full               Full pine dataset
+pine_sup                Supplementary data for pine dataset
+plots.confints.bootpls
+                        Plot bootstrap confidence intervals
+PLS_glm                 Partial least squares Regression generalized
+                        linear models
+PLS_glm_kfoldcv         Partial least squares regression glm models
+                        with kfold cross validation
+PLS_glm_wvc             Light version of PLS\_glm for cross validation
+                        purposes
+PLS_lm                  Partial least squares Regression models with
+                        leave one out cross validation
+PLS_lm_kfoldcv          Partial least squares regression models with
+                        kfold cross validation
+PLS_lm_wvc              Light version of PLS\_lm for cross validation
+                        purposes
+PLS_v1                  Partial least squares Regression models with
+                        leave one out cross validation
+PLS_v1_kfoldcv          Partial least squares regression models with
+                        kfold cross validation
+PLS_v1_wvc              Light version of PLS\_v1 for cross validation
+                        purposes
+PLS_v2                  Partial least squares Regression generalized
+                        linear models
+PLS_v2_kfoldcv          Partial least squares regression glm models
+                        with kfold cross validation
+PLS_v2_wvc              Light version of PLS\_v2 for cross validation
+                        purposes
+plsR                    Partial least squares Regression models with
+                        leave one out cross validation
+plsRglm                 Partial least squares Regression generalized
+                        linear models
+plsRglm-package         Partial least squares Regression for
+                        generalized linear models
+plsRglmmodel.default    Partial least squares Regression generalized
+                        linear models
+plsRmodel.default       Partial least squares Regression models with
+                        leave one out cross validation
+print.plsRglmmodel      Print method for plsRglm models
+print.plsRmodel         Print method for plsR models
+print.summary.plsRglmmodel
+                        Print method for summaries of plsRglm models
+print.summary.plsRmodel
+                        Print method for summaries of plsR models
+simul_data_complete     Data generating detailed process for
+                        multivariate plsR models
+simul_data_UniYX        Data generating function for univariate plsR
+                        models
+simul_data_YX           Data generating function for multivariate plsR
+                        models
+summary.plsRglmmodel    Summary method for plsRglm models
+summary.plsRmodel       Summary method for plsR models
+tilt.bootpls            Tilted bootstrap for PLS models
+tilt.bootplsglm         Tilted bootstrap for PLS models
+XbordeauxNA             Missing data analysis for the quality of wine
+                        dataset
+XpineNAX21              Missing data analysis for the pine dataset

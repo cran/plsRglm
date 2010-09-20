@@ -1,0 +1,38 @@
+Software and datasets to support several articles.
+
+These datasets and software are provided in good faith, but none of the authors, publishers nor distributors warrant their accuracy nor can be held responsible for the consequences of their use.
+
+This file is intended to clarify ownership and copyright: where possible individual files also carry brief copyright notices. 
+
+
+Copyrights
+==========
+
+Our understanding is that the dataset files plsRglm/data/*.Rdata were generated or digitized by F. Bertrand and N. Meyer: no
+copyright is asserted.
+
+All other files are copyright (C) 2009-2010  F. Bertrand, N. Meyer and M. Maumy-Bertrand.
+
+
+
+Licence
+=======
+
+    This is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 or 3 of the License
+    (at your option).
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+Files share/licenses/GPL-2 and share/licenses/GPL-3 in the R
+(source or binary) distribution are copies of versions 2 and 3
+of the 'GNU General Public License'.
+These can also be viewed at http://www.r-project.org/licenses/
+
+frederic.bertrand@math.unistra.fr
+Nicolas.Meyer@medecine.u-strasbg.fr
+myriam.maumy-bertrand@math.unistra.fr

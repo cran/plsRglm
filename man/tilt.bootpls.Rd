@@ -39,6 +39,7 @@ tilt.bootpls(object, typeboot="plsmodel", statistic=coefs.plsR, R=c(499, 250, 25
 }
 \seealso{\code{\link[boot:boot]{tilt.boot}}}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -51,5 +52,6 @@ str(Cornell.tilt.boot)
 boxplots.bootpls(Cornell.tilt.boot,indices=2:7)
 
 rm(Cornell.tilt.boot)
+}
 }
 \keyword{models}

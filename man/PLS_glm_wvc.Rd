@@ -47,6 +47,7 @@ PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",dataPre
 PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-gaussian",dataPredictY=XCornell[1,])
 rm("XCornell","yCornell")
 
+\donttest{
 ## With an incomplete dataset (X[1,2] is NA)
 data(pine)
 ypine <- pine[,11]
@@ -61,6 +62,7 @@ yaze_compl<-aze_compl$y
 PLS_glm(yaze_compl,Xaze_compl,10,modele="pls-glm-logistic",typeVC="none")$InfCrit
 PLS_glm_wvc(yaze_compl,Xaze_compl,10,modele="pls-glm-logistic", keepcoeffs=TRUE)
 rm("Xaze_compl","yaze_compl")
+}
 }
 \keyword{models}
 \keyword{regression}

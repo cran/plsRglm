@@ -1,5 +1,5 @@
 Package: plsRglm
-Version: 0.3.2
+Version: 0.3.3
 Date: 2010-09-20
 Depends: R (>= 2.4.0)
 Imports: mvtnorm, boot
@@ -19,6 +19,6 @@ License: GPL-3
 Encoding: latin1
 URL: http://www-irma.u-strasbg.fr/~fbertran/
 Classification/MSC: 62J12, 62J99
-Packaged: 2010-09-20 00:36:07 UTC; Bertrand
+Packaged: 2010-10-04 20:39:23 UTC; Bertrand
 Repository: CRAN
-Date/Publication: 2010-09-20 07:41:20
+Date/Publication: 2010-10-05 08:24:28

@@ -131,6 +131,7 @@ PLS_lm(yCornell,XCornell,6)$AIC.std
 rm(list=c("XCornell","yCornell"))
 
 
+\donttest{
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
@@ -191,7 +192,7 @@ modpls$computed_nt
 modpls$CVinfos
 rm(list=c("dimX","Astar","dataAstar2","modpls","ydataAstar2","XdataAstar2"))
 
-\donttest{
+
 # Comparing the results with the plspm package and SIMCA results in Tenenhaus's book
 library(plspm)
 

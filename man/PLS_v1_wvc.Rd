@@ -41,6 +41,7 @@ Use \code{\link{PLS_lm_wvc}} instead.
 }
 \seealso{\code{\link{PLS_v1}} for more detailed results, \code{\link{PLS_v1_kfoldcv}} for cross validating models and \code{\link{PLS_v2_wvc}} for the same function dedicated to plsRglm models}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -58,6 +59,7 @@ PLS_v1_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3,dataPredictY=XpineNAX
 PLS_v1_wvc(dataY=log(ypine)[-2],dataX=XpineNAX21[-2,],nt=3,dataPredictY=XpineNAX21[2,])
 PLS_v1_wvc(dataY=log(ypine),dataX=XpineNAX21,nt=3)
 rm("XpineNAX21","ypine")
+}
 }
 \keyword{models}
 \keyword{regression}

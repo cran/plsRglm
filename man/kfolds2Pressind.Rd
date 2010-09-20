@@ -34,7 +34,7 @@ kfolds2Pressind(bbb)
 kfolds2Pressind(bbb2)
 rm(list=c("XCornell","yCornell","bbb","bbb2"))
 
-
+\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
@@ -54,6 +54,7 @@ kfolds2Pressind(bbbNA)
 kfolds2Pressind(bbbNA2)
 kfolds2Pressind(bbbNA3)
 rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbb3","bbbNA","bbbNA2","bbbNA3"))
+}
 }
 \keyword{models}
 \keyword{regression}

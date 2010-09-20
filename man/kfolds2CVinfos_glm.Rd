@@ -46,6 +46,26 @@ kfolds2CVinfos_glm(bbb,MClassed=TRUE)
 bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-logistic")
 kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
 rm(list=c("Xaze_compl","yaze_compl","bbb","bbb2"))
+
+
+#install.packages("chemometrics")
+library(chemometrics)
+data(hyptis)
+hyptis
+yhyptis <- factor(hyptis$Group,ordered=TRUE)
+Xhyptis <- as.data.frame(hyptis[,c(1:6)])
+options(contrasts = c("contr.treatment", "contr.poly"))
+modpls2 <- plsRglm(yhyptis,Xhyptis,6,modele="pls-glm-polr")
+modpls2$Coeffsmodel_vals
+modpls2$InfCrit
+modpls2$Coeffs
+modpls2$std.coeffs
+
+table(yhyptis,predict(modpls2$FinalModel,type="class"))
+
+modpls3 <- PLS_glm(yhyptis[-c(1,2,3)],Xhyptis[-c(1,2,3),],3,modele="pls-glm-polr",dataPredictY=Xhyptis[c(1,2,3),])
+bbb <- PLS_glm_kfoldcv(yhyptis,Xhyptis,nt=4,K=10,random=TRUE,modele="pls-glm-polr",keepcoeffs=T)
+kfolds2CVinfos_v2(bbb,MClassed=TRUE)
 }
 }\keyword{models}
 \keyword{regression}

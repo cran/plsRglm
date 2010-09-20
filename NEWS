@@ -1,3 +1,4 @@
 This file documents software changes.
 
+0.3.3 Boostrap functionnalities improvement. Bootstrap no longer stops if model fitting fails for some sample.
 0.1.2-0.1.5 Completing help files.

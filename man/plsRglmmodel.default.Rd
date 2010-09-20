@@ -54,6 +54,7 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 \note{Use \code{plsRglm} instead.}
 \seealso{\code{\link{plsRmodel.default}}}
 \examples{
+\donttest{
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
@@ -75,5 +76,5 @@ modplsNA <- plsRglmmodel.default(ybordeaux,XbordeauxNA,10,modele="pls-glm-polr")
 modplsNA$InfCrit
 rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux"))
 }
-\keyword{models}
+}\keyword{models}
 \keyword{regression}

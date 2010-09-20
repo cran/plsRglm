@@ -5,7 +5,7 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-plots.confints.bootpls(ic_bootobject, indices = NULL, legendpos = "topleft", prednames = TRUE, articlestyle = TRUE, ...)
+plots.confints.bootpls(ic_bootobject, indices = NULL, legendpos = "topleft", prednames = TRUE, articlestyle = TRUE, xaxisticks=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,6 +14,7 @@ plots.confints.bootpls(ic_bootobject, indices = NULL, legendpos = "topleft", pre
   \item{legendpos}{ ~~Explain \code{legendpos} here~~ }
   \item{prednames}{ ~~Explain \code{prednames} here~~ }
   \item{articlestyle}{ ~~Explain \code{articlestyle} here~~ }
+  \item{xaxisticks}{ ~~Explain \code{articlestyle} here~~ }
   \item{\dots}{ ~~Explain \code{\dots} here~~ }
 }
 \details{

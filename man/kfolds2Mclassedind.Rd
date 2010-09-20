@@ -26,6 +26,7 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 \note{Use \code{\link{PLS_lm_kfoldcv}} to create kfold cross validated partial least squares regression models.}
 \seealso{\code{\link{kfolds2coeff}}, \code{\link{kfolds2Press}}, \code{\link{kfolds2Pressind}} and \code{\link{kfolds2Mclassed}} to extract and transforms results from kfold cross validation.}
 \examples{
+\donttest{
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
@@ -36,6 +37,7 @@ kfolds2Mclassedind(bbb)
 kfolds2Mclassedind(bbb2)
 kfolds2Mclassedind(bbb3)
 rm(list=c("Xaze_compl","yaze_compl","bbb","bbb2","bbb3"))
+}
 }
 \keyword{models}
 \keyword{regression}

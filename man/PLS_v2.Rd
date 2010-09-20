@@ -57,6 +57,7 @@ Use \code{plsRglm} instead.
 }
 \seealso{\code{\link{PLS_v2_wvc}} and \code{\link{PLS_v2_kfoldcv}}}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -101,14 +102,13 @@ cbind((log(ypine)),PLS_v2(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,PLS
 rm(list=c("Xpine","ypine"))
 
 
-\donttest{
 data(fowlkes)
 Xfowlkes <- fowlkes[,2:13]
 yfowlkes <- fowlkes[,1]
 modpls <- PLS_v2(yfowlkes,Xfowlkes,4,modele="pls-glm-logistic",pvals.expli=TRUE)
 modpls$pvalstep
 rm(list=c("Xfowlkes","yfowlkes","modpls"))
-}
+
 
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
@@ -140,7 +140,6 @@ modplsNA$InfCrit
 rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux"))
 
 
-\donttest{
 dimX <- 6
 Astar <- 4
 dataAstar4 <- t(replicate(250,simul_data_UniYX(dimX,Astar)))

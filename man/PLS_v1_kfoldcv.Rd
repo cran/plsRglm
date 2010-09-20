@@ -63,6 +63,7 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 You should use \code{\link{PLS_lm_kfoldcv}} instead.}
 \seealso{\code{\link{kfolds2coeff}}, \code{\link{kfolds2Pressind}}, \code{\link{kfolds2Press}}, \code{\link{kfolds2Mclassedind}}, \code{\link{kfolds2Mclassed}} and \code{\link{kfolds2CVinfos_v1}} to extract and transform results from kfold cross validation.}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -98,6 +99,7 @@ kfolds2CVinfos_v1(bbbNA)
 kfolds2CVinfos_v1(bbbNA2)
 PLS_v1(log(ypine),XpineNAX21,10,typeVC="standard")$CVinfos
 rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbbNA","bbbNA2"))
+}
 }
 \keyword{models}
 \keyword{regression}

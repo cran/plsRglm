@@ -87,6 +87,7 @@ PLS_v1(log(yCornell),XCornell,10,typeVC="standard")$CVinfos
 rm(list=c("XCornell","yCornell","bbb","bbb2"))
 
 
+\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
@@ -131,6 +132,7 @@ kfolds2Chisqind(bbb2)
 kfolds2Chisq(bbb2)
 kfolds2CVinfos_glm(bbb2)
 rm(list=c("Xaze_compl","yaze_compl","bbb","bbb2"))
+}
 }
 \keyword{models}
 \keyword{regression}

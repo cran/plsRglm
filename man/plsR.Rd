@@ -129,6 +129,7 @@ plsR(yCornell,XCornell,6)$AIC.std
 rm(list=c("XCornell","yCornell"))
 
 
+\donttest{
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
@@ -190,7 +191,6 @@ modpls$CVinfos
 rm(list=c("dimX","Astar","dataAstar2","modpls","ydataAstar2","XdataAstar2"))
 
 
-\donttest{
 dimX <- 24
 Astar <- 3
 dataAstar3 <- t(replicate(200,simul_data_UniYX(dimX,Astar)))

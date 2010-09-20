@@ -66,7 +66,7 @@ plsRglm(yCornell,XCornell,10)$InfCrit
 plsRglm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
 rm(list=c("XCornell","yCornell"))
 
-
+\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
@@ -99,7 +99,6 @@ cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,plsRgl
 cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
 rm(list=c("Xpine","ypine"))
 
-\donttest{
 data(fowlkes)
 Xfowlkes <- fowlkes[,2:13]
 yfowlkes <- fowlkes[,1]
@@ -135,10 +134,26 @@ XbordeauxNA[1,1] <- NA
 modplsNA <- plsRglm(ybordeaux,XbordeauxNA,10,modele="pls-glm-polr")
 modplsNA$Coeffsmodel_vals
 modplsNA$InfCrit
-rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux"))
+rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux","modplsNA"))
 
 
 \donttest{
+#install.packages(chemometrics)
+library(chemometrics)
+data(hyptis)
+yhyptis <- factor(hyptis$Group,ordered=TRUE)
+Xhyptis <- as.data.frame(hyptis[,c(1:6)])
+options(contrasts = c("contr.treatment", "contr.poly"))
+modpls2 <- plsRglm(yhyptis,Xhyptis,6,modele="pls-glm-polr")
+modpls2$Coeffsmodel_vals
+modpls2$InfCrit
+modpls2$Coeffs
+modpls2$std.coeffs
+
+table(yhyptis,predict(modpls2$FinalModel,type="class"))
+rm(list=c("yhyptis","Xhyptis","modpls2"))
+
+
 dimX <- 6
 Astar <- 4
 dataAstar4 <- t(replicate(250,simul_data_UniYX(dimX,Astar)))
@@ -203,6 +218,7 @@ modplsglm <- plsRglm(ysimbin1,Xsimbin1,10,modele="pls-glm-logistic")
 modplsglm$computed_nt
 modplsglm$InfCrit
 rm(list=c("dimX","Astar","dataAstar6","ysimbin1","Xsimbin1","modplsglm"))
+
 }
 }\keyword{models}
 \keyword{regression}

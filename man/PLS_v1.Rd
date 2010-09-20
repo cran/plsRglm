@@ -121,6 +121,7 @@ Use \code{plsR} instead.
 }
 \seealso{\code{\link{PLS_v1_wvc}} and \code{\link{PLS_v1_kfoldcv}}}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -152,7 +153,6 @@ PLS_v1(yaze_compl,Xaze_compl,10,typeVC="standard",MClassed=TRUE)$CVinfos
 rm(list=c("Xaze_compl","yaze_compl","modpls"))
 
 
-\donttest{
 dimX <- 24
 Astar <- 2
 simul_data_UniYX(dimX,Astar)

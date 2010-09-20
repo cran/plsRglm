@@ -5,13 +5,15 @@
 Boxplot plots for bootstrap distributions.
 }
 \usage{
-boxplots.bootpls(bootobject, indices = NULL, prednames = TRUE, articlestyle = TRUE, ...)
+boxplots.bootpls(bootobject, indices = NULL, prednames = TRUE, articlestyle = TRUE, xaxisticks=TRUE, ranget0= FALSE, ...)
 }
 \arguments{
   \item{bootobject}{ ~~Explain \code{bootobject} here~~ }
   \item{indices}{ ~~Explain \code{indices} here~~ }
   \item{prednames}{ ~~Explain \code{prednames} here~~ }
   \item{articlestyle}{ ~~Explain \code{articlestyle} here~~ }
+  \item{xaxisticks}{ ~~Explain \code{articlestyle} here~~ }
+  \item{ranget0}{ ~~Explain \code{articlestyle} here~~ }
   \item{\dots}{ ~~Explain \code{\dots} here~~ }
 }
 \details{

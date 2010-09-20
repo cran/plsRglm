@@ -66,7 +66,7 @@ PLS_glm(yCornell,XCornell,10)$InfCrit
 PLS_glm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
 rm(list=c("XCornell","yCornell"))
 
-
+\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
@@ -100,14 +100,13 @@ cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,PL
 rm(list=c("Xpine","ypine"))
 
 
-\donttest{
 data(fowlkes)
 Xfowlkes <- fowlkes[,2:13]
 yfowlkes <- fowlkes[,1]
 modpls <- PLS_glm(yfowlkes,Xfowlkes,4,modele="pls-glm-logistic",pvals.expli=TRUE)
 modpls$pvalstep
 rm(list=c("Xfowlkes","yfowlkes","modpls"))
-}
+
 
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
@@ -139,7 +138,6 @@ modplsNA$InfCrit
 rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux"))
 
 
-\donttest{
 dimX <- 6
 Astar <- 4
 dataAstar4 <- t(replicate(250,simul_data_UniYX(dimX,Astar)))

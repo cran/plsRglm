@@ -42,6 +42,7 @@ Use \code{\link{PLS_glm_wvc}} instead.
 }
 \seealso{\code{\link{PLS_v2}} for more detailed results, \code{\link{PLS_v2_kfoldcv}} for cross validating models and \code{\link{PLS_v1_wvc}} for the same function dedicated to plsR models}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -63,6 +64,7 @@ yaze_compl<-aze_compl$y
 PLS_v2(yaze_compl,Xaze_compl,10,modele="pls-glm-logistic",typeVC="none")$InfCrit
 PLS_v2_wvc(yaze_compl,Xaze_compl,10,modele="pls-glm-logistic", keepcoeffs=TRUE)
 rm("Xaze_compl","yaze_compl")
+}
 }
 \keyword{models}
 \keyword{regression}

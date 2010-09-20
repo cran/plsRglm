@@ -81,6 +81,7 @@ PLS_lm(yCornell,XCornell,6,typeVC="standard")$CVinfos
 rm(list=c("XCornell","yCornell","bbb","bbb2"))
 
 
+\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
@@ -98,6 +99,7 @@ kfolds2CVinfos_lm(bbbNA)
 kfolds2CVinfos_lm(bbbNA2)
 PLS_lm(log(ypine),XpineNAX21,10,typeVC="standard")$CVinfos
 rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbbNA","bbbNA2"))
+}
 }
 \keyword{models}
 \keyword{regression}

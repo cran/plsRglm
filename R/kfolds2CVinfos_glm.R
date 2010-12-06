@@ -1,6 +1,6 @@
 kfolds2CVinfos_glm <- function(pls_kfolds,MClassed=FALSE) {
 (mf <- pls_kfolds$call)
-(m <- match(c("dataY", "dataX", "nt", "limQ2set", "modele", "scaleX", "scaleY"), names(pls_kfolds$call), 0))
+(m <- match(c("dataY", "dataX", "nt", "limQ2set", "modele", "family", "scaleX", "scaleY"), names(pls_kfolds$call), 0))
 (mf <- mf[c(1, m)])
 (mf$typeVC <- "none")
 (mf$MClassed <- MClassed)
@@ -41,7 +41,7 @@ if (MClassed==FALSE) {
     }
 }
 
-if (as.character(pls_kfolds$call["modele"]) %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (as.character(pls_kfolds$call["modele"]) %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 press_kfolds <- kfolds2Press(pls_kfolds)
 preChisq_kfolds <- kfolds2Chisq(pls_kfolds)
 Q2Chisqcum_2=rep(NA, nt)

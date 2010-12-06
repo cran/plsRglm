@@ -9,9 +9,23 @@ PLS_glm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="p
 
 cat("____************************************************____\n")
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
-if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-gaussian","pls-glm-polr","pls-glm-lrm"))) {break}
-if (modele=="pls-glm-logistic") {family<-binomial()}
-if (modele=="pls-glm-gaussian") {family<-gaussian()}
+if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
+if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr"))) {break}
+if (!(modele %in% "pls-glm-family") & !is.null(family)) {break}
+if (modele=="pls") {family<-NULL}
+if (modele=="pls-glm-Gamma") {family<-Gamma(link = "inverse")}
+if (modele=="pls-glm-gaussian") {family<-gaussian(link = "identity")}
+if (modele=="pls-glm-inverse.gaussian") {family<-inverse.gaussian(link = "1/mu^2")}
+if (modele=="pls-glm-logistic") {family<-binomial(link = "logit")}
+if (modele=="pls-glm-poisson") {family<-poisson(link = "log")}
+if (modele=="pls-glm-polr") {family<-NULL}
+if (!is.null(family)) {
+    if (is.character(family)) {family <- get(family, mode = "function", envir = parent.frame())}
+    if (is.function(family)) {family <- family()}
+    if (is.language(family)) {family <- eval(family)}
+}
+print(family)
+
 scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
@@ -31,6 +45,8 @@ else {
     attr(ExpliX,"scaled:scale") <- rep(1,ncol(dataX))
     PredictY <- (dataPredictY)
 }
+if(is.null(colnames(ExpliX))){colnames(ExpliX)<-paste("X",1:ncol(ExpliX),sep=".")}
+if(is.null(rownames(ExpliX))){rownames(ExpliX)<-1:nrow(ExpliX)}
 
 if (any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if (any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
@@ -132,7 +148,7 @@ tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 if (!pvals.expli) {
 XXwotNA[!XXNA] <- NA
 for (jj in 1:(res$nc)) {
@@ -266,7 +282,7 @@ rownames(res$Std.Coeffs) <- c("Intercept",colnames(ExpliX))
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-logistic","pls-glm-gaussian")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 if (kk==1) {
 tempconstglm <- glm(YwotNA~1,family=family)
 res$AIC <- AIC(tempconstglm)
@@ -478,7 +494,7 @@ res$RSS <- cbind(res$RSS,crossprod(res$Yresidus))
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 res$residYChapeau <- tempregglm$linear.predictors
 if (kk==1) {
 res$RSSresidY <- crossprod(RepY-mean(RepY))
@@ -520,7 +536,7 @@ if (na.miss.X & !na.miss.Y) {
 
 
 if (kk==1) {
-cat("____Il y a des NA dans X et pas dans Y____\n")
+cat("____There are some NAs in X but not in Y____\n")
 }
 
 ##############################################
@@ -552,7 +568,7 @@ res$RSS <- cbind(res$RSS,crossprod(res$Yresidus))
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 res$residYChapeau <- tempregglm$linear.predictors
 if (kk==1) {
 res$RSSresidY <- crossprod(RepY-mean(RepY))
@@ -582,7 +598,7 @@ rownames(res$Coeffs) <- rownames(res$Std.Coeffs)
 
 else {
 if (kk==1) {
-cat("____Il y a des NA dans X et aussi dans Y____\n")
+cat("____There are some NAs both in X and Y____\n")
 }
 }
 }
@@ -646,7 +662,7 @@ rm(tempConstante)
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 res$residY <- res$residY 
 res$residusY <- cbind(res$residusY,res$residY)
 
@@ -718,7 +734,7 @@ for (ii in 1:nrow(PredictYwotNA)) {
 colnames(res$ttPredictY) <- paste("tt",1:res$computed_nt,sep="")
 }
 else {
-cat("____Il y a des NA dans X et aussi dans Y____\n")
+cat("____There are some NAs both in X and Y____\n")
 }
 }
 
@@ -751,10 +767,10 @@ dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian", "pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 res$R2residY <- 1-res$RSSresidY[2:(res$computed_nt+1)]/res$RSSresidY[1]
 res$R2 <- 1-res$RSS[2:(res$computed_nt+1)]/res$RSS[1]
-if (modele %in% c("pls-glm-gaussian")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson")) {
 res$InfCrit <- t(rbind(res$AIC, res$BIC, res$ChisqPearson, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY))
 dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "BIC", "Chi2_Pearson_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY"))
 }
@@ -813,7 +829,7 @@ rownames(res$Coeffs) <- c("Intercept",colnames(ExpliX))
 ##############################################
 ######              PLS-GLM             ######
 ##############################################
-if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
+if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 res$YChapeau <- as.matrix(tempregglm$fitted.values)            
 rownames(res$YChapeau) <- rownames(ExpliX)
 

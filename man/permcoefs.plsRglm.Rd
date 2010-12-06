@@ -5,13 +5,14 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-permcoefs.plsRglm(dataset, ind, nt, modele)
+permcoefs.plsRglm(dataset, ind, nt, modele, family=NULL)
 }
 \arguments{
   \item{dataset}{ ~~Explain \code{dataset} here~~ }
   \item{ind}{ ~~Explain \code{ind} here~~ }
   \item{nt}{ ~~Explain \code{nt} here~~ }
   \item{modele}{ ~~Explain \code{modele} here~~ }
+  \item{family}{ ~~Explain \code{family} here~~ }
 }
 \details{
   ~~ More details than the description above ~~

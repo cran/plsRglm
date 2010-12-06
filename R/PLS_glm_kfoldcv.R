@@ -8,12 +8,22 @@ PLS_glm_kfoldcv <- function(dataY,dataX,nt=2,limQ2set=.0975,modele="pls", family
             random = FALSE
         }
     call <- match.call(expand.dots=FALSE)
+    if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
     if (as.character(call["family"])=="NULL") {
-        if (modele=="pls") {call$family <- NULL}
-        if (modele=="pls-glm-gaussian") {call$family <- gaussian()}
-        if (modele=="pls-glm-logistic") {call$family <- binomial()}
-        if (modele=="pls-glm-polr") {call$family <- NULL}
+        if (modele=="pls") {call$family<-NULL}
+        if (modele=="pls-glm-Gamma") {call$family<-Gamma(link = "inverse")}
+        if (modele=="pls-glm-gaussian") {call$family<-gaussian(link = "identity")}
+        if (modele=="pls-glm-inverse.gaussian") {call$family<-inverse.gaussian(link = "1/mu^2")}
+        if (modele=="pls-glm-logistic") {call$family<-binomial(link = "logit")}
+        if (modele=="pls-glm-poisson") {call$family<-poisson(link = "log")}
+        if (modele=="pls-glm-polr") {call$family<-NULL}
     }
+    if (!is.null(call$family)) {
+        if (is.character(call$family)) {call$family <- get(call$family, mode = "function", envir = parent.frame())}
+        if (is.function(call$family)) {call$family <- call$family()}
+        if (is.language(call$family)) {call$family <- eval(call$family)}
+    }
+    print(family)
     if (as.character(call["tol_Xi"])=="NULL") {call$tol_Xi <- 10^(-12)}
     if (as.character(call["modele"])=="NULL") {call$modele <- "pls"}
     if (as.character(call["limQ2set"])=="NULL") {call$limQ2set <- .0975}

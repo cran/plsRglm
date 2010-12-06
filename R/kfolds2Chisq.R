@@ -1,15 +1,17 @@
 kfolds2Chisq <- function(pls_kfolds) {
     if (!is.null(pls_kfolds$call$family)) {
+        if (is.character(pls_kfolds$call$family)) {pls_kfolds$call$family <- get(pls_kfolds$call$family, mode = "function", envir = parent.frame())}
+        if (is.function(pls_kfolds$call$family)) {pls_kfolds$call$family <- pls_kfolds$call$family()}
+        if (is.language(pls_kfolds$call$family)) {pls_kfolds$call$family <- eval(pls_kfolds$call$family)}
         fam_var <- pls_kfolds$call$family$variance
-        cat(paste("glm-family : ",as.character(pls_kfolds$call$family$family)))
-        cat("\n")
+        fam_name <- paste(pls_kfolds$call$family$family,pls_kfolds$call$family$link)
     } else {
         if (pls_kfolds$call$modele=="pls") {
             fam_var <- function(vals) {return(1)}
-            pls_kfolds$call$family$family <- "pls"
+            fam_name <- "pls"
         }
         if (pls_kfolds$call$modele=="pls-glm-polr") {
-            pls_kfolds$call$family$family <- "pls-glm-polr"
+            fam_name <- "pls-glm-polr"
             Varyy <- function(piVaryy) {
             diag(piVaryy[-length(piVaryy)])-piVaryy[-length(piVaryy)]%*%t(piVaryy[-length(piVaryy)])
             }
@@ -21,8 +23,7 @@ kfolds2Chisq <- function(pls_kfolds) {
             }
         }
     }
-    cat(paste("glm-family : ",as.character(pls_kfolds$call$family$family)))
-    cat("\n")
+    print(pls_kfolds$call$family)
 
 
 if (!(pls_kfolds$call$modele=="pls-glm-polr")) {

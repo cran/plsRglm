@@ -14,7 +14,7 @@ OLD_PLS_v2_vc(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, mod
   \item{limQ2set}{limit value for the Q2}
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted (\code{"pls"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-polr"}).}
-  \item{family}{for the present moment the family argumlent is ignored and set thanks to the value of modele.}
+  \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
   \item{typeVC}{type of crossed validation (only leave-one-out now). Several procedures are available and may be forced.
     \describe{
       \item{\code{none}}{no crossed validation}

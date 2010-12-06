@@ -58,7 +58,9 @@ rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbbNA","bbbNA2","bbbNA3"))
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
+bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-family",family="binomial")
 bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-logistic")
+bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(),K=10)
 bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-logistic",K=10)
 kfolds2Chisq(bbb)
 kfolds2Chisq(bbb2)

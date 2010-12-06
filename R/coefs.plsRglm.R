@@ -1,7 +1,7 @@
-coefs.plsRglm <- function(dataset, ind, nt, modele) 
+coefs.plsRglm <- function(dataset, ind, nt, modele, family=NULL) 
 {
     tempcoefs <- try(PLS_glm_wvc(dataY = dataset[ind, 1], dataX = dataset[ind, 
-        -1], nt = nt, modele = modele, keepstd.coeffs = TRUE)$std.coeffs, silent=TRUE)
+        -1], nt = nt, modele = modele, family=family, keepstd.coeffs = TRUE)$std.coeffs, silent=TRUE)
     if (is.numeric(tempcoefs)) {
         return(tempcoefs)
     }

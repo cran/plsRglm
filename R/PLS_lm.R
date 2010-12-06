@@ -29,6 +29,8 @@ else {
     attr(ExpliX,"scaled:scale") <- rep(1,ncol(dataX))
     PredictY <- (dataPredictY)
 }
+if(is.null(colnames(ExpliX))){colnames(ExpliX)<-paste("X",1:ncol(ExpliX),sep=".")}
+if(is.null(rownames(ExpliX))){rownames(ExpliX)<-1:nrow(ExpliX)}
 
 if (any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if (any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
@@ -327,7 +329,7 @@ if (na.miss.X & !na.miss.Y) {
 
 
 if (kk==1) {
-cat("____Il y a des NA dans X et pas dans Y____\n")
+cat("____There are some NAs in X but not in Y____\n")
 }
 
 ##############################################
@@ -431,7 +433,7 @@ res$RSS <- cbind(res$RSS,crossprod(res$Yresidus))
 
 else {
 if (kk==1) {
-cat("____Il y a des NA dans X et aussi dans Y____\n")
+cat("____There are some NAs both in X and Y____\n")
 }
 }
 }
@@ -529,7 +531,7 @@ for (ii in 1:nrow(PredictYwotNA)) {
 colnames(res$ttPredictY) <- paste("tt",1:res$computed_nt,sep="")
 }
 else {
-cat("____Il y a des NA dans X et aussi dans Y____\n")
+cat("____There are some NAs both in X and Y____\n")
 }
 }
 

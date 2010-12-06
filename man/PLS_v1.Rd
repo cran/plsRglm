@@ -14,7 +14,7 @@ PLS_v1(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{limQ2set}{limit value for the Q2}
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted, only (\code{"pls"} available for this fonction.}
-  \item{family}{for the present moment the family argumlent is ignored and set thanks to the value of modele.}
+  \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
   \item{typeVC}{type of leave one out crossed validation. Several procedures are available and may be forced.
     \describe{
       \item{\code{none}}{no crossed validation}
@@ -28,7 +28,7 @@ PLS_v1(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{scaleY}{scale the response : Yes/No. Ignored since not always possible for glm responses.}
   \item{pvals.expli}{should individual p-values be reported to tune model selection ?}
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
-  \item{MClassed}{number of missclassed cases, should only be used for binary responses}
+  \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
 }
 \details{
@@ -77,7 +77,7 @@ There are several ways to deal with missing values that leads to different compu
   \item{optional}{If the response is assumed to be binary:\cr
         i.e. \code{MClassed=TRUE}.    
   \describe{
-  \item{\code{MissClassed}}{Number of miss classed results}
+  \item{\code{MissClassed}}{Number of missclassified results}
   \item{\code{Probs}}{Probability predicted by the model. These atre not true probabilities since they may lay outside of [0,1]}
   \item{\code{Probs.trc}}{Probability predicted by the model constrined in [0,1]}
   }

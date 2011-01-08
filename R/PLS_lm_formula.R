@@ -1,5 +1,4 @@
-PLS_v1 <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",
-                    family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12)) {
+PLS_lm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12), weights,subset,contrasts=NULL) {
 
 ##################################################
 #                                                #
@@ -8,6 +7,30 @@ PLS_v1 <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pl
 ##################################################
 
 cat("____************************************************____\n")
+
+if (missing(data)) {data <- environment(formula)}
+mf <- match.call(expand.dots = FALSE)
+m <- match(c("formula", "data", "subset", "weights"), names(mf), 0L)
+mf <- mf[c(1L, m)]
+mf$drop.unused.levels <- TRUE
+mf$na.action <- na.pass    
+mf[[1L]] <- as.name("model.frame")
+mf <- eval(mf, parent.frame())
+#if (identical(method, "model.frame")) return(mf)
+mt <- attr(mf, "terms")
+attr(mt,"intercept")<-0L
+dataY <- model.response(mf, "any")
+if (length(dim(dataY)) == 1L) {
+    nm <- rownames(dataY)
+    dim(dataY) <- NULL
+    if (!is.null(nm)) names(dataY) <- nm
+    }
+dataX <- if (!is.empty.model(mt)) model.matrix(mt, mf, contrasts)
+    else matrix(, NROW(dataY), 0L)
+weights <- as.vector(model.weights(mf))
+if (!is.null(weights) && !is.numeric(weights)) stop("'weights' must be a numeric vector")
+if (!is.null(weights) && any(weights < 0)) stop("negative weights not allowed")
+
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (!(modele %in% c("pls"))) {break}
 scaleY <- NULL
@@ -59,7 +82,7 @@ dataYwotNA[!YNA] <- 0
 PredictYwotNA <- as.matrix(PredictY)
 PredictYwotNA [is.na(PredictY)] <- 0
 
-res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),nt=nt,ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,press.ind=NULL,press.tot=NULL,family=family,ttPredictY = NULL,typeVC=typeVC,dataY=dataY)
+res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),nt=nt,ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,press.ind=NULL,press.tot=NULL,family=family,ttPredictY = NULL,typeVC=typeVC,dataX=dataX,dataY=dataY)
 res$temppred <- NULL
 
 ##############################################
@@ -174,7 +197,7 @@ if(break_nt==TRUE) {break}
 res$ww <- cbind(res$ww,tempww)
 res$wwnorm <- cbind(res$wwnorm,tempwwnorm)
 res$pp <- cbind(res$pp,temppp)   
-res$tt <- cbind(res$tt,temptt)       
+res$tt <- cbind(res$tt,temptt)   
 
 
 
@@ -228,9 +251,6 @@ rownames(res$Std.Coeffs) <- c("Intercept",colnames(ExpliX))
 
 
 
-
-
-
 if (!(na.miss.X | na.miss.Y)) {
 
 ##############################################
@@ -250,7 +270,7 @@ if (kk==1) {
 cat(paste("____TypeVC____",typeVC,"____\n"))
 }
 temppred <- rep(0, res$nr)
-for (i in 1:(res$nr)) {    
+for (i in 1:(res$nr)) {     
                 tempww.cv <- t(XXwotNA[-i, ])%*%YwotNA[-i]/(t(XXNA[-i, ])%*%YwotNA[-i]^2)
                 tempwwnorm.cv <- tempww.cv/sqrt(drop(crossprod(tempww.cv)))
                 temptt.cv <- XXwotNA[-i, ]%*%tempwwnorm.cv/(XXNA[-i, ]%*%(tempwwnorm.cv^2))
@@ -269,11 +289,11 @@ cat(paste("____TypeVC____",typeVC,"____\n"))
 }
 temppp.cv <- res$pp  
 temppred <- rep(0, res$nr)
-for (i in 1:(res$nr)) {
+for (i in 1:(res$nr)) {     
                 tempww.cv <- t(XXwotNA[-i, ])%*%YwotNA[-i]/(t(XXNA[-i, ])%*%YwotNA[-i]^2)
                 tempwwnorm.cv <- tempww.cv/sqrt(drop(crossprod(tempww.cv)))
                 temptt.cv <- XXwotNA[-i, ]%*%tempwwnorm.cv/(XXNA[-i, ]%*%(tempwwnorm.cv^2))
-                tempc.cv <- solve(t(temptt.cv)%*%temptt.cv)%*%t(temptt.cv)%*%(YwotNA[-i])  
+                tempc.cv <- solve(t(temptt.cv)%*%temptt.cv)%*%t(temptt.cv)%*%(YwotNA[-i])    
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
@@ -285,7 +305,7 @@ for (i in 1:(res$nr)) {
                 break
                 }
                 ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(ExpliXwotNA[i,])[XXNA[i,]])[kk]
-                temppred[i] <- tempc.cv*ttPredictY.cv  
+                temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 rm(i)
 res$press.ind <- cbind(res$press.ind,(YwotNA-temppred)^2)
@@ -346,7 +366,7 @@ cat(paste("____TypeVC____",typeVC,"____\n"))
 }
 temppp.cv <- res$pp  
 temppred <- rep(0, res$nr)
-for (i in 1:(res$nr)) { 
+for (i in 1:(res$nr)) {     
                 tempww.cv <- t(XXwotNA[-i, ])%*%YwotNA[-i]/(t(XXNA[-i, ])%*%YwotNA[-i]^2)
                 tempwwnorm.cv <- tempww.cv/sqrt(drop(crossprod(tempww.cv)))
                 temptt.cv <- XXwotNA[-i, ]%*%tempwwnorm.cv/(XXNA[-i, ]%*%(tempwwnorm.cv^2))
@@ -400,7 +420,7 @@ else {
                 }
                 ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
-}
+                }
 }
 res$press.ind <- cbind(res$press.ind,(YwotNA-temppred)^2)
 res$press.ind2 <- cbind(res$press.ind2,(dataYwotNA-res$YChapeau-attr(res$RepY,"scaled:scale")*temppred)^2)

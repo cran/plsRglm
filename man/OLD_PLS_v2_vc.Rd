@@ -15,9 +15,9 @@ OLD_PLS_v2_vc(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, mod
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted (\code{"pls"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-polr"}).}
   \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
-  \item{typeVC}{type of crossed validation (only leave-one-out now). Several procedures are available and may be forced.
+  \item{typeVC}{type of cross validation (only leave-one-out now). Several procedures are available and may be forced.
     \describe{
-      \item{\code{none}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
       \item{\code{standard}}{as in SIMCA for datasets without missing values and with all values predicted as those with missing values for datasets with any missing values}
       \item{\code{missingdata}}{all values predicted as those with missing values for datasets with any missing values}
       \item{\code{adaptative}}{predict a response value for an x with any missing value as those with missing values and for an x without any missing value as those without missing values.}

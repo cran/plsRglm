@@ -14,7 +14,6 @@ kfolds2Mclassed <- function(pls_kfolds) {
             fam_name <- "pls-glm-polr"
         }
     }
-    print(pls_kfolds$call$family)
 
 
 if (!(pls_kfolds$call$modele=="pls-glm-polr")) {

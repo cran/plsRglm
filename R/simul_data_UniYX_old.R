@@ -53,8 +53,8 @@ Psi <- rmvnorm(1,mean=rep(0,HH),sigma=sigmaPsi)
 
 Y <- z%*%t(eta)+Psi
 
-res <- cbind(Y[1],simX)
-colnames(res) <- c("Y",paste("X",1:totdim))
+res <- c(Y[1],simX)
+names(res) <- c("Y",paste("X",1:totdim,sep=""))
 
 return(res)
 }

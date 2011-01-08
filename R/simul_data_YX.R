@@ -4,8 +4,8 @@ varsR <- c(10,8,6,4,2,1/2)
 varepsilon <- .01 
 varsF <- c(.25,.125,.05,.0125,.005,.00125) 
 
-if(totdim==1){break}
-if(ncomp==1){break}
+if(totdim==1){stop("'totdim' must be > 1")}
+if(ncomp==1){stop("'ncomp' must be > 1")}
 
 if(totdim==2){
 dimok <- TRUE
@@ -157,7 +157,7 @@ ksi6 <- c(4/5,62/65,62/65,4/5,77/65,-6/5,-68/65,-68/65,-6/5,-53/65,8/13,rep(c(-1
 ksi <- cbind(ksi1,ksi2,ksi3,ksi4,ksi5,ksi6)[1:totdim,1:ncomp]
 }
 
-if(!dimok) {break}
+if(!dimok) {stop("Incorrect value for 'totdim'. 'totdim' must be > 1")}
 
 epsilon <- stats::rnorm(totdim,mean=rep(0,totdim),sd=varepsilon)
 
@@ -224,8 +224,8 @@ Psi <- mvtnorm::rmvnorm(1,mean=rep(0,HH),sigma=sigmaPsi)
 
 Y <- z%*%t(eta)+Psi
 
-res <- cbind(Y,simX)
-colnames(res) <- c(paste("Y",1:HH),paste("X",1:totdim))
+res <- c(Y,simX)
+names(res) <- c(paste("Y",1:HH),paste("X",1:totdim,sep=""))
 
 return(res)
 }

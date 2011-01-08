@@ -1,4 +1,28 @@
-PLS_glm_kfoldcv <- function(dataY,dataX,nt=2,limQ2set=.0975,modele="pls", family=NULL, K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12)) {
+PLS_lm_kfoldcv_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12), weights,subset,contrasts=NULL) {
+
+    if (missing(data)) {data <- environment(formula)}
+    mf <- match.call(expand.dots = FALSE)
+    m <- match(c("formula", "data", "subset", "weights"), names(mf), 0L)
+    mf <- mf[c(1L, m)]
+    mf$drop.unused.levels <- TRUE
+    mf$na.action <- na.pass    
+    mf[[1L]] <- as.name("model.frame")
+    mf <- eval(mf, parent.frame())
+#    if (identical(method, "model.frame")) return(mf)
+    mt <- attr(mf, "terms")
+    attr(mt,"intercept")<-0L
+    dataY <- model.response(mf, "any")
+    if (length(dim(dataY)) == 1L) {
+        nm <- rownames(dataY)
+        dim(dataY) <- NULL
+        if (!is.null(nm)) names(dataY) <- nm
+        }
+    dataX <- if (!is.empty.model(mt)) model.matrix(mt, mf, contrasts)
+        else matrix(, NROW(dataY), 0L)
+    weights <- as.vector(model.weights(mf))
+    if (!is.null(weights) && !is.numeric(weights)) stop("'weights' must be a numeric vector")
+    if (!is.null(weights) && any(weights < 0)) stop("negative weights not allowed")
+
     res <- NULL
     res$nr <- nrow(dataX)
         if (K > res$nr) {
@@ -8,25 +32,9 @@ PLS_glm_kfoldcv <- function(dataY,dataX,nt=2,limQ2set=.0975,modele="pls", family
             random = FALSE
         }
     call <- match.call(expand.dots=FALSE)
-    if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
-    if (as.character(call["family"])=="NULL") {
-        if (modele=="pls") {call$family<-NULL}
-        if (modele=="pls-glm-Gamma") {call$family<-Gamma(link = "inverse")}
-        if (modele=="pls-glm-gaussian") {call$family<-gaussian(link = "identity")}
-        if (modele=="pls-glm-inverse.gaussian") {call$family<-inverse.gaussian(link = "1/mu^2")}
-        if (modele=="pls-glm-logistic") {call$family<-binomial(link = "logit")}
-        if (modele=="pls-glm-poisson") {call$family<-poisson(link = "log")}
-        if (modele=="pls-glm-polr") {call$family<-NULL}
-    }
-    if (!is.null(call$family)) {
-        if (is.character(call$family)) {call$family <- get(call$family, mode = "function", envir = parent.frame())}
-        if (is.function(call$family)) {call$family <- call$family()}
-        if (is.language(call$family)) {call$family <- eval(call$family)}
-    }
-    if (modele=="pls") {cat("\n", modele, "\n\n")} else {print(family)}
-    if (as.character(call["tol_Xi"])=="NULL") {call$tol_Xi <- 10^(-12)}
     if (as.character(call["modele"])=="NULL") {call$modele <- "pls"}
     if (as.character(call["limQ2set"])=="NULL") {call$limQ2set <- .0975}
+    if (as.character(call["tol_Xi"])=="NULL") {call$tol_Xi <- 10^(-12)}
     if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
     folds_kfolds <-vector("list",NK)
     if (NK==1) {respls_kfolds <- list(vector("list", K))}
@@ -49,6 +57,19 @@ PLS_glm_kfoldcv <- function(dataY,dataX,nt=2,limQ2set=.0975,modele="pls", family
       dataY_kfolds <-vector("list",NK)
         for (jj in 1:NK) {
           dataY_kfolds[[jj]] <-vector("list",K)
+        }
+      }
+    }
+    }
+    if (keepMclassed) {
+    if (NK==1) {Mclassed_kfolds <- list(vector("list", K))}
+    else
+    {
+      if (NK>1)
+      {
+      Mclassed_kfolds <-vector("list",NK)
+        for (jj in 1:NK) {
+          Mclassed_kfolds[[jj]] <-vector("list",K)
         }
       }
     }
@@ -118,17 +139,19 @@ PLS_glm_kfoldcv <- function(dataY,dataX,nt=2,limQ2set=.0975,modele="pls", family
             }
             else folds = c(folds, list(as.vector(unlist(groups[-ii]))))
             if (K == 1) {
-                temptemp <- PLS_glm_wvc(dataY=dataY, dataX=dataX, nt=nt, dataPredictY=dataX, modele=modele,family=family,scaleX=scaleX,scaleY=scaleY,keepcoeffs=keepcoeffs,tol_Xi=tol_Xi)
+                temptemp <- PLS_lm_wvc(dataY=dataY, dataX=dataX, nt=nt, dataPredictY=dataX,scaleX=scaleX,scaleY=scaleY,keepcoeffs=keepcoeffs,tol_Xi=tol_Xi)
                 respls_kfolds[[nnkk]][[ii]] <- temptemp$valsPredict
                 if (keepcoeffs) {coeffskfolds[[nnkk]][[ii]] = temptemp$coeffs}
                 if (keepdataY) {dataY_kfolds[[nnkk]][[ii]] = NULL}
+                if (keepMclassed) {Mclassed_kfolds[[nnkk]][[ii]] = unclass(dataY) !=ifelse(temptemp$valsPredict < 0.5, 0, 1)}
                 }
             else {
                   cat(paste(ii,"\n"))
-                  temptemp <- PLS_glm_wvc(dataY=dataY[-nofolds], dataX=dataX[-nofolds,], nt=nt, dataPredictY=dataX[nofolds,], modele=modele,family=family,scaleX=scaleX,scaleY=scaleY,keepcoeffs=keepcoeffs,tol_Xi=tol_Xi)
+                  temptemp <- PLS_lm_wvc(dataY=dataY[-nofolds], dataX=dataX[-nofolds,], nt=nt, dataPredictY=dataX[nofolds,], scaleX=scaleX,scaleY=scaleY,keepcoeffs=keepcoeffs,tol_Xi=tol_Xi)
                   respls_kfolds[[nnkk]][[ii]] <- temptemp$valsPredict
                   if (keepcoeffs) {coeffs_kfolds[[nnkk]][[ii]] = temptemp$coeffs}
                   if (keepdataY) {dataY_kfolds[[nnkk]][[ii]] = dataY[nofolds]}
+                  if (keepMclassed) {Mclassed_kfolds[[nnkk]][[ii]] = unclass(dataY[nofolds]) !=ifelse(temptemp$valsPredict < 0.5, 0, 1)}
                   }
         }
         folds_kfolds[[nnkk]]<-folds
@@ -137,6 +160,7 @@ results <- list(results_kfolds=respls_kfolds)
 if (keepcoeffs) {results$coeffs_kfolds <- coeffs_kfolds}
 if (keepfolds) {results$folds <- folds_kfolds}
 if (keepdataY) {results$dataY_kfolds <- dataY_kfolds}
+if (keepMclassed) {results$Mclassed_kfolds <- Mclassed_kfolds}
 results$call <- call
 return(results)
 }

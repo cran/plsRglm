@@ -2,7 +2,7 @@
 \alias{kfolds2CVinfos_lm}
 \title{Extracts and computes information criteria and fits statistics for kfold cross validated partial least squares models}
 \description{
-This function extracts and computes information criteria and fits statistics for kfold cross validated partial least squares models.
+This function extracts and computes information criteria and fits statistics for kfold cross validated partial least squares models for both formula or classic specifications of the model.
 }
 \usage{
 kfolds2CVinfos_lm(pls_kfolds, MClassed = FALSE)

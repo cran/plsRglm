@@ -59,7 +59,7 @@ dataYwotNA[!YNA] <- 0
 PredictYwotNA <- as.matrix(PredictY)
 PredictYwotNA [is.na(PredictY)] <- 0
 
-res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),nt=nt,ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,press.ind=NULL,press.tot=NULL,family=family,ttPredictY = NULL,typeVC=typeVC,dataY=dataY)
+res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),nt=nt,ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,press.ind=NULL,press.tot=NULL,family=family,ttPredictY = NULL,typeVC=typeVC,dataX=dataX,dataY=dataY)
 res$temppred <- NULL
 
 ##############################################
@@ -515,7 +515,7 @@ if(break_nt_vc==TRUE) {break}
 
 if (!(na.miss.X | na.miss.Y)) {
 if(kk==1){
-cat("____Predicting X without NA neither in X or Y____\n")
+cat("____Predicting X without NA neither in X nor in Y____\n")
 }
 res$ttPredictY <- PredictYwotNA%*%res$wwetoile 
 colnames(res$ttPredictY) <- paste("tt",1:res$computed_nt,sep="")

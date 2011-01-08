@@ -15,12 +15,12 @@ PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = 
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS glm model to be fitted (\code{"pls"}, \code{"pls-glm-Gamma"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-inverse.gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-poisson"}, \code{"pls-glm-polr"}). Use \code{"modele=pls-glm-family"} to enable the \code{family} option.}
   \item{family}{a description of the error distribution and link function to be used in the model. This can be a character string naming a family function, a family function or the result of a call to a family function. (See \code{\link[stats]{family}} for details of family functions.) To use the family option, please set \code{modele="pls-glm-family"}. User defined families can also be defined. See details.}
-  \item{typeVC}{type of leave one out crossed validation. For back compatibility purpose.
+  \item{typeVC}{type of leave one out cross validation. For back compatibility purpose.
     \describe{
-      \item{\code{none}}{no crossed validation}
-      \item{\code{standard}}{no crossed validation}
-      \item{\code{missingdata}}{no crossed validation}
-      \item{\code{adaptative}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
+      \item{\code{standard}}{no cross validation}
+      \item{\code{missingdata}}{no cross validation}
+      \item{\code{adaptative}}{no cross validation}
       }
   }
   \item{EstimXNA}{only for \code{modele="pls"}. Set whether the missing X values have to be estimated.}

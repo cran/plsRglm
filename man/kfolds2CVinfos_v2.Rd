@@ -8,7 +8,7 @@ This function extracts and computes information criteria and fits statistics for
 kfolds2CVinfos_v2(pls_kfolds, MClassed = FALSE)
 }
 \arguments{
-  \item{pls_kfolds}{an object computed using \code{\link{PLS_v1_kfoldcv}}}
+  \item{pls_kfolds}{an object computed using \code{\link{PLS_v2_kfoldcv}}}
   \item{MClassed}{should number of miss classed be computed}
 }
 \details{

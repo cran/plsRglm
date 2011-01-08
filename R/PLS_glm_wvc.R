@@ -1,4 +1,4 @@
-PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=NULL,scaleX=TRUE,scaleY=NULL,keepcoeffs=FALSE,keepstd.coeffs=FALSE,tol_Xi=10^(-12)) {
+PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=NULL,scaleX=TRUE,scaleY=NULL,keepcoeffs=FALSE,keepstd.coeffs=FALSE,tol_Xi=10^(-12),method="logistic") {
 
 ##################################################
 #                                                #
@@ -9,8 +9,8 @@ PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=
 cat("____************************************************____\n")
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
-if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr"))) {break}
-if (!(modele %in% "pls-glm-family") & !is.null(family)) {break}
+if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr"))) {print(modele);stop("'modele' not recognized")}
+if (!(modele %in% "pls-glm-family") & !is.null(family)) {stop("Set 'modele=pls-glm-family' to use the family option")}
 if (modele=="pls") {family<-NULL}
 if (modele=="pls-glm-Gamma") {family<-Gamma(link = "inverse")}
 if (modele=="pls-glm-gaussian") {family<-gaussian(link = "identity")}
@@ -23,7 +23,12 @@ if (!is.null(family)) {
     if (is.function(family)) {family <- family()}
     if (is.language(family)) {family <- eval(family)}
 }
-print(family)
+    if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {print(family)}
+    if (modele %in% c("pls-glm-polr")) {cat("\nModel:", modele, "\n");cat("Method:", method, "\n\n")}
+    if (modele=="pls") {cat("\nModel:", modele, "\n\n")}
+
+
+
 scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
@@ -163,7 +168,7 @@ XXwotNA[!XXNA] <- NA
 library(MASS)
 tts <- res$tt
 for (jj in 1:(res$nc)) {
-    tempww[jj] <- -1*polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude)$coef[kk]
+    tempww[jj] <- -1*MASS:::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,method=method)$coef[kk]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj,tts)}
@@ -318,11 +323,11 @@ rownames(res$Std.Coeffs) <- c("Intercept",colnames(ExpliX))
 
 if (modele %in% c("pls-glm-polr")) {
 if (kk==1) {
-tempconstpolr <- polr(YwotNA~1,na.action=na.exclude,Hess=TRUE)
+tempconstpolr <- MASS:::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE,method=method)
 res$Coeffsmodel_vals <- rbind(summary(tempconstpolr)$coefficients,matrix(rep(NA,3*nt),ncol=3))
 rm(tempconstpolr)
 tts <- res$tt
-tempregpolr <- polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)
@@ -332,7 +337,7 @@ res$CoeffConstante <- tempCoeffConstante
 } else {
 if (!(na.miss.X | na.miss.Y)) {
 tts <- res$tt
-tempregpolr <- polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  
@@ -343,7 +348,7 @@ res$CoeffConstante <- cbind(res$CoeffConstante,tempCoeffConstante)
 else
 {
 tts <- res$tt
-tempregpolr <- polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  
@@ -555,7 +560,7 @@ rm(tempCoeffC)
 
 if (!(na.miss.X | na.miss.Y)) {
 if(kk==1){
-cat("____Predicting X without NA neither in X or Y____\n")
+cat("____Predicting X without NA neither in X nor in Y____\n")
 }
 res$ttPredictY <- PredictYwotNA%*%res$wwetoile 
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")

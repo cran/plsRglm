@@ -5,7 +5,7 @@
 Light version of \code{PLS_glm} for cross validation purposes either on complete or incomplete datasets.
 }
 \usage{
-PLS_glm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", family = NULL, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12))
+PLS_glm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", family = NULL, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12), method = "logistic")
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -19,9 +19,10 @@ PLS_glm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", family =
   \item{keepcoeffs}{whether the coefficients of the linear fit on link scale of unstandardized eXplanatory variables should be returned or not.}
   \item{keepstd.coeffs}{whether the coefficients of the linear fit on link scale of standardized eXplanatory variables should be returned or not.}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{method}{logistic, probit, complementary log-log or cauchit (corresponding to a Cauchy latent variable).}
 }
 \details{
-This function is called by \code{\link{PLS_glm_kfoldcv}} in order to perform cross validation either on complete or incomplete datasets.
+This function is called by \code{\link{PLS_glm_kfoldcv_formula}} in order to perform cross validation either on complete or incomplete datasets.
 
 There are seven different predefined models with predefined link functions available :
 \describe{

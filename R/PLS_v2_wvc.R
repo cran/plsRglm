@@ -149,7 +149,7 @@ YwotNA <- as.factor(YwotNA)
 XXwotNA[!XXNA] <- NA
 library(MASS)
 for (jj in 1:(res$nc)) {
-    tempww[jj] <- -1*polr(YwotNA~cbind(res$tt,XXwotNA[,jj]),na.action=na.exclude)$coef[kk]
+    tempww[jj] <- -1*MASS:::polr(YwotNA~cbind(res$tt,XXwotNA[,jj]),na.action=na.exclude)$coef[kk]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj)}
@@ -304,10 +304,10 @@ rownames(res$Std.Coeffs) <- c("Intercept",colnames(ExpliX))
 
 if (modele %in% c("pls-glm-polr")) {
 if (kk==1) {
-tempconstpolr <- polr(YwotNA~1,na.action=na.exclude,Hess=TRUE)
+tempconstpolr <- MASS:::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE)
 res$Coeffsmodel_vals <- rbind(summary(tempconstpolr)$coefficients,matrix(rep(NA,3*nt),ncol=3))
 rm(tempconstpolr)
-tempregpolr <- polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)
 tempCoeffConstante <- as.vector(tempregpolr$zeta)
@@ -315,7 +315,7 @@ res$CoeffCFull <- matrix(c(tempCoeffConstante,tempCoeffC,rep(NA,nt-kk)),ncol=1)
 res$CoeffConstante <- tempCoeffConstante
 } else {
 if (!(na.miss.X | na.miss.Y)) {
-tempregpolr <- polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  
 tempCoeffConstante <- as.vector(tempregpolr$zeta)
@@ -324,7 +324,7 @@ res$CoeffConstante <- cbind(res$CoeffConstante,tempCoeffConstante)
 }
 else
 {
-tempregpolr <- polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
+tempregpolr <- MASS:::polr(YwotNA~res$tt,na.action=na.exclude,Hess=TRUE)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  
 tempCoeffConstante <- as.vector(tempregpolr$zeta)
@@ -521,7 +521,7 @@ rm(tempCoeffC)
 
 if (!(na.miss.X | na.miss.Y)) {
 if(kk==1){
-cat("____Predicting X without NA neither in X or Y____\n")
+cat("____Predicting X without NA neither in X nor in Y____\n")
 }
 res$ttPredictY <- PredictYwotNA%*%res$wwetoile 
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")

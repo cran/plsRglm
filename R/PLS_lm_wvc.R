@@ -9,7 +9,7 @@ PLS_lm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",scaleX=T
 ##################################################
 
 cat("____************************************************____\n")
-if (!(modele %in% c("pls"))) {break}
+if (!(modele %in% c("pls"))) {print(modele);stop("'modele' not recognized")}
 scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
@@ -195,7 +195,7 @@ tempCoeffC <- solve(t(res$tt[YNA])%*%res$tt[YNA])%*%t(res$tt[YNA])%*%YwotNA[YNA]
 res$CoeffCFull <- matrix(c(tempCoeffC,rep(NA,nt-kk)),ncol=1)
 tempCoeffConstante <- 0
 } else {
-if (!(na.miss.X | na.miss.Y)) {# Cette distinction n'est pas necessaire a priori
+if (!(na.miss.X | na.miss.Y)) {
 tempCoeffC <- c(rep(0,kk-1),solve(t(res$tt[YNA,kk])%*%res$tt[YNA,kk])%*%t(res$tt[YNA,kk])%*%YwotNA[YNA])  
 tempCoeffConstante <- 0
 res$CoeffCFull <- cbind(res$CoeffCFull,c(tempCoeffC,rep(NA,nt-kk)))
@@ -331,7 +331,7 @@ rm(tempConstante)
 
 if (!(na.miss.X | na.miss.Y)) {
 if(kk==1){
-cat("____Predicting X without NA neither in X or Y____\n")
+cat("____Predicting X without NA neither in X nor in Y____\n")
 }
 res$ttPredictY <- PredictYwotNA%*%res$wwetoile 
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")

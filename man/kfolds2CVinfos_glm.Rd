@@ -2,13 +2,13 @@
 \alias{kfolds2CVinfos_glm}
 \title{Extracts and computes information criteria and fits statistics for kfold cross validated partial least squares glm models}
 \description{
-This function extracts and computes information criteria and fits statistics for kfold cross validated partial least squares glm models.
+This function extracts and computes information criteria and fits statistics for kfold cross validated partial least squares glm models for both formula or classic specifications of the model.
 }
 \usage{
 kfolds2CVinfos_glm(pls_kfolds, MClassed = FALSE)
 }
 \arguments{
-  \item{pls_kfolds}{an object computed using \code{\link{PLS_v1_kfoldcv}}}
+  \item{pls_kfolds}{an object computed using \code{\link{PLS_glm_kfoldcv}}}
   \item{MClassed}{should number of miss classed be computed}
 }
 \details{

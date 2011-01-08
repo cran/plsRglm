@@ -15,9 +15,9 @@ PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted, only (\code{"pls"} available for this fonction.}
   \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
-  \item{typeVC}{type of leave one out crossed validation. Several procedures are available and may be forced.
+  \item{typeVC}{type of leave one out cross validation. Several procedures are available and may be forced.
     \describe{
-      \item{\code{none}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
       \item{\code{standard}}{as in SIMCA for datasets without missing values and with all values predicted as those with missing values for datasets with any missing values}
       \item{\code{missingdata}}{all values predicted as those with missing values for datasets with any missing values}
       \item{\code{adaptative}}{predict a response value for an x with any missing value as those with missing values and for an x without any missing value as those without missing values.}
@@ -299,7 +299,7 @@ Astar <- 6
 dataAstar6 <- t(replicate(200,simul_data_UniYX(dimX,Astar)))
 ydataAstar6 <- dataAstar6[,1]
 XdataAstar6 <- dataAstar6[,2:(dimX+1)]
-modpls <- PLS_lm(ydataAstar3,XdataAstar6,10,typeVC="standard")
+modpls <- PLS_lm(ydataAstar6,XdataAstar6,10,typeVC="standard")
 modpls$computed_nt
 modpls$CVinfos
 rm(list=c("dimX","Astar","dataAstar6","modpls","ydataAstar6","XdataAstar6"))

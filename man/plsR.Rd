@@ -1,23 +1,30 @@
 \name{plsR}
 \alias{plsR}
+\alias{plsRmodel.default}
+\alias{plsRmodel.formula}
 \title{Partial least squares Regression models with leave one out cross validation}
 \description{
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets.
 }
 \usage{
-plsR(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
+plsR(x, \dots)
+\method{plsRmodel}{default}(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
+\method{plsRmodel}{formula}(formula,data,nt=2,limQ2set=.0975,dataPredictY,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL)
 }
 \arguments{
+  \item{x}{a formula or a response (training) dataset}
   \item{dataY}{response (training) dataset}
   \item{dataX}{predictor(s) (training) dataset}
+  \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
+  \item{data}{an optional data frame, list or environment (or object coercible by \code{\link{as.data.frame}} to a data frame) containing the variables in the model. If not found in \code{data}, the variables are taken from \code{environment(formula)}, typically the environment from which \code{plsR} is called.}  
   \item{nt}{number of components to be extracted}
   \item{limQ2set}{limit value for the Q2}
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted, only (\code{"pls"} available for this fonction.}
   \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
-  \item{typeVC}{type of leave one out crossed validation. Several procedures are available and may be forced.
+  \item{typeVC}{type of leave one out cross validation. Several procedures are available and may be forced.
     \describe{
-      \item{\code{none}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
       \item{\code{standard}}{as in SIMCA for datasets without missing values and with all values predicted as those with missing values for datasets with any missing values}
       \item{\code{missingdata}}{all values predicted as those with missing values for datasets with any missing values}
       \item{\code{adaptative}}{predict a response value for an x with any missing value as those with missing values and for an x without any missing value as those without missing values.}
@@ -30,9 +37,21 @@ plsR(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pl
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
+  \item{subset}{an optional vector specifying a subset of observations to be used in the fitting process.}
+  \item{contrasts}{an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.}
+  \item{\dots}{arguments to pass to \code{plsRmodel.default} or to \code{plsRmodel.formula}}
 }
 \details{
 There are several ways to deal with missing values that leads to different computations of leave one out cross validation criteria.
+
+A typical predictor has the form response ~ terms where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response. A terms specification of the form first + second indicates all the terms in first together with all the terms in second with any duplicates removed. 
+
+A specification of the form first:second indicates the the set of terms obtained by taking the interactions of all terms in first with all terms in second. The specification first*second indicates the cross of first and second. This is the same as first + second + first:second. 
+
+The terms in the formula will be re-ordered so that main effects come first, followed by the interactions, all second-order, all third-order and so on: to avoid this pass a terms object as the formula. 
+
+Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
 }
 \value{
   \item{nr}{Description of 'comp1'}

@@ -15,12 +15,12 @@ PLS_v2(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS glm model to be fitted (\code{"pls"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-polr"}).}
   \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
-  \item{typeVC}{type of leave one out crossed validation. For back compatibility purpose.
+  \item{typeVC}{type of leave one out cross validation. For back compatibility purpose.
     \describe{
-      \item{\code{none}}{no crossed validation}
-      \item{\code{standard}}{no crossed validation}
-      \item{\code{missingdata}}{no crossed validation}
-      \item{\code{adaptative}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
+      \item{\code{standard}}{no cross validation}
+      \item{\code{missingdata}}{no cross validation}
+      \item{\code{adaptative}}{no cross validation}
       }
   }
   \item{EstimXNA}{only for \code{modele="pls"}. Set whether the missing X values have to be estimated.}

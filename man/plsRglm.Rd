@@ -1,26 +1,33 @@
 \name{plsRglm}
 \alias{plsRglm}
+\alias{plsRglmmodel.default}
+\alias{plsRglmmodel.formula}
 \title{Partial least squares Regression generalized linear models}
 \description{
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets.
 }
 \usage{
-plsRglm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
+plsRglm(x, \dots)
+\method{plsRglmmodel}{default}(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12))
+\method{plsRglmmodel}{formula}(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method="glm.fit",control= list(),contrasts=NULL)
 }
 \arguments{
+  \item{x}{a formula or a response (training) dataset}
   \item{dataY}{response (training) dataset}
   \item{dataX}{predictor(s) (training) dataset}
+  \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
+  \item{data}{an optional data frame, list or environment (or object coercible by \code{\link{as.data.frame}} to a data frame) containing the variables in the model. If not found in \code{data}, the variables are taken from \code{environment(formula)}, typically the environment from which \code{plsRglm} is called.}  
   \item{nt}{number of components to be extracted}
   \item{limQ2set}{limit value for the Q2}
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS glm model to be fitted (\code{"pls"}, \code{"pls-glm-Gamma"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-inverse.gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-poisson"}, \code{"pls-glm-polr"}). Use \code{"modele=pls-glm-family"} to enable the \code{family} option.}
   \item{family}{a description of the error distribution and link function to be used in the model. This can be a character string naming a family function, a family function or the result of a call to a family function. (See \code{\link[stats]{family}} for details of family functions.) To use the family option, please set \code{modele="pls-glm-family"}. User defined families can also be defined. See details.}
-  \item{typeVC}{type of leave one out crossed validation. For back compatibility purpose.
+  \item{typeVC}{type of leave one out cross validation. For back compatibility purpose.
     \describe{
-      \item{\code{none}}{no crossed validation}
-      \item{\code{standard}}{no crossed validation}
-      \item{\code{missingdata}}{no crossed validation}
-      \item{\code{adaptative}}{no crossed validation}
+      \item{\code{none}}{no cross validation}
+      \item{\code{standard}}{no cross validation}
+      \item{\code{missingdata}}{no cross validation}
+      \item{\code{adaptative}}{no cross validation}
       }
   }
   \item{EstimXNA}{only for \code{modele="pls"}. Set whether the missing X values have to be estimated.}
@@ -30,6 +37,16 @@ plsRglm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = 
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
+  \item{subset}{an optional vector specifying a subset of observations to be used in the fitting process.}
+  \item{start}{starting values for the parameters in the linear predictor.}
+  \item{etastart}{starting values for the linear predictor.}
+  \item{mustart}{starting values for the vector of means.}
+  \item{offset}{this can be used to specify an \emph{a priori} known component to be included in the linear predictor during fitting. This should be \code{NULL} or a numeric vector of length equal to the number of cases. One or more \code{\link{offset}} terms can be included in the formula instead or as well, and if more than one is specified their sum is used. See \code{\link{model.offset}}.}
+  \item{method}{the method to be used in fitting the model. The default method \code{"glm.fit"} uses iteratively reweighted least squares (IWLS). User-supplied fitting functions can be supplied either as a function or a character string naming a function, with a function which takes the same arguments as \code{glm.fit}.}
+  \item{control}{a list of parameters for controlling the fitting process. For \code{glm.fit} this is passed to \code{\link{glm.control}}.}
+  \item{contrasts}{an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.}
+  \item{\dots}{arguments to pass to \code{plsRmodel.default} or to \code{plsRmodel.formula}}
 }
 \details{
 There are seven different predefined models with predefined link functions available :
@@ -52,6 +69,14 @@ Using the \code{"family="} option and setting \code{"modele=pls-glm-family"} all
 \item{The \code{quasi} family}{accepts the links \code{logit}, \code{probit}, \code{cloglog}, \code{identity}, \code{inverse}, \code{log}, \code{1/mu^2} and \code{sqrt}.}
 \item{The function \code{power}}{can be used to create a power link function.} 
 }
+
+A typical predictor has the form response ~ terms where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response. A terms specification of the form first + second indicates all the terms in first together with all the terms in second with any duplicates removed. 
+
+A specification of the form first:second indicates the the set of terms obtained by taking the interactions of all terms in first with all terms in second. The specification first*second indicates the cross of first and second. This is the same as first + second + first:second. 
+
+The terms in the formula will be re-ordered so that main effects come first, followed by the interactions, all second-order, all third-order and so on: to avoid this pass a terms object as the formula. 
+
+Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
 }
 \value{
 Depends on the model that was used to fit the model.

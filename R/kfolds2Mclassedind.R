@@ -16,14 +16,13 @@ kfolds2Mclassedind <- function(pls_kfolds) {
             diag(piVaryy[-length(piVaryy)])-piVaryy[-length(piVaryy)]%*%t(piVaryy[-length(piVaryy)])
             }
             Chisqcomp <- function(yichisq,pichisq) {
-            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%solve(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
+            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%MASS:::ginv(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
             }
             Chiscompmatrix <- function(rowspi,rowsyi) {
             sum(mapply(Chisqcomp,rowsyi,rowspi))
             }
         }
     }
-    print(pls_kfolds$call$family)
 
 
 if (!(pls_kfolds$call$modele=="pls-glm-polr")) {

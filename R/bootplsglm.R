@@ -1,6 +1,7 @@
 bootplsglm <- function(object, typeboot="plsmodel", R=250, statistic=coefs.plsRglm, sim="ordinary", stype="i",...){
 callplsRglm <- object$call
-dataset <- cbind(y = eval(callplsRglm$dataY),eval(callplsRglm$dataX))
+#dataset <- cbind(y = eval(callplsRglm$dataY),eval(callplsRglm$dataX))
+dataset <- cbind(y = object$dataY,object$dataX)
 nt <- eval(callplsRglm$nt)
 if(!is.null(callplsRglm$modele)){modele <- eval(callplsRglm$modele)} else {modele <- "pls"}
 if(!is.null(callplsRglm$family)){family <- eval(callplsRglm$family)} else {family <- NULL}

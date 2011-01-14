@@ -1,5 +1,5 @@
 PLS_lm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",
-                    family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12)) {
+                    family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),sparse=FALSE,sparseStop=TRUE) {
 
 ##################################################
 #                                                #
@@ -8,6 +8,7 @@ PLS_lm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pl
 ##################################################
 
 cat("____************************************************____\n")
+if(sparse==TRUE){pvals.expli=TRUE}
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (!(modele %in% c("pls"))) {break}
 scaleY <- NULL
@@ -85,6 +86,7 @@ res$residYChapeau=rep(mean(RepY),nrow(ExpliX))}
 
 res$computed_nt <- 0
 break_nt <- FALSE
+break_nt_sparse <- FALSE
 break_nt_vc <- FALSE
 
 for (kk in 1:nt) {
@@ -124,6 +126,17 @@ res$computed_nt <- kk
 ##############################################
 if (modele == "pls") {
 tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
+if (pvals.expli) {
+tempvalpvalstep <- 2 * pnorm(-abs(tempww)) 
+temppvalstep <- (tempvalpvalstep < alpha.pvals.expli)
+if(sparse&sparseStop){
+  if(sum(temppvalstep)==0L){
+    break_nt_sparse <- TRUE}
+  else 
+  {tempww[!temppvalstep] <- 0}}
+res$valpvalstep <- cbind(res$valpvalstep,tempvalpvalstep)
+res$pvalstep <- cbind(res$pvalstep,temppvalstep)
+}
 }
 
 
@@ -132,6 +145,18 @@ tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
 # Computation of the components (model free) #
 #                                            #
 ##############################################
+if((break_nt_sparse==TRUE)&(kk==1L)){
+cat(paste("No significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
+cat(paste("Warning only one standard component (without sparse option) was thus extracted\n",sep=""))
+break_nt_sparse1 <- TRUE
+}
+if((break_nt_sparse==TRUE)&!(kk==1L)){
+res$computed_nt <- kk-1
+if(!(break_nt_sparse1)){
+cat(paste("No more significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
+cat(paste("Warning only ",res$computed_nt," components were thus extracted\n",sep=""))
+}
+break}
 
 tempwwnorm <- tempww/sqrt(drop(crossprod(tempww)))
 

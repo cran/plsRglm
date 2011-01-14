@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets.
 }
 \usage{
-PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
+PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12), sparse = FALSE,sparseStop=TRUE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -30,6 +30,8 @@ PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = 
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
+  \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
 }
 \details{
 There are seven different predefined models with predefined link functions available :
@@ -78,6 +80,10 @@ PLS_glm(yCornell,XCornell,3)$Coeffs
 PLS_glm(yCornell,XCornell,10)$InfCrit
 PLS_glm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
 data.frame(pls=PLS_glm(yCornell,XCornell,3)$Coeffs,pls_glm_gaussian=PLS_glm(yCornell,XCornell,10,modele="pls-glm-gaussian")$Coeffs,pls_glm_family_gaussian=PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=gaussian())$Coeffs)
+
+mod <- PLS_glm(yCornell,XCornell,10,pvals.expli =TRUE)
+mod2 <- PLS_glm(yCornell,XCornell,10,sparse=TRUE)
+mod3 <- PLS_glm(yCornell,XCornell,10,sparse=TRUE,sparseStop=FALSE)
 rm(list=c("XCornell","yCornell"))
 
 
@@ -172,6 +178,7 @@ modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed
 modpls$InfCrit
 modpls$valpvalstep
 modpls$Coeffsmodel_vals
+modpls$Coeffs
 modpls2 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logit),MClassed=TRUE,pvals.expli=TRUE)
 modpls3 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=probit),MClassed=TRUE,pvals.expli=TRUE)
 modpls4 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=cauchit),MClassed=TRUE,pvals.expli=TRUE)
@@ -182,7 +189,18 @@ data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,cauchit=modpls4$St
 plot(PLS_glm(yaze_compl,Xaze_compl,4,modele="pls-glm-logistic")$FinalModel)
 PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
 plot(PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
-rm(list=c("Xaze_compl","yaze_compl","modpls"))
+
+modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE)
+modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
+modpls7$InfCrit
+modpls7$valpvalstep
+modpls7$Coeffs
+
+modpls$InfCrit
+modpls7$InfCrit
+colSums(modpls$pvalstep)
+colSums(modpls7$pvalstep)
+rm(list=c("Xaze_compl","yaze_compl","modpls","modpls2","modpls3","modpls4","modpls5","modpls6","modpls7"))
 
 
 data(bordeaux)
@@ -197,7 +215,25 @@ XbordeauxNA[1,1] <- NA
 modplsNA <- PLS_glm(ybordeaux,XbordeauxNA,10,modele="pls-glm-polr")
 modplsNA$Coeffsmodel_vals
 modplsNA$InfCrit
-rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux"))
+
+modpls2 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",pvals.expli=TRUE)
+modpls2$Coeffsmodel_vals
+modpls2$InfCrit
+modpls2$valpvalstep
+modpls2$Coeffs
+
+modpls3 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE)
+modpls4 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparseStop=FALSE)
+modpls3$Coeffsmodel_vals
+modpls3$InfCrit
+modpls3$valpvalstep
+modpls3$Coeffs
+
+modpls2$InfCrit
+modpls3$InfCrit
+colSums(modpls2$pvalstep)
+colSums(modpls3$pvalstep)
+rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux","modpls","modpls2","modpls3"))
 
 
 # Test of other families and links on the same datasets.

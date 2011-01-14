@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets (formula specification of the model).
 }
 \usage{
-PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL)
+PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL,sparse=FALSE,sparseStop=TRUE)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
@@ -37,10 +37,12 @@ PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele=
   \item{mustart}{starting values for the vector of means.}
   \item{offset}{this can be used to specify an \emph{a priori} known component to be included in the linear predictor during fitting. This should be \code{NULL} or a numeric vector of length equal to the number of cases. One or more \code{\link{offset}} terms can be included in the formula instead or as well, and if more than one is specified their sum is used. See \code{\link{model.offset}}.}
   \item{method}{\describe{
-  \item{for fitting glms with glm (\code{"pls-glm-Gamma"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-inverse.gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-poisson"}, \code{"modele=pls-glm-family"})}{the method to be used in fitting the model. The default method \code{"glm.fit"} uses iteratively reweighted least squares (IWLS). User-supplied fitting functions can be supplied either as a function or a character string naming a function, with a function which takes the same arguments as \code{glm.fit}. If "model.frame", the model frame is returned.}
+  \item{for fitting glms with glm (\code{"pls-glm-Gamma"}, \code{"pls-glm-gaussian"}, \code{"pls-glm-inverse.gaussian"}, \code{"pls-glm-logistic"}, \code{"pls-glm-poisson"}, \code{"modele=pls-glm-family"})}{the method to be used in fitting the model. The default method \code{"glm.fit"} uses iteratively reweighted least squares (IWLS). User-supplied fitting functions can be supplied either as a function or a character string naming a function, with a function which takes the same arguments as \code{glm.fit}. If \code{"model.frame"}, the model frame is returned.}
   \item{\code{pls-glm-polr}}{logistic, probit, complementary log-log or cauchit (corresponding to a Cauchy latent variable).}}}
   \item{control}{a list of parameters for controlling the fitting process. For \code{glm.fit} this is passed to \code{\link{glm.control}}.}
   \item{contrasts}{an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.}
+  \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
+  \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
 }
 \details{
 There are seven different predefined models with predefined link functions available :
@@ -95,6 +97,10 @@ PLS_glm_formula(Y~.,data=Cornell,3)$Coeffs
 PLS_glm_formula(Y~.,data=Cornell,10)$InfCrit
 PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-gaussian")$InfCrit
 data.frame(pls=PLS_glm_formula(Y~.,data=Cornell,3)$Coeffs,PLS_glm_formula_gaussian=PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-gaussian")$Coeffs,PLS_glm_formula_family_gaussian=PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=gaussian())$Coeffs)
+
+mod <- PLS_glm_formula(Y~.,data=Cornell,10,pvals.expli =TRUE)
+mod2 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE)
+mod3 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE,sparseStop=FALSE)
 
 
 ## User specified links can be used.
@@ -190,6 +196,17 @@ data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,cauchit=modpls4$St
 plot(PLS_glm_formula(y~.,data=aze_compl,4,modele="pls-glm-logistic")$FinalModel)
 PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
 plot(PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
+
+modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE)
+modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
+modpls7$InfCrit
+modpls7$valpvalstep
+modpls7$Coeffs
+
+modpls$InfCrit
+modpls7$InfCrit
+colSums(modpls$pvalstep)
+colSums(modpls7$pvalstep)
 rm(list=c("modpls"))
 
 
@@ -214,7 +231,24 @@ modpls5 <- PLS_glm_formula(Quality~.,data=bordeaux,2,modele="pls-glm-polr",metho
 cbind(modpls2$Coeffs,modpls3$Coeffs,modpls4$Coeffs,modpls5$Coeffs)
 rbind(modpls2$InfCrit[,"Chi2_Pearson_Y"],modpls3$InfCrit[,"Chi2_Pearson_Y"],modpls4$InfCrit[,"Chi2_Pearson_Y"],c(modpls5$InfCrit[,"Chi2_Pearson_Y"],NA,NA))
 
-rm(list=c("modpls","modplsNA","modpls2","modpls3","modpls4","modpls5"))
+modpls6 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",pvals.expli=TRUE)
+modpls6$Coeffsmodel_vals
+modpls6$InfCrit
+modpls6$valpvalstep
+modpls6$Coeffs
+
+modpls7 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE)
+modpls8 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE,sparseStop=FALSE)
+modpls7$Coeffsmodel_vals
+modpls7$InfCrit
+modpls7$valpvalstep
+modpls7$Coeffs
+
+modpls6$InfCrit
+modpls7$InfCrit
+colSums(modpls6$pvalstep)
+colSums(modpls7$pvalstep)
+rm(list=c("modpls","modplsNA","modpls2","modpls3","modpls4","modpls5","modpls6","modpls7"))
 
 
 # Test of other families and links on the same datasets.

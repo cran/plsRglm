@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets (formula specification of the model).
 }
 \usage{
-PLS_lm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL)
+PLS_lm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL,sparse=FALSE,sparseStop=TRUE)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
@@ -33,6 +33,8 @@ PLS_lm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="
   \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
   \item{subset}{an optional vector specifying a subset of observations to be used in the fitting process.}
   \item{contrasts}{an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.}
+  \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
+  \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
 }
 \details{
 There are several ways to deal with missing values that leads to different computations of leave one out cross validation criteria.
@@ -137,6 +139,10 @@ PLS_lm_formula(Y~.,data=Cornell,nt=10)$InfCrit
 PLS_lm_formula(Y~.,data=Cornell,nt=10,typeVC="standard")$CVinfos
 PLS_lm_formula(Y~.,data=Cornell,nt=6)$AIC 
 PLS_lm_formula(Y~.,data=Cornell,nt=6)$AIC.std    
+
+modpls <- PLS_lm_formula(Y~.,data=Cornell,nt=6,pvals.expli =TRUE) 
+modpls2 <- PLS_lm_formula(Y~.,data=Cornell,nt=6,sparse=TRUE)    
+modpls3 <- PLS_lm_formula(Y~.,data=Cornell,nt=6,sparse=TRUE,sparseStop=FALSE)    
 
 
 \donttest{

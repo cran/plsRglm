@@ -1,5 +1,5 @@
-PLS_glm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",
-                    family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12)) {  
+PLS_glm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),sparse=FALSE,sparseStop=TRUE) {  
+
 
 ##################################################
 #                                                #
@@ -8,6 +8,7 @@ PLS_glm <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="p
 ##################################################
 
 cat("____************************************************____\n")
+if(sparse){pvals.expli=TRUE}
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
 if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr"))) {print(modele);stop("'modele' not recognized")}
@@ -107,6 +108,7 @@ res$residYChapeau=rep(mean(RepY),nrow(ExpliX))}
 
 res$computed_nt <- 0
 break_nt <- FALSE
+break_nt_sparse <- FALSE
 break_nt_vc <- FALSE
 
 for (kk in 1:nt) {
@@ -143,6 +145,17 @@ res$computed_nt <- kk
 ##############################################
 if (modele == "pls") {
 tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
+if (pvals.expli) {
+tempvalpvalstep <- 2 * pnorm(-abs(tempww)) 
+temppvalstep <- (tempvalpvalstep < alpha.pvals.expli)
+if(sparse&sparseStop){
+  if(sum(temppvalstep)==0L){
+    break_nt_sparse <- TRUE}
+  else 
+  {tempww[!temppvalstep] <- 0}}
+res$valpvalstep <- cbind(res$valpvalstep,tempvalpvalstep)
+res$pvalstep <- cbind(res$pvalstep,temppvalstep)
+}
 }
 
 ##############################################
@@ -166,6 +179,11 @@ for (jj in 1:(res$nc)) {
     tempvalpvalstep[jj] <- tmww[4]
     temppvalstep[jj] <- (tmww[4] < alpha.pvals.expli)
 }
+if(sparse&sparseStop){
+  if(sum(temppvalstep)==0L){
+    break_nt_sparse <- TRUE}
+  else 
+  {tempww[!temppvalstep] <- 0}}
 XXwotNA[!XXNA] <- 0
 rm(jj)
 res$valpvalstep <- cbind(res$valpvalstep,tempvalpvalstep)
@@ -178,6 +196,7 @@ res$pvalstep <- cbind(res$pvalstep,temppvalstep)
 ##############################################
 if (modele %in% c("pls-glm-polr")) {
 YwotNA <- as.factor(YwotNA)
+if (!pvals.expli) {
 XXwotNA[!XXNA] <- NA
 library(MASS)
 tts <- res$tt
@@ -186,8 +205,29 @@ for (jj in 1:(res$nc)) {
 }
 XXwotNA[!XXNA] <- 0
 rm(jj,tts)}
-
-
+else {
+XXwotNA[!XXNA] <- NA
+library(MASS)
+tts <- res$tt
+tempvalpvalstep <- rep(0,res$nc)
+temppvalstep <- rep(0,res$nc)
+for (jj in 1:(res$nc)) {
+    tmww <- -1*MASS:::summary.polr(MASS:::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,Hess=TRUE))$coefficients[kk,]
+    tempww[jj] <- tmww[1]
+    tempvalpvalstep[jj] <- 2 * pnorm(-abs(tmww[3])) 
+    temppvalstep[jj] <- (tempvalpvalstep[jj] < alpha.pvals.expli)
+}
+if(sparse&sparseStop){
+      if(sum(temppvalstep)==0L){
+        break_nt_sparse <- TRUE}
+      else 
+      {tempww[!temppvalstep] <- 0}}
+XXwotNA[!XXNA] <- 0
+rm(jj,tts)
+res$valpvalstep <- cbind(res$valpvalstep,tempvalpvalstep)
+res$pvalstep <- cbind(res$pvalstep,temppvalstep)
+}
+}
 
 
 ##############################################
@@ -195,6 +235,18 @@ rm(jj,tts)}
 # Computation of the components (model free) #
 #                                            #
 ##############################################
+if((break_nt_sparse)&(kk==1L)){
+cat(paste("No significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
+cat(paste("Warning only one standard component (without sparse option) was thus extracted\n",sep=""))
+break_nt_sparse1 <- TRUE
+}
+if((break_nt_sparse)&!(kk==1L)){
+res$computed_nt <- kk-1
+if(!(break_nt_sparse1)){
+cat(paste("No more significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
+cat(paste("Warning only ",res$computed_nt," components were thus extracted\n",sep=""))
+}
+break}
 
 tempwwnorm <- tempww/sqrt(drop(crossprod(tempww)))
 
@@ -210,28 +262,26 @@ if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
 if(1/kappa(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-res$computed_nt <- kk-1
 cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
 if(1/kappa(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-res$computed_nt <- kk-1
 cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
 res$ww <- cbind(res$ww,tempww)
@@ -705,7 +755,7 @@ cat("____Component____",kk,"____\n")
 ##############################################
 
 
-if (pvals.expli) {
+if (pvals.expli&!(modele=="pls")) {
 res$Coeffsmodel_vals<-res$Coeffsmodel_vals[1:(dim(res$Coeffsmodel_vals)[1]-(nt-res$computed_nt)),]
 }
 

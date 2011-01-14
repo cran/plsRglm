@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets.
 }
 \usage{
-PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
+PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),sparse=FALSE,sparseStop=TRUE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -30,6 +30,8 @@ PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
+  \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
 }
 \details{
 There are several ways to deal with missing values that leads to different computations of leave one out cross validation criteria.
@@ -127,7 +129,11 @@ yCornell<-Cornell[,8]
 PLS_lm(yCornell,XCornell,10)$InfCrit
 PLS_lm(yCornell,XCornell,10,typeVC="standard")$CVinfos
 PLS_lm(yCornell,XCornell,6)$AIC 
-PLS_lm(yCornell,XCornell,6)$AIC.std    
+PLS_lm(yCornell,XCornell,6)$AIC.std   
+
+modpls <- PLS_lm(yCornell,XCornell,6,pvals.expli =TRUE)
+modpls2 <- PLS_lm(yCornell,XCornell,6,sparse=TRUE)
+modpls3 <- PLS_lm(yCornell,XCornell,6,sparse=TRUE,sparseStop=FALSE)
 rm(list=c("XCornell","yCornell"))
 
 

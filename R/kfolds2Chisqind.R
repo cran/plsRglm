@@ -25,6 +25,10 @@ kfolds2Chisqind <- function(pls_kfolds) {
             (mapply(Chisqcomp,rowsyi,rowspi))
             }
         }
+        if (pls_kfolds$call$modele=="pls-beta") {            
+            fam_beta <- function(vals,phis) {return(vals*(1-vals)/(1+phis))}
+            fam_name <- "pls-beta"
+        }
     }
 
 
@@ -46,6 +50,23 @@ kfolds2Chisqind <- function(pls_kfolds) {
     {
         for (ii in 1:length(pls_kfolds$results_kfolds[[1]]))
         {
+            if (pls_kfolds$call$modele=="pls-beta") {
+                    if (dim(pls_kfolds$results_kfolds[[nnkk]][[ii]])[1]==1)
+                    {
+                    if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
+                        preChisqind_kfolds[[nnkk]][[ii]] <- (pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]])^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]]))
+                    } else {
+                        preChisqind_kfolds[[nnkk]][[ii]] <- attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]])^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]]))
+                    }
+                    }                
+                    else {
+                        if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
+                        preChisqind_kfolds[[nnkk]][[ii]] <- colSums((apply(pls_kfolds$results_kfolds[[nnkk]][[ii]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]]))) 
+                        } else {
+                        preChisqind_kfolds[[nnkk]][[ii]] <- colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(apply(pls_kfolds$results_kfolds[[nnkk]][[ii]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]]))) 
+                        }
+                    }
+            } else {
             if (pls_kfolds$call$modele=="pls-glm-polr") {
                     fff <- ~pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-1
                     m <- model.frame(fff, pls_kfolds$dataY_kfolds[[nnkk]][[ii]])
@@ -78,7 +99,7 @@ kfolds2Chisqind <- function(pls_kfolds) {
                         }
                     }
             }
-        }
+        }}
     }
 rm(ii)
 rm(nnkk)

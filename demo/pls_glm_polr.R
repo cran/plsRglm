@@ -109,3 +109,4 @@ boxplots.bootpls(hyptis.boot4,xaxisticks=FALSE)
 confints.bootpls(hyptis.boot4)
 plots.confints.bootpls(confints.bootpls(hyptis.boot4),legendpos = "bottomleft",xaxisticks=TRUE)
 plots.confints.bootpls(confints.bootpls(hyptis.boot4),legendpos = "bottomleft",xaxisticks=FALSE)
+}

@@ -25,9 +25,57 @@ kfolds2Chisq <- function(pls_kfolds) {
             (mapply(Chisqcomp,rowsyi,rowspi))
             }
         }
+        if (pls_kfolds$call$modele=="pls-beta") {            
+            fam_beta <- function(vals,phis) {return(vals*(1-vals)/(1+phis))}
+            fam_name <- "pls-beta"
+        }
     }
 
+            if (pls_kfolds$call$modele=="pls-beta") {
+    max_nt <- rep(NA,length(pls_kfolds$results_kfolds))
+    if (length(pls_kfolds$results_kfolds)==1) {
+        max_nt[1] <- min(unlist(lapply(pls_kfolds$results_kfolds[[1]],ncol)))
+        preChisq_kfolds <- list(rep(0, max_nt[1]))
+    }
+    else
+    {
+      if (length(pls_kfolds$results_kfolds)>1)
+      {
+      preChisq_kfolds <-vector("list",length(pls_kfolds$results_kfolds))
+        for (jj in 1:length(pls_kfolds$results_kfolds))
+        {
+          max_nt[jj] <- min(unlist(lapply(pls_kfolds$results_kfolds[[jj]],ncol)))
+          preChisq_kfolds[[jj]] <- rep(0,max_nt[jj])
+        }
+      rm(jj)
+      }
+    }
 
+    for (nnkk in 1:length(pls_kfolds$results_kfolds))
+    {
+        for (ii in 1:length(pls_kfolds$results_kfolds[[1]]))
+        {
+            if (dim(pls_kfolds$results_kfolds[[nnkk]][[ii]])[1]==1)
+            {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
+preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]])^2/(fam_var(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]][1:max_nt[nnkk]])))
+                    } else {
+preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]])^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]][1:max_nt[nnkk]]))            
+            }            
+            }
+            else
+            {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
+                preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+colSums((apply(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk],drop=FALSE],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk],drop=FALSE],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]][,1:max_nt[nnkk],drop=FALSE]))) 
+                    } else {
+                preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(apply(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_beta(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]],pls_kfolds$results_kfolds_phi[[nnkk]][[ii]][1:max_nt[nnkk]])))             
+             }            
+            }
+        }
+    }
+rm(ii)
+rm(nnkk)
+            } else {
 if (!(pls_kfolds$call$modele=="pls-glm-polr")) {
     max_nt <- rep(NA,length(pls_kfolds$results_kfolds))
     if (length(pls_kfolds$results_kfolds)==1) {
@@ -72,7 +120,7 @@ preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+attr(pls_kfolds$results_kfold
     }
 rm(ii)
 rm(nnkk)
-}
+}}
 
 if (pls_kfolds$call$modele=="pls-glm-polr") {
     max_nt <- rep(NA,length(pls_kfolds$results_kfolds))

@@ -12,7 +12,7 @@ simul_data_UniYX(totdim, ncomp)
   \item{ncomp}{Number of latent components in the model (from 2 to 6)}
 }
 \details{
-This function should be combined with the replicate function to give rise to a larger dataset. The algorithm used is a \R{} port of the one describe in the article of Li which is a multivariate generalization of the algorithm of Naes and Martens.
+This function should be combined with the replicate function to give rise to a larger dataset. The algorithm used is a \R{} port of the one described in the article of Li which is a multivariate generalization of the algorithm of Naes and Martens.
 }
 \value{
   \item{vector}{\eqn{(Y,X_1,\ldots,X_{totdim})}}

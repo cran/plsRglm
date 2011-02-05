@@ -25,9 +25,6 @@ plsRglm(x, \dots)
   \item{typeVC}{type of leave one out cross validation. For back compatibility purpose.
     \describe{
       \item{\code{none}}{no cross validation}
-      \item{\code{standard}}{no cross validation}
-      \item{\code{missingdata}}{no cross validation}
-      \item{\code{adaptative}}{no cross validation}
       }
   }
   \item{EstimXNA}{only for \code{modele="pls"}. Set whether the missing X values have to be estimated.}

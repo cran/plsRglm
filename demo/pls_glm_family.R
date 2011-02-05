@@ -355,7 +355,7 @@ yaze_compl<-aze_compl$y
 dataset <- cbind(y=yaze_compl,Xaze_compl)
 
 library(boot)
-# Lazraq-Cléroux PLS bootstrap Classic
+# Lazraq-Cleroux PLS bootstrap Classic
 
 aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 # The same
@@ -371,7 +371,7 @@ yaze_compl<-aze_compl$y
 dataset <- cbind(y=yaze_compl,Xaze_compl)
 
 library(boot)
-# Lazraq-Cléroux PLS bootstrap Classic
+# Lazraq-Cleroux PLS bootstrap Classic
 
 tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic", family=NULL)
 aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic", family=NULL), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)

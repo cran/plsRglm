@@ -183,7 +183,7 @@ Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
 dataset <- cbind(y=yaze_compl,Xaze_compl)
 library(boot)
-# Lazraq-Cléroux PLS bootstrap Classic
+# Lazraq-Cleroux PLS bootstrap Classic
 #aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 # The same
 #aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-family",family=binomial)

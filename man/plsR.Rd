@@ -22,10 +22,10 @@ plsR(x, \dots)
   \item{dataPredictY}{predictor(s) (testing) dataset}
   \item{modele}{name of the PLS model to be fitted, only (\code{"pls"} available for this fonction.}
   \item{family}{for the present moment the family argument is ignored and set thanks to the value of modele.}
-  \item{typeVC}{type of leave one out cross validation. Several procedures are available and may be forced.
+  \item{typeVC}{type of leave one out cross validation. Several procedures are available. If cross validation is required, one needs to selects the way of predicting the response for left out observations. For complete rows, without any missing value, there are two different ways of computing these predictions. As a consequence, for mixed datasets, with complete and incomplete rows, there are two ways of computing prediction : either predicts any row as if there were missing values in it (\code{missingdata}) or selects the prediction method accordingly to the completeness of the row (\code{adaptative}).
     \describe{
       \item{\code{none}}{no cross validation}
-      \item{\code{standard}}{as in SIMCA for datasets without missing values and with all values predicted as those with missing values for datasets with any missing values}
+      \item{\code{standard}}{as in SIMCA for datasets without any missing value. For datasets with any missing value, it is the as using \code{missingdata}}
       \item{\code{missingdata}}{all values predicted as those with missing values for datasets with any missing values}
       \item{\code{adaptative}}{predict a response value for an x with any missing value as those with missing values and for an x without any missing value as those without missing values.}
       }

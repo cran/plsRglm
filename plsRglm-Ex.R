@@ -1351,18 +1351,18 @@ simul_data_UniYX(20,6)
 
 
 cleanEx()
-nameEx("simul_data_UniYX_old")
-### * simul_data_UniYX_old
+nameEx("simul_data_UniYX_binom")
+### * simul_data_UniYX_binom
 
 flush(stderr()); flush(stdout())
 
-### Name: simul_data_UniYX_old
-### Title: Deprecated version of the data generating function for
-###   univariate plsR models
-### Aliases: simul_data_UniYX_old
-### Keywords: internal datagen utilities
+### Name: simul_data_UniYX_binom
+### Title: Data generating function for univariate binomial plsR models
+### Aliases: simul_data_UniYX_binom
+### Keywords: datagen utilities
 
 ### ** Examples
+
 
 
 

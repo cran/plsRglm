@@ -257,7 +257,7 @@ rm(list=c("dimX","Astar","dataAstar6","modpls","ydataAstar6","XdataAstar6"))
 
 
 
-# Lazraq-Cléroux PLS ordinary bootstrap
+# Lazraq-Cleroux PLS ordinary bootstrap
 
 set.seed(250)
 Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), sim="ordinary", stype="i", R=250)
@@ -277,7 +277,7 @@ data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
 
-# Lazraq-Cléroux PLS ordinary bootstrap
+# Lazraq-Cleroux PLS ordinary bootstrap
 
 set.seed(250)
 Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), sim="ordinary", stype="i", R=250)

@@ -18,9 +18,6 @@ PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele=
   \item{typeVC}{type of leave one out cross validation. For back compatibility purpose.
     \describe{
       \item{\code{none}}{no cross validation}
-      \item{\code{standard}}{no cross validation}
-      \item{\code{missingdata}}{no cross validation}
-      \item{\code{adaptative}}{no cross validation}
       }
   }
   \item{EstimXNA}{only for \code{modele="pls"}. Set whether the missing X values have to be estimated.}
@@ -106,6 +103,7 @@ mod2 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE)
 mod3 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE,sparseStop=FALSE)
 
 
+\donttest{
 ## User specified links can be used.
 ## Example of user-specified link, a logit model for p^days
 ## See Shaffer, T.  2004. Auk 121(2): 526-540 and ?family.
@@ -129,7 +127,6 @@ modpls$InfCrit
 rm(list=c("modpls","logexp","aze_compl"))
 
 
-\donttest{
 data(pine)
 PLS_glm_formula(log(x11)~.,data=pine,1)$Std.Coeffs
 PLS_glm_formula(log(x11)~.,data=pine,1)$Coeffs

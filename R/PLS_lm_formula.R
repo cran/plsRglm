@@ -124,6 +124,7 @@ res$residYChapeau=rep(mean(RepY),nrow(ExpliX))}
 res$computed_nt <- 0
 break_nt <- FALSE
 break_nt_sparse <- FALSE
+break_nt_sparse1 <- FALSE
 break_nt_vc <- FALSE
 
 for (kk in 1:nt) {

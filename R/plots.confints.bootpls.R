@@ -11,8 +11,8 @@ plots.confints.bootpls = function (ic_bootobject, indices = NULL, legendpos = "t
         par(mar = c(2, 2, 1, 1) + 0.1, mgp = c(2, 1, 0))
     }
     plot(c(1, 1), xlab = "", ylab = "", type = "n", xlim = c(1, 
-        length(indices) + 0.5), ylim = c(min(ic_bootobject), 
-        max(ic_bootobject)), xaxt = "n", ...)
+        length(indices) + 0.5), ylim = c(min(ic_bootobject[indices,]), 
+        max(ic_bootobject[indices,])), xaxt = "n", ...)
     if (attr(ic_bootobject, "typeBCa")) {
         if (prednames) {
             if(xaxisticks){

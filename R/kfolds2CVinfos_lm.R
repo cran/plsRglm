@@ -1,7 +1,7 @@
 kfolds2CVinfos_lm <- function(pls_kfolds,MClassed=FALSE) {
 if(!(match("dataY",names(pls_kfolds$call), 0L)==0L)){
 (mf <- pls_kfolds$call)
-(m <- match(c("dataY", "dataX", "nt", "limQ2set", "modele", "scaleX", "scaleY"), names(pls_kfolds$call), 0))
+(m <- match(c("dataY", "dataX", "nt", "limQ2set", "modele", "family", "scaleX", "scaleY", "weights", "method", "sparse", "naive"), names(pls_kfolds$call), 0))
 (mf <- mf[c(1, m)])
 (mf$typeVC <- "none")
 (mf$MClassed <- MClassed)
@@ -47,7 +47,7 @@ return(CVinfos)
 
 if(!(match("formula",names(pls_kfolds$call), 0L)==0L)){
 (mf <- pls_kfolds$call)
-(m <- match(c("formula", "data", "nt", "limQ2set", "modele", "scaleX", "scaleY","weights","subset","contrasts"), names(pls_kfolds$call), 0))
+(m <- match(c("formula", "data", "nt", "limQ2set", "modele", "scaleX", "scaleY","weights","subset","contrasts", "method", "sparse", "naive"), names(pls_kfolds$call), 0))
 (mf <- mf[c(1, m)])
 (mf$typeVC <- "none")
 (mf$MClassed <- MClassed)

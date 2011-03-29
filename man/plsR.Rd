@@ -8,8 +8,8 @@ This function implements Partial least squares Regression models with leave one 
 }
 \usage{
 plsR(x, \dots)
-\method{plsRmodel}{default}(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12))
-\method{plsRmodel}{formula}(formula,data,nt=2,limQ2set=.0975,dataPredictY,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL)
+\method{plsRmodel}{default}(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),weights,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+\method{plsRmodel}{formula}(formula,data,nt=2,limQ2set=.0975,dataPredictY,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{x}{a formula or a response (training) dataset}
@@ -40,6 +40,9 @@ plsR(x, \dots)
   \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
   \item{subset}{an optional vector specifying a subset of observations to be used in the fitting process.}
   \item{contrasts}{an optional list. See the \code{contrasts.arg} of \code{model.matrix.default}.}
+  \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
+  \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
+  \item{naive}{Use the naive estimates for the Degrees of Freedom in plsR? Default is \code{FALSE}.}
   \item{\dots}{arguments to pass to \code{plsRmodel.default} or to \code{plsRmodel.formula}}
 }
 \details{
@@ -52,6 +55,8 @@ A specification of the form first:second indicates the the set of terms obtained
 The terms in the formula will be re-ordered so that main effects come first, followed by the interactions, all second-order, all third-order and so on: to avoid this pass a terms object as the formula. 
 
 Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
+
+The default estimator for Degrees of Freedom is the Kramer and Sugiyama's one. Information criteria are computed accordingly to these estimations. Naive Degrees of Freedom and Information Criteria are also provided for comparison purposes. For more details, see Kraemer, N., Sugiyama M. (2010). "The Degrees of Freedom of Partial Least Squares Regression". preprint, http://arxiv.org/abs/1002.4112. 
 }
 \value{
   \item{nr}{Description of 'comp1'}

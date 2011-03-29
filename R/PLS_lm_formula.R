@@ -1,4 +1,4 @@
-PLS_lm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12), weights,subset,contrasts=NULL,sparse=FALSE,sparseStop=TRUE) {
+PLS_lm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE) {
 
 ##################################################
 #                                                #
@@ -7,7 +7,10 @@ PLS_lm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=da
 ##################################################
 
 cat("____************************************************____\n")
-if(sparse==TRUE){pvals.expli=TRUE}
+if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
+if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS\n",sep=""))} else {NoWeights=TRUE}
+if(sparse){pvals.expli=TRUE}
+
 if (missing(data)) {data <- environment(formula)}
 mf <- match.call(expand.dots = FALSE)
 m <- match(c("formula", "data", "subset", "weights"), names(mf), 0L)
@@ -31,19 +34,24 @@ weights <- as.vector(model.weights(mf))
 if (!is.null(weights) && !is.numeric(weights)) stop("'weights' must be a numeric vector")
 if (!is.null(weights) && any(weights < 0)) stop("negative weights not allowed")
 
+if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
+if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
+if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else na.miss.PredictY <- FALSE
+if(na.miss.X|na.miss.Y){naive=TRUE; cat(paste("Only naive DoF can be used with missing data\n",sep="")); if(!NoWeights){cat(paste("Weights cannot be used with missing data\n",sep=""))}}
+
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (!(modele %in% c("pls"))) {break}
 scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
 }
-if (scaleY) {RepY <- scale(dataY)}
+if (scaleY) {if(is.null(weights)){RepY <- scale(dataY)} else {meanY <- weighted.mean(dataY,weights); stdevY <- sqrt((length(dataY)-1)/length(dataY)*weighted.mean((dataY-meanY)^2,weights)); RepY <- (dataY-meanY)/stdevY; attr(RepY,"scaled:center") <- meanY ; attr(RepY,"scaled:scale") <- stdevY}}
 else {
     RepY <- dataY
     attr(RepY,"scaled:center") <- 0
     attr(RepY,"scaled:scale") <- 1
 }
-if (scaleX) {ExpliX <- scale(dataX)
+if (scaleX) {if(is.null(weights)){ExpliX <- scale(dataX)} else {meanX <- apply(dataX,2,weighted.mean,weights); stdevX <- sqrt((length(dataY)-1)/length(dataY)*apply((sweep(dataX,2,meanX))^2,2,weighted.mean,weights)); ExpliX <- sweep(sweep(dataX, 2, meanX), 2 ,stdevX, "/"); attr(ExpliX,"scaled:center") <- meanX ; attr(ExpliX,"scaled:scale") <- stdevX}
     PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")
 }
 else {
@@ -54,10 +62,6 @@ else {
 }
 if(is.null(colnames(ExpliX))){colnames(ExpliX)<-paste("X",1:ncol(ExpliX),sep=".")}
 if(is.null(rownames(ExpliX))){rownames(ExpliX)<-1:nrow(ExpliX)}
-
-if (any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
-if (any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
-if (any(is.na(PredictY))) {na.miss.PredictY <- TRUE} else na.miss.PredictY <- FALSE
 
 XXNA <- !(is.na(ExpliX))
 YNA <- !(is.na(RepY))
@@ -83,6 +87,7 @@ PredictYwotNA <- as.matrix(PredictY)
 PredictYwotNA [is.na(PredictY)] <- 0
 
 res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),nt=nt,ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,press.ind=NULL,press.tot=NULL,family=family,ttPredictY = NULL,typeVC=typeVC,dataX=dataX,dataY=dataY)
+if(NoWeights){res$weights<-rep(1L,res$nr)} else {res$weights<-weights}
 res$temppred <- NULL
 
 ##############################################
@@ -147,7 +152,12 @@ res$computed_nt <- kk
 ######                PLS               ######
 ##############################################
 if (modele == "pls") {
+if(NoWeights){
 tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
+}
+if(!NoWeights){
+tempww <- t(XXwotNA*weights)%*%YwotNA/(t(XXNA*weights)%*%YwotNA^2)
+}
 if (pvals.expli) {
 tempvalpvalstep <- 2 * pnorm(-abs(tempww)) 
 temppvalstep <- (tempvalpvalstep < alpha.pvals.expli)
@@ -342,10 +352,19 @@ cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
 }
 res$residYChapeau <- res$tt%*%tempCoeffC
 if (kk==1) {
+if(NoWeights){
 res$RSSresidY <- crossprod(RepY)
 }
+if(!NoWeights){
+res$RSSresidY <- crossprod(RepY,weights*RepY)
+}
+}
+if(NoWeights){
 res$RSSresidY <- cbind(res$RSSresidY,crossprod(res$residY-res$residYChapeau))
-
+}
+if(!NoWeights){
+res$RSSresidY <- cbind(res$RSSresidY,crossprod(res$residY-res$residYChapeau,weights*(res$residY-res$residYChapeau)))
+}
 
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
 tempConstante <- attr(res$RepY,"scaled:center")-sum(tempCoeffs*attr(res$ExpliX,"scaled:center"))
@@ -355,9 +374,19 @@ res$YChapeau <- attr(res$RepY,"scaled:center")+attr(res$RepY,"scaled:scale")*res
 res$Yresidus <- dataY-res$YChapeau
 
 if (kk==1) {
+if(NoWeights){
 res$RSS <- crossprod(dataY-mean(dataY))
 }
+if(!NoWeights){
+res$RSS <- crossprod(dataY-mean(dataY),weights*(dataY-mean(dataY)))
+}
+}
+if(NoWeights){
 res$RSS <- cbind(res$RSS,crossprod(res$Yresidus))
+}
+if(!NoWeights){
+res$RSS <- cbind(res$RSS,crossprod(res$Yresidus,weights*res$Yresidus))
+}
 }
 }
 
@@ -456,9 +485,19 @@ cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
 }
 res$residYChapeau <- res$tt%*%tempCoeffC
 if (kk==1) {
+if(NoWeights){
 res$RSSresidY <- crossprod(RepY)
 }
+if(!NoWeights){
+res$RSSresidY <- crossprod(RepY,weights*RepY)
+}
+}
+if(NoWeights){
 res$RSSresidY <- cbind(res$RSSresidY,crossprod(res$residY-res$residYChapeau))
+}
+if(!NoWeights){
+res$RSSresidY <- cbind(res$RSSresidY,crossprod(res$residY-res$residYChapeau,weights*(res$residY-res$residYChapeau)))
+}
 
 
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
@@ -470,9 +509,19 @@ res$Yresidus <- dataY-res$YChapeau
 
 
 if (kk==1) {
+if(NoWeights){
 res$RSS <- crossprod(dataY-mean(dataY))
 }
+if(!NoWeights){
+res$RSS <- crossprod(dataY-mean(dataY),weights*(dataY-mean(dataY)))
+}
+}
+if(NoWeights){
 res$RSS <- cbind(res$RSS,crossprod(res$Yresidus))
+}
+if(!NoWeights){
+res$RSS <- cbind(res$RSS,crossprod(res$Yresidus,weights*res$Yresidus))
+}
 }
 }
 
@@ -501,14 +550,14 @@ res$residY <- res$residY - res$tt%*%tempCoeffC
 res$residusY <- cbind(res$residusY,res$residY)
 
 if (kk==1) {
-res$AIC.std <- AIC(lm(res$RepY~1))
-res$AIC.std <- cbind(res$AIC.std,AICpls(res$nr,kk,res$residY))
-res$AIC <- AIC(lm(dataY~1))
-res$AIC <- cbind(res$AIC,AICpls2(kk,dataY,res$YChapeau,res$Yresidus))
+res$AIC.std <- AIC(lm(res$RepY~1,weights=res$weights))
+res$AIC.std <- cbind(res$AIC.std,AICpls(kk,res$residY,weights=res$weights))
+res$AIC <- AIC(lm(dataY~1,weights=res$weights))
+res$AIC <- cbind(res$AIC,AICpls(kk,res$Yresidus,weights=res$weights))
 if (MClassed) {
-res$MissClassed <- sum(unclass(dataY)!=ifelse(predict(lm(dataY~1)) < 0.5, 0,1))
+res$MissClassed <- sum(unclass(dataY)!=ifelse(predict(lm(dataY~1,weights=res$weights)) < 0.5, 0,1))
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(dataY)!=ifelse(res$YChapeau < 0.5, 0,1)))
-tempprob <- res$Probs <- predict(lm(dataY~1))
+tempprob <- res$Probs <- predict(lm(dataY~1,weights=res$weights))
 tempprob <- ifelse(tempprob<0,0,tempprob)
 res$Probs.trc <- ifelse(tempprob>1,1,tempprob)
 res$Probs <- cbind(res$Probs,res$YChapeau)
@@ -517,8 +566,8 @@ tempprob <- ifelse(tempprob>1,1,tempprob)
 res$Probs.trc <- cbind(res$Probs.trc,tempprob)
 }
 } else {
-res$AIC.std <- cbind(res$AIC.std,AICpls(res$nr,kk,res$residY))
-res$AIC <- cbind(res$AIC,AICpls2(kk,dataY,res$YChapeau,res$Yresidus))
+res$AIC.std <- cbind(res$AIC.std,AICpls(kk,res$residY,weights=res$weights))
+res$AIC <- cbind(res$AIC,AICpls(kk,res$Yresidus,weights=res$weights))
 if (MClassed) {
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(dataY)!=ifelse(res$YChapeau < 0.5, 0,1)))
 res$Probs <- cbind(res$Probs,res$YChapeau)
@@ -594,11 +643,17 @@ cat("____There are some NAs both in X and Y____\n")
 if (modele == "pls") {
 
 res$R2residY <- 1-res$RSSresidY[2:(res$computed_nt+1)]/res$RSSresidY[1]
-
 res$R2 <- 1-res$RSS[2:(res$computed_nt+1)]/res$RSS[1]
+
 if (typeVC %in% c("standard","missingdata","adaptative")) {
+if(NoWeights){
 res$press.tot <- colSums(res$press.ind)
 res$press.tot2 <- colSums(res$press.ind2)
+}
+if(!NoWeights){
+res$press.tot <- colSums(res$press.ind*weights)
+res$press.tot2 <- colSums(res$press.ind2*weights)
+}
 res$Q2 <- 1-res$press.tot/res$RSSresidY[-(res$computed_nt+1)]
 res$limQ2 <- rep(limQ2set,res$computed_nt)
 res$Q2_2 <- 1-res$press.tot2/res$RSS[-(res$computed_nt+1)]
@@ -615,8 +670,8 @@ dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "Q2c
 res$CVinfos <- t(rbind(res$AIC,c(0,res$Q2cum_2), c(NA,res$limQ2), c(0,res$Q2_2[1:res$computed_nt]), c(0,res$press.tot2[1:res$computed_nt]), res$RSS, c(0,res$R2), res$MissClassed, c(0,res$R2residY), res$RSSresidY, c(0,res$press.tot), c(0,res$Q2), c(NA,res$limQ2), c(0,res$Q2cum), res$AIC.std))
 dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "PRESS_residY", "Q2_residY", "LimQ2", "Q2cum_residY", "AIC.std"))
 }
-
-
+res$ic.dof<-infcrit.dof(res,naive=naive)
+res$CVinfos <- cbind(res$CVinfos,res$ic.dof)
 } else {
 if (MClassed==FALSE) {
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY, res$AIC.std))
@@ -625,6 +680,8 @@ dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), res$MissClassed, c(0,res$R2residY), res$RSSresidY, res$AIC.std))
 dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "AIC.std"))
 }
+res$ic.dof<-infcrit.dof(res,naive=naive)
+res$InfCrit <- cbind(res$InfCrit,res$ic.dof)
 }
 }
 

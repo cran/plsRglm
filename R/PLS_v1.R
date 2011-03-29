@@ -460,9 +460,9 @@ res$residusY <- cbind(res$residusY,res$residY)
 
 if (kk==1) {
 res$AIC.std <- AIC(lm(res$RepY~1))
-res$AIC.std <- cbind(res$AIC.std,AICpls(res$nr,kk,res$residY))
+res$AIC.std <- cbind(res$AIC.std,AICpls(kk,res$residY))
 res$AIC <- AIC(lm(dataY~1))
-res$AIC <- cbind(res$AIC,AICpls2(kk,dataY,res$YChapeau,res$Yresidus))
+res$AIC <- cbind(res$AIC,AICpls(kk,res$Yresidus))
 if (MClassed) {
 res$MissClassed <- sum(unclass(dataY)!=ifelse(predict(lm(dataY~1)) < 0.5, 0,1))
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(dataY)!=ifelse(res$YChapeau < 0.5, 0,1)))
@@ -475,8 +475,8 @@ tempprob <- ifelse(tempprob>1,1,tempprob)
 res$Probs.trc <- cbind(res$Probs.trc,tempprob)
 }
 } else {
-res$AIC.std <- cbind(res$AIC.std,AICpls(res$nr,kk,res$residY))
-res$AIC <- cbind(res$AIC,AICpls2(kk,dataY,res$YChapeau,res$Yresidus))
+res$AIC.std <- cbind(res$AIC.std,AICpls(kk,res$residY))
+res$AIC <- cbind(res$AIC,AICpls(kk,res$Yresidus))
 if (MClassed) {
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(dataY)!=ifelse(res$YChapeau < 0.5, 0,1)))
 res$Probs <- cbind(res$Probs,res$YChapeau)

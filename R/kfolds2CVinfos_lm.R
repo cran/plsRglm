@@ -31,9 +31,11 @@ if (as.character(pls_kfolds$call["modele"]) == "pls") {
 if (MClassed==FALSE) {
             CVinfos[[nnkk]] <- t(rbind(tempres$AIC[1:(computed_nt+1)], c(NA,Q2cum_2[1:computed_nt]), c(NA,limQ2[1:computed_nt]), c(NA,Q2_2[1:computed_nt]), c(NA,press_kfolds[[nnkk]][1:computed_nt]), tempres$RSS[1:(computed_nt+1)], c(NA,tempres$R2[1:computed_nt]), tempres$AIC.std[1:(computed_nt+1)]))
             dimnames(CVinfos[[nnkk]]) <- list(paste("Nb_Comp_",0:computed_nt,sep=""), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "AIC.std"))
+            CVinfos[[nnkk]] <- cbind(CVinfos[[nnkk]],tempres$ic.dof)
 } else {
             CVinfos[[nnkk]] <- t(rbind(tempres$AIC[1:(computed_nt+1)], tempres$MissClassed[1:(computed_nt+1)], c(NA,Mclassed_kfolds[[nnkk]][1:computed_nt]), c(NA,Q2cum_2[1:computed_nt]), c(NA,limQ2[1:computed_nt]), c(NA,Q2_2[1:computed_nt]), c(NA,press_kfolds[[nnkk]][1:computed_nt]), tempres$RSS[1:(computed_nt+1)], c(NA,tempres$R2[1:computed_nt]), tempres$AIC.std[1:(computed_nt+1)]))
             dimnames(CVinfos[[nnkk]]) <- list(paste("Nb_Comp_",0:computed_nt,sep=""), c("AIC", "MissClassed", "CV_MissClassed", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "AIC.std"))
+            CVinfos[[nnkk]] <- cbind(CVinfos[[nnkk]],tempres$ic.dof)
 }
 attr(CVinfos[[nnkk]],"computed_nt") <- computed_nt
     }
@@ -75,9 +77,11 @@ if (as.character(pls_kfolds$call["modele"]) == "pls") {
 if (MClassed==FALSE) {
             CVinfos[[nnkk]] <- t(rbind(tempres$AIC[1:(computed_nt+1)], c(NA,Q2cum_2[1:computed_nt]), c(NA,limQ2[1:computed_nt]), c(NA,Q2_2[1:computed_nt]), c(NA,press_kfolds[[nnkk]][1:computed_nt]), tempres$RSS[1:(computed_nt+1)], c(NA,tempres$R2[1:computed_nt]), tempres$AIC.std[1:(computed_nt+1)]))
             dimnames(CVinfos[[nnkk]]) <- list(paste("Nb_Comp_",0:computed_nt,sep=""), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "AIC.std"))
+            CVinfos[[nnkk]] <- cbind(CVinfos[[nnkk]],tempres$ic.dof)
 } else {
             CVinfos[[nnkk]] <- t(rbind(tempres$AIC[1:(computed_nt+1)], tempres$MissClassed[1:(computed_nt+1)], c(NA,Mclassed_kfolds[[nnkk]][1:computed_nt]), c(NA,Q2cum_2[1:computed_nt]), c(NA,limQ2[1:computed_nt]), c(NA,Q2_2[1:computed_nt]), c(NA,press_kfolds[[nnkk]][1:computed_nt]), tempres$RSS[1:(computed_nt+1)], c(NA,tempres$R2[1:computed_nt]), tempres$AIC.std[1:(computed_nt+1)]))
             dimnames(CVinfos[[nnkk]]) <- list(paste("Nb_Comp_",0:computed_nt,sep=""), c("AIC", "MissClassed", "CV_MissClassed", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "AIC.std"))
+            CVinfos[[nnkk]] <- cbind(CVinfos[[nnkk]],tempres$ic.dof)
 }
 attr(CVinfos[[nnkk]],"computed_nt") <- computed_nt
     }

@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets.
 }
 \usage{
-PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),sparse=FALSE,sparseStop=TRUE)
+PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),weights,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -30,11 +30,15 @@ PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "
   \item{alpha.pvals.expli}{level of significance for predictors when pvals.expli=TRUE}
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
   \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
   \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
+  \item{naive}{Use the naive estimates for the Degrees of Freedom in plsR? Default is \code{FALSE}.}
 }
 \details{
-There are several ways to deal with missing values that leads to different computations of leave one out cross validation criteria.
+There are several ways to deal with missing values that leads to different computations of leave one out cross validation criteria.\cr
+
+The default estimator for Degrees of Freedom is the Kramer and Sugiyama's one. Information criteria are computed accordingly to these estimations. Naive Degrees of Freedom and Information Criteria are also provided for comparison purposes. For more details, see Kraemer, N., Sugiyama M. (2010). "The Degrees of Freedom of Partial Least Squares Regression". preprint, http://arxiv.org/abs/1002.4112. 
 }
 \value{
   \item{nr}{Description of 'comp1'}

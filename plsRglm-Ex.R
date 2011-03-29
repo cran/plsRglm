@@ -12,8 +12,8 @@ nameEx("AICpls")
 flush(stderr()); flush(stdout())
 
 ### Name: AICpls
-### Title: AIC functions for plsR models
-### Aliases: AICpls AICpls2
+### Title: AIC function for plsR models
+### Aliases: AICpls
 ### Keywords: models regression utilities
 
 ### ** Examples
@@ -35,12 +35,10 @@ print(logLik(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
 
 sum(dnorm(modpls$RepY, modpls$Std.ValsPredictY, sqrt(mean(modpls$residY^2)), log=TRUE))
 sum(dnorm(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),sqrt(mean(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled))^2)), log=TRUE))
-loglikpls2(modpls$RepY,modpls$Std.ValsPredictY,modpls$residY)
-loglikpls2(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-loglikpls(33,10,modpls$residY)
-loglikpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,modpls$residY)
+loglikpls(modpls$residY)
+loglikpls(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,modpls$residY)
 
 
 
@@ -587,6 +585,35 @@ data(XpineNAX21)
 
 
 cleanEx()
+nameEx("aic.dof")
+### * aic.dof
+
+flush(stderr()); flush(stdout())
+
+### Name: aic.dof
+### Title: Akaike and Bayesian Information Criteria and Generalized minimum
+###   description length
+### Aliases: aic.dof bic.dof gmdl.dof
+### Keywords: models regression utilities
+
+### ** Examples
+
+data(Cornell)
+XCornell<-Cornell[,1:7]
+yCornell<-Cornell[,8]
+modpls <- plsR(yCornell,XCornell,4)
+dof.object <- plsR.dof(modpls)
+aic.dof(modpls$RSS,modpls$nr,dof.object$DoF,dof.object$sigmahat)
+bic.dof(modpls$RSS,modpls$nr,dof.object$DoF,dof.object$sigmahat)
+gmdl.dof(dof.object$sigmahat,modpls$nr,dof.object$DoF,dof.object$yhat)
+naive.object <- plsR.dof(modpls,naive=TRUE)
+aic.dof(modpls$RSS,modpls$nr,naive.object$DoF,naive.object$sigmahat)
+bic.dof(modpls$RSS,modpls$nr,naive.object$DoF,naive.object$sigmahat)
+gmdl.dof(naive.object$sigmahat,modpls$nr,naive.object$DoF,naive.object$yhat)
+
+
+
+cleanEx()
 nameEx("aze")
 ### * aze
 
@@ -832,6 +859,27 @@ data(fowlkes)
 
 
 cleanEx()
+nameEx("infcrit.dof")
+### * infcrit.dof
+
+flush(stderr()); flush(stdout())
+
+### Name: infcrit.dof
+### Title: Information criteria
+### Aliases: infcrit.dof
+### Keywords: models regression utilities
+
+### ** Examples
+
+data(Cornell)
+XCornell<-Cornell[,1:7]
+yCornell<-Cornell[,8]
+modpls <- plsR(yCornell,XCornell,4)
+infcrit.dof(modpls)
+
+
+
+cleanEx()
 nameEx("kfolds2CVinfos_glm")
 ### * kfolds2CVinfos_glm
 
@@ -1055,8 +1103,8 @@ nameEx("loglikpls")
 flush(stderr()); flush(stdout())
 
 ### Name: loglikpls
-### Title: loglikelihood functions for plsR models
-### Aliases: loglikpls loglikpls2
+### Title: loglikelihood function for plsR models
+### Aliases: loglikpls
 ### Keywords: models regression utilities
 
 ### ** Examples
@@ -1078,12 +1126,10 @@ print(logLik(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
 
 sum(dnorm(modpls$RepY, modpls$Std.ValsPredictY, sqrt(mean(modpls$residY^2)), log=TRUE))
 sum(dnorm(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),sqrt(mean(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled))^2)), log=TRUE))
-loglikpls2(modpls$RepY,modpls$Std.ValsPredictY,modpls$residY)
-loglikpls2(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-loglikpls(33,10,modpls$residY)
-loglikpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,modpls$residY)
+loglikpls(modpls$residY)
+loglikpls(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,modpls$residY)
 
 
 
@@ -1233,6 +1279,28 @@ plsR(yCornell,XCornell,6)$AIC.std
 rm(list=c("XCornell","yCornell"))
 
 
+
+
+
+cleanEx()
+nameEx("plsR.dof")
+### * plsR.dof
+
+flush(stderr()); flush(stdout())
+
+### Name: plsR.dof
+### Title: Computation of the Degrees of Freedom
+### Aliases: plsR.dof
+### Keywords: models regression utilities
+
+### ** Examples
+
+data(Cornell)
+XCornell<-Cornell[,1:7]
+yCornell<-Cornell[,8]
+modpls <- plsR(yCornell,XCornell,4)
+plsR.dof(modpls) 
+plsR.dof(modpls,naive=TRUE) 
 
 
 

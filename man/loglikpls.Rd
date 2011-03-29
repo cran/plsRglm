@@ -1,20 +1,15 @@
 \name{loglikpls}
 \alias{loglikpls}
-\alias{loglikpls2}
-\title{loglikelihood functions for plsR models}
+\title{loglikelihood function for plsR models}
 \description{
-This function provides loglikelihood computations for an univariate plsR model.
+This function provides loglikelihood computation for an univariate plsR model.
 }
 \usage{
-loglikpls(nn, ncomp, residpls)
-loglikpls2(dataYpls, YChapeaupls, residpls)
+loglikpls(residpls, weights=rep.int(1,length(residpls)))
 }
 \arguments{
-  \item{nn}{Number of rows of the dataset}
-  \item{ncomp}{Number of components}
-  \item{dataYpls}{Vector of the response}
-  \item{YChapeaupls}{Fitted values of a plsR univariate plsR model}
   \item{residpls}{Residuals of a fitted univariate plsR model}
+  \item{weights}{Weights of observations}
 }
 \details{
 Loglikelihood functions for plsR models with univariate response.
@@ -32,7 +27,7 @@ Chemometrics and Intelligent Laboratory Systems 64 (2002) 79-89.
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
 }
-\seealso{\code{\link{AICpls}} and \code{\link{AICpls2}} for AIC compuations and \code{\link{logLik}} for loglikelihood computations for linear models}
+\seealso{\code{\link{AICpls}} for AIC computation and \code{\link{logLik}} for loglikelihood computations for linear models}
 \examples{
 data(pine)
 ypine <- pine[,11]
@@ -51,12 +46,10 @@ print(logLik(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
 
 sum(dnorm(modpls$RepY, modpls$Std.ValsPredictY, sqrt(mean(modpls$residY^2)), log=TRUE))
 sum(dnorm(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),sqrt(mean(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled))^2)), log=TRUE))
-loglikpls2(modpls$RepY,modpls$Std.ValsPredictY,modpls$residY)
-loglikpls2(Pinscaled$yy,fitted(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)),residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-loglikpls(33,10,modpls$residY)
-loglikpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
-AICpls(33,10,modpls$residY)
+loglikpls(modpls$residY)
+loglikpls(residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,residuals(lm(yy~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10,data=Pinscaled)))
+AICpls(10,modpls$residY)
 }
 \keyword{models}
 \keyword{regression}

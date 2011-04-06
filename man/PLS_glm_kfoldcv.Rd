@@ -5,7 +5,7 @@
 This function implements kfold cross validation on complete or incomplete datasets for partial least squares regression generalized linear models
 }
 \usage{
-PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family = NULL, K = nrow(dataX), NK = 1, grouplist = NULL, random = FALSE, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepfolds = FALSE, keepdataY = TRUE, keepMclassed=FALSE, tol_Xi = 10^(-12))
+PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family = NULL, K = nrow(dataX), NK = 1, grouplist = NULL, random = FALSE, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepfolds = FALSE, keepdataY = TRUE, keepMclassed=FALSE, tol_Xi = 10^(-12), weights)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -25,6 +25,7 @@ PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family 
   \item{keepdataY}{shall the observed value of the response for each one of the predicted value be returned}
   \item{keepMclassed}{shall the number of miss classed be returned (unavailable)}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
 }
 \details{
 Predicts 1 group with the \code{K-1} other groups. Leave one out cross validation is thus obtained for \code{K==nrow(dataX)}.
@@ -49,6 +50,8 @@ Using the \code{"family="} option and setting \code{"modele=pls-glm-family"} all
 \item{The \code{quasi} family}{accepts the links \code{logit}, \code{probit}, \code{cloglog}, \code{identity}, \code{inverse}, \code{log}, \code{1/mu^2} and \code{sqrt}.}
 \item{The function \code{power}}{can be used to create a power link function.} 
 }
+
+Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
 }
 \value{
   \item{results_kfolds}{list of \code{NK}. Each element of the list sums up the results for a group division:

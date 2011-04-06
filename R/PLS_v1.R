@@ -1,5 +1,4 @@
-PLS_v1 <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",
-                    family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12)) {
+PLS_v1 <- function(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12)) {
 
 ##################################################
 #                                                #
@@ -145,10 +144,10 @@ res$residXX <- XXwotNA-temptt%*%temppp
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(1/kappa(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
 res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -159,10 +158,10 @@ if(break_nt==TRUE) {break}
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(1/kappa(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
 res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -277,14 +276,14 @@ for (i in 1:(res$nr)) {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                if(det(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])<tol_Xi) {
+                if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
                 break_nt_vc <- TRUE
                 res$computed_nt_vc <- kk-1
-                cat(paste("Warning : determinant of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
-                cat(paste("Please choose a smaller number of component to cross validate\n",sep=""))
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(ExpliXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(ExpliXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv  
 }
 rm(i)
@@ -354,14 +353,14 @@ for (i in 1:(res$nr)) {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                if(det(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])<tol_Xi) {
+                if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
                 break_nt_vc <- TRUE
                 res$computed_nt_vc <- kk-1
-                cat(paste("Warning : determinant of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
-                cat(paste("Please choose a smaller number of component to cross validate\n",sep=""))
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 res$press.ind <- cbind(res$press.ind,(YwotNA-temppred)^2)
@@ -391,14 +390,14 @@ else {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                if(det(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])<tol_Xi) {
+                if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
                 break_nt_vc <- TRUE
                 res$computed_nt_vc <- kk-1
-                cat(paste("Warning : determinant of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
-                cat(paste("Please choose a smaller number of component to cross validate\n",sep=""))
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 }
@@ -529,7 +528,7 @@ if(kk==1){
 cat("____Predicting X with NA in X and not in Y____\n")
 }
 for (ii in 1:nrow(PredictYwotNA)) {  
-      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],])%*%res$pp[PredictYNA[ii,],])%*%t(res$pp[PredictYNA[ii,],])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
+      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
 colnames(res$ttPredictY) <- paste("tt",1:res$computed_nt,sep="")
 }
@@ -568,20 +567,20 @@ for (k in 1:res$computed_nt) {res$Q2cum_2[k] <- prod(res$press.tot2[1:k])/prod(r
 res$Q2cum_2 <- 1 - res$Q2cum_2
 if (MClassed==FALSE) {
 res$CVinfos <- t(rbind(res$AIC,c(0,res$Q2cum_2), c(NA,res$limQ2), c(0,res$Q2_2[1:res$computed_nt]), c(0,res$press.tot2[1:res$computed_nt]), res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY, c(0,res$press.tot), c(0,res$Q2), c(NA,res$limQ2), c(0,res$Q2cum), res$AIC.std))
-dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "PRESS_residY", "Q2_residY", "LimQ2", "Q2cum_residY", "AIC.std"))
+dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "PRESS_residY", "Q2_residY", "LimQ2", "Q2cum_residY", "AIC.std"))
 } else {
 res$CVinfos <- t(rbind(res$AIC,c(0,res$Q2cum_2), c(NA,res$limQ2), c(0,res$Q2_2[1:res$computed_nt]), c(0,res$press.tot2[1:res$computed_nt]), res$RSS, c(0,res$R2), res$MissClassed, c(0,res$R2residY), res$RSSresidY, c(0,res$press.tot), c(0,res$Q2), c(NA,res$limQ2), c(0,res$Q2cum), res$AIC.std))
-dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "PRESS_residY", "Q2_residY", "LimQ2", "Q2cum_residY", "AIC.std"))
+dimnames(res$CVinfos) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "Q2cum_Y", "LimQ2_Y", "Q2_Y", "PRESS_Y", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "PRESS_residY", "Q2_residY", "LimQ2", "Q2cum_residY", "AIC.std"))
 }
 
 
 } else {
 if (MClassed==FALSE) {
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY, res$AIC.std))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "AIC.std"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "AIC.std"))
 } else {
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), res$MissClassed, c(0,res$R2residY), res$RSSresidY, res$AIC.std))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "AIC.std"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "AIC.std"))
 }
 }
 }

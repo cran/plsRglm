@@ -1,4 +1,4 @@
-PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=NULL,scaleX=TRUE,scaleY=NULL,keepcoeffs=FALSE,keepstd.coeffs=FALSE,tol_Xi=10^(-12),method="logistic") {
+PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=NULL,scaleX=TRUE,scaleY=NULL,keepcoeffs=FALSE,keepstd.coeffs=FALSE,tol_Xi=10^(-12),weights,method="logistic") {
 
 ##################################################
 #                                                #
@@ -7,6 +7,15 @@ PLS_glm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",family=
 ##################################################
 
 cat("____************************************************____\n")
+if(identical(dataPredictY,dataX)){PredYisdataX <- TRUE} else {PredYisdataX <- FALSE}
+if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
+if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
+if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
+if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else {na.miss.PredictY <- FALSE}
+if(na.miss.X|na.miss.Y){naive=TRUE; cat(paste("Only naive DoF can be used with missing data\n",sep="")); if(!NoWeights){cat(paste("Weights cannot be used with missing data\n",sep=""))}}
+if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS\n",sep=""))}
+
+
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
 if (is.null(modele) & !is.null(family)) {modele<-"pls-glm-family"}
 if (!(modele %in% c("pls","pls-glm-logistic","pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr"))) {print(modele);stop("'modele' not recognized")}
@@ -27,20 +36,18 @@ if (!is.null(family)) {
     if (modele %in% c("pls-glm-polr")) {cat("\nModel:", modele, "\n");cat("Method:", method, "\n\n")}
     if (modele=="pls") {cat("\nModel:", modele, "\n\n")}
 
-
-
 scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
 }
-if (scaleY) {RepY <- scale(dataY)}
+if (scaleY) {if(NoWeights){RepY <- scale(dataY)} else {meanY <- weighted.mean(dataY,weights); stdevY <- sqrt((length(dataY)-1)/length(dataY)*weighted.mean((dataY-meanY)^2,weights)); RepY <- (dataY-meanY)/stdevY; attr(RepY,"scaled:center") <- meanY ; attr(RepY,"scaled:scale") <- stdevY}}
 else {
     RepY <- dataY
     attr(RepY,"scaled:center") <- 0
     attr(RepY,"scaled:scale") <- 1
 }
-if (scaleX) {ExpliX <- scale(dataX)
-    PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")
+if (scaleX) {if(NoWeights){ExpliX <- scale(dataX)} else {meanX <- apply(dataX,2,weighted.mean,weights); stdevX <- sqrt((length(dataY)-1)/length(dataY)*apply((sweep(dataX,2,meanX))^2,2,weighted.mean,weights)); ExpliX <- sweep(sweep(dataX, 2, meanX), 2 ,stdevX, "/"); attr(ExpliX,"scaled:center") <- meanX ; attr(ExpliX,"scaled:scale") <- stdevX}
+    if(PredYisdataX){PredictY <- ExpliX} else {PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")}
 }
 else {
     ExpliX <- dataX
@@ -51,13 +58,9 @@ else {
 if(is.null(colnames(ExpliX))){colnames(ExpliX)<-paste("X",1:ncol(ExpliX),sep=".")}
 if(is.null(rownames(ExpliX))){rownames(ExpliX)<-1:nrow(ExpliX)}
 
-if (any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
-if (any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
-if (any(is.na(PredictY))) {na.miss.PredictY <- TRUE} else na.miss.PredictY <- FALSE
-
 XXNA <- !(is.na(ExpliX))
 YNA <- !(is.na(RepY))
-PredictYNA <- !is.na(PredictY)
+if(PredYisdataX){PredictYNA <- XXNA} else {PredictYNA <- !is.na(PredictY)}
 
 ExpliXwotNA <- as.matrix(ExpliX)
 ExpliXwotNA[!XXNA] <- 0
@@ -75,14 +78,17 @@ dataYwotNA <- as.matrix(dataY)
 
 dataYwotNA[!YNA] <- 0
 
+if(PredYisdataX){PredictYwotNA <- XXwotNA} else {
 PredictYwotNA <- as.matrix(PredictY)
 PredictYwotNA [is.na(PredictY)] <- 0
+}
 
 if (modele %in% "pls-glm-polr") {
 dataY <- as.factor(dataY)
 YwotNA <- as.factor(YwotNA)}
 
 res <- list(nr=nrow(ExpliX),nc=ncol(ExpliX),ww=NULL,wwnorm=NULL,wwetoile=NULL,tt=NULL,pp=NULL,CoeffC=NULL,uscores=NULL,YChapeau=NULL,residYChapeau=NULL,RepY=RepY,na.miss.Y=na.miss.Y,YNA=YNA,residY=RepY,ExpliX=ExpliX,na.miss.X=na.miss.X,XXNA=XXNA,residXX=ExpliX,PredictY=PredictYwotNA,RSS=rep(NA,nt),RSSresidY=rep(NA,nt),R2=rep(NA,nt),R2residY=rep(NA,nt),press.ind=NULL,press.tot=NULL,Q2cum=rep(NA, nt),family=family,ttPredictY = NULL,typeVC="none",listValsPredictY=NULL) 
+if(NoWeights){res$weights<-rep(1L,res$nr)} else {res$weights<-weights}
 res$temppred <- NULL
 
 ##############################################
@@ -144,7 +150,12 @@ tempww <- rep(0,res$nc)
 ######                PLS               ######
 ##############################################
 if (modele %in% "pls") {
+if(NoWeights){
 tempww <- t(XXwotNA)%*%YwotNA/(t(XXNA)%*%YwotNA^2)
+}
+if(!NoWeights){
+tempww <- t(XXwotNA*weights)%*%YwotNA/(t(XXNA*weights)%*%YwotNA^2)
+}
 }
 
 ##############################################
@@ -194,30 +205,30 @@ res$residXX <- XXwotNA-temptt%*%temppp
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(1/kappa(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
+if(!PredYisdataX){
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(1/kappa(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
+}
 }
 
 
@@ -572,7 +583,7 @@ cat("____Predicting X with NA in X and not in Y____\n")
 }
 res$ttPredictY <- NULL
 for (ii in 1:nrow(PredictYwotNA)) {  
-      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],])%*%res$pp[PredictYNA[ii,],])%*%t(res$pp[PredictYNA[ii,],])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
+      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")
 }

@@ -1,5 +1,7 @@
 This file documents software changes.
 
+0.7.2 Cross-validation fully compatible with weighted plsR or plsRglm models.
+0.7.1 Minor code changes.
 0.7.0 Estimation of Degrees of Freedom for plsR models.
 0.6.7 Weighted plsR models.
 0.6.5 Sparse option to set to 0 the coefficients of non-significant predictors and to select the number of components.

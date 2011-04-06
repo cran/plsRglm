@@ -18,11 +18,19 @@ kfolds2Pressind <- function(pls_kfolds) {
         {
             if (dim(pls_kfolds$results_kfolds[[nnkk]][[ii]])[1]==1)
             {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                 pressind_kfolds[[nnkk]][[ii]] <- (pls_kfolds$results_kfolds[[nnkk]][[ii]]-pls_kfolds$dataY_kfolds[[nnkk]][[ii]])^2
+                } else {
+                pressind_kfolds[[nnkk]][[ii]] <- attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(pls_kfolds$results_kfolds[[nnkk]][[ii]]-pls_kfolds$dataY_kfolds[[nnkk]][[ii]])^2
+                }
             }
             else
             {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                 pressind_kfolds[[nnkk]][[ii]] <- colSums((apply(pls_kfolds$results_kfolds[[nnkk]][[ii]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2)
+                } else {
+                pressind_kfolds[[nnkk]][[ii]] <- colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(apply(pls_kfolds$results_kfolds[[nnkk]][[ii]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2)
+                }
             }
         }
     }

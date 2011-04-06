@@ -175,10 +175,10 @@ res$residXX <- XXwotNA-temptt%*%temppp
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(1/kappa(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
 res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -189,10 +189,10 @@ if(break_nt==TRUE) {break}
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(1/kappa(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
 res$computed_nt <- kk-1
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -533,7 +533,7 @@ cat("____Predicting X with NA in X and not in Y____\n")
 }
 res$ttPredictY <- NULL
 for (ii in 1:nrow(PredictYwotNA)) {  
-      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],])%*%res$pp[PredictYNA[ii,],])%*%t(res$pp[PredictYNA[ii,],])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
+      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")
 }

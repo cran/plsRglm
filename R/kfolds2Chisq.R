@@ -21,6 +21,9 @@ kfolds2Chisq <- function(pls_kfolds) {
             Chiscompmatrix <- function(rowspi,rowsyi) {
             sum(mapply(Chisqcomp,rowsyi,rowspi))
             }
+            Chiscompmatrixweight <- function(rowspi,rowsyi) {
+            (mapply(Chisqcomp,rowsyi,rowspi))
+            }
         }
     }
 
@@ -51,11 +54,19 @@ if (!(pls_kfolds$call$modele=="pls-glm-polr")) {
         {
             if (dim(pls_kfolds$results_kfolds[[nnkk]][[ii]])[1]==1)
             {
-                preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]])^2/(fam_var(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]]))
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
+preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]])^2/(fam_var(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]]))
+                    } else {
+preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]])^2/(fam_var(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]]))            
+            }            
             }
             else
             {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                 preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+colSums((apply(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_var(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]]))) 
+                    } else {
+                preChisq_kfolds[[nnkk]] <- preChisq_kfolds[[nnkk]]+colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*(apply(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]],2,'-',pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))^2/(fam_var(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]])))             
+             }            
             }
         }
     }
@@ -106,8 +117,13 @@ if (pls_kfolds$call$modele=="pls-glm-polr") {
                     fff <- ~pls_kfolds$dataY_kfolds[[nnkk]][[ii]]-1
                     m <- model.frame(fff, pls_kfolds$dataY_kfolds[[nnkk]][[ii]])
                     mat <- model.matrix(fff, model.frame(fff, pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))
+                    if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                     preChisqind_kfolds[[nnkk]][[ii]] <- (unlist(lapply(lapply(pls_kfolds$results_kfolds[[nnkk]][[ii]],function(xxx) {as.list(as.data.frame(t(xxx)))}),
                     Chiscompmatrix,as.list(as.data.frame(t(mat))))))[1:max_nt[nnkk]]
+                    } else {
+                    preChisqind_kfolds[[nnkk]][[ii]] <- (unlist(lapply(lapply(lapply(lapply(pls_kfolds$results_kfolds[[nnkk]][[ii]],function(xxx) {as.list(as.data.frame(t(xxx)))}),
+                    Chiscompmatrixweight,as.list(as.data.frame(t(mat)))),"*",attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")),sum)))[1:max_nt[nnkk]]
+                    }
                     rm(fff)
                     rm(m)
                     rm(mat)

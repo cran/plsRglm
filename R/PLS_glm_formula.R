@@ -61,9 +61,11 @@ if (!is.null(offset)) {
     if (length(offset) != NROW(dataY)) stop(gettextf("number of offsets is %d should equal %d (number of observations)", length(offset), NROW(dataY)), domain = NA)
     }
 
+if(identical(dataPredictY,dataX)){PredYisdataX <- TRUE} else {PredYisdataX <- FALSE}
+
 if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
-if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else na.miss.PredictY <- FALSE
+if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else {na.miss.PredictY <- FALSE}
 if(na.miss.X|na.miss.Y){naive=TRUE; cat(paste("Only naive DoF can be used with missing data\n",sep="")); if(!NoWeights){cat(paste("Weights cannot be used with missing data\n",sep=""))}}
 
 if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
@@ -97,7 +99,7 @@ else {
     attr(RepY,"scaled:scale") <- 1
 }
 if (scaleX) {if(NoWeights){ExpliX <- scale(dataX)} else {meanX <- apply(dataX,2,weighted.mean,weights); stdevX <- sqrt((length(dataY)-1)/length(dataY)*apply((sweep(dataX,2,meanX))^2,2,weighted.mean,weights)); ExpliX <- sweep(sweep(dataX, 2, meanX), 2 ,stdevX, "/"); attr(ExpliX,"scaled:center") <- meanX ; attr(ExpliX,"scaled:scale") <- stdevX}
-    PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")
+    if(PredYisdataX){PredictY <- ExpliX} else {PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")}
 }
 else {
     ExpliX <- dataX
@@ -110,7 +112,7 @@ if(is.null(rownames(ExpliX))){rownames(ExpliX)<-1:nrow(ExpliX)}
 
 XXNA <- !(is.na(ExpliX))
 YNA <- !(is.na(RepY))
-PredictYNA <- !is.na(PredictY)
+if(PredYisdataX){PredictYNA <- XXNA} else {PredictYNA <- !is.na(PredictY)}
 
 ExpliXwotNA <- as.matrix(ExpliX)
 ExpliXwotNA[!XXNA] <- 0
@@ -127,8 +129,10 @@ YwotNA[!YNA] <- 0
 dataYwotNA <- as.matrix(dataY)
 dataYwotNA[!YNA] <- 0
 
+if(PredYisdataX){PredictYwotNA <- XXwotNA} else {
 PredictYwotNA <- as.matrix(PredictY)
 PredictYwotNA [is.na(PredictY)] <- 0
+}
 
 if (modele == "pls-glm-polr") {
 dataY <- as.factor(dataY)
@@ -328,9 +332,10 @@ res$residXX <- XXwotNA-temptt%*%temppp
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(1/kappa(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -339,17 +344,20 @@ rm(ii)
 if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
+if(!PredYisdataX){
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(1/kappa(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
 break_nt <- TRUE
-cat(paste("Warning : determinant of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
 if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
+}
 }
 
 res$ww <- cbind(res$ww,tempww)
@@ -959,7 +967,7 @@ if(kk==1){
 cat("____Predicting X with NA in X and not in Y____\n")
 }
 for (ii in 1:nrow(PredictYwotNA)) {  
-      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],])%*%res$pp[PredictYNA[ii,],])%*%t(res$pp[PredictYNA[ii,],])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
+      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
 colnames(res$ttPredictY) <- paste("tt",1:res$computed_nt,sep="")
 }
@@ -986,12 +994,12 @@ res$R2residY <- 1-res$RSSresidY[2:(res$computed_nt+1)]/res$RSSresidY[1]
 res$R2 <- 1-res$RSS[2:(res$computed_nt+1)]/res$RSS[1]
 if (MClassed==FALSE) {
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY, res$AIC.std))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "AIC.std"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY", "AIC.std"))
 res$ic.dof<-infcrit.dof(res,naive=naive)
 res$InfCrit <- cbind(res$InfCrit,res$ic.dof)
 } else {
 res$InfCrit <- t(rbind(res$AIC, res$RSS, c(0,res$R2), res$MissClassed, c(0,res$R2residY), res$RSSresidY, res$AIC.std))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "AIC.std"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "RSS_Y", "R2_Y", "MissClassed", "R2_residY", "RSS_residY", "AIC.std"))
 res$ic.dof<-infcrit.dof(res,naive=naive)
 res$InfCrit <- cbind(res$InfCrit,res$ic.dof)
 }
@@ -1006,11 +1014,11 @@ res$R2residY <- 1-res$RSSresidY[2:(res$computed_nt+1)]/res$RSSresidY[1]
 res$R2 <- 1-res$RSS[2:(res$computed_nt+1)]/res$RSS[1]
 if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson")) {
 res$InfCrit <- t(rbind(res$AIC, res$BIC, res$ChisqPearson, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "BIC", "Chi2_Pearson_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "BIC", "Chi2_Pearson_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY"))
 }
 if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
 res$InfCrit <- t(rbind(res$AIC, res$BIC, res$MissClassed, res$ChisqPearson, res$RSS, c(0,res$R2), c(0,res$R2residY), res$RSSresidY))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "BIC", "Missclassed", "Chi2_Pearson_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "BIC", "Missclassed", "Chi2_Pearson_Y", "RSS_Y", "R2_Y", "R2_residY", "RSS_residY"))
 }
 }
 
@@ -1021,7 +1029,7 @@ dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "BIC
 if (modele == "pls-glm-polr") {
 
 res$InfCrit <- t(rbind(res$AIC, res$BIC, res$MissClassed, res$ChisqPearson))
-dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt), c("AIC", "BIC", "Missclassed", "Chi2_Pearson_Y"))
+dimnames(res$InfCrit) <- list(paste("Nb_Comp_",0:res$computed_nt,sep=""), c("AIC", "BIC", "Missclassed", "Chi2_Pearson_Y"))
 }
 
 

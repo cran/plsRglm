@@ -41,11 +41,19 @@ if (!(pls_kfolds$call$modele=="pls-glm-polr")) {
         {
             if (dim(pls_kfolds$results_kfolds[[nnkk]][[ii]])[1]==1)
             {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                 Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+as.numeric(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]] < 0.5, 0, 1) != unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))
+                } else {
+                Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*as.numeric(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][1:max_nt[nnkk]] < 0.5, 0, 1) != unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))
+            }
             }
             else
             {
+                if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
                 Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+colSums(apply(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]] < 0.5, 0, 1),2,'!=',unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))) 
+                } else {
+                Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*apply(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]] < 0.5, 0, 1),2,'!=',unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))) 
+                }
             }
         }
     }
@@ -90,7 +98,12 @@ if (pls_kfolds$call$modele=="pls-glm-polr") {
     {
         for (ii in 1:length(pls_kfolds$results_kfolds[[1]]))
         {
+            if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
             Mclassedind_kfolds[[nnkk]][[ii]] <- unlist(lapply(lapply(lapply(pls_kfolds$results_kfolds[[nnkk]],lapply,apply,1,which.max)[[ii]],"!=",unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]])),sum))[1:max_nt[nnkk]]
+            }
+            else {
+            Mclassedind_kfolds[[nnkk]][[ii]] <- unlist(lapply(lapply(lapply(lapply(pls_kfolds$results_kfolds[[nnkk]],lapply,apply,1,which.max)[[ii]],"!=",unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]])),"*",attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")),sum))[1:max_nt[nnkk]]
+          }
         }
     }
 

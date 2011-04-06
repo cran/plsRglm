@@ -363,7 +363,7 @@ rownames(res$Std.Coeffs) <- c(names(tempregpolr$zeta),colnames(ExpliX))
 
 res$ttPredictFittedMissingY <- NULL
 for (ii in 1:res$nr) {
-res$ttPredictFittedMissingY <- rbind(res$ttPredictFittedMissingY,t(solve(t(res$pp[XXNA[ii,],])%*%res$pp[XXNA[ii,],])%*%t(res$pp[XXNA[ii,],])%*%(ExpliXwotNA[ii,])[XXNA[ii,]]))
+res$ttPredictFittedMissingY <- rbind(res$ttPredictFittedMissingY,t(solve(t(res$pp[XXNA[ii,],,drop=FALSE])%*%res$pp[XXNA[ii,],,drop=FALSE])%*%t(res$pp[XXNA[ii,],,drop=FALSE])%*%(ExpliXwotNA[ii,])[XXNA[ii,]]))
 }
 rm(ii)
 
@@ -418,7 +418,7 @@ for (i in 1:(res$nr)) {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(ExpliXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(ExpliXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 rm(i)
@@ -532,7 +532,7 @@ for (i in 1:(res$nr)) {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 res$press.ind <- cbind(res$press.ind,(YwotNA-temppred)^2)
@@ -562,7 +562,7 @@ else {
                 for (jj in 1:(res$nc)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
-                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],])%*%temppp.cv[XXNA[i,],])%*%t(temppp.cv[XXNA[i,],])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
+                ttPredictY.cv <- (solve(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])%*%t(temppp.cv[XXNA[i,],,drop=FALSE])%*%(XXwotNA[i,])[XXNA[i,]])[kk]
                 temppred[i] <- tempc.cv*ttPredictY.cv   
 }
 }
@@ -737,7 +737,7 @@ else {
 if (na.miss.X & !na.miss.Y) {
 cat("____Predicting X with NA in X and not in Y____\n")
 for (ii in 1:nrow(PredictYwotNA)) {  
-      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],])%*%res$pp[PredictYNA[ii,],])%*%t(res$pp[PredictYNA[ii,],])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
+      res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
 colnames(res$ttPredictY) <- paste("tt",1:nt,sep="")
 }

@@ -5,7 +5,7 @@
 Light version of \code{PLS_lm} for cross validation purposes either on complete or incomplete datasets.
 }
 \usage{
-PLS_lm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12))
+PLS_lm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -18,9 +18,12 @@ PLS_lm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", scaleX = 
   \item{keepcoeffs}{whether the coefficients of unstandardized eXplanatory variables should be returned or not.}
   \item{keepstd.coeffs}{whether the coefficients of standardized eXplanatory variables should be returned or not.}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
+  \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
 }
 \details{
 This function is called by \code{\link{PLS_lm_kfoldcv}} in order to perform cross validation either on complete or incomplete datasets.
+
+Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
 }
 \value{
   \item{valsPredict}{\code{nrow(dataPredictY) * nt} matrix of the predicted values}

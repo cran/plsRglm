@@ -1,6 +1,6 @@
 PLS_glm_kfoldcv_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", family=NULL, K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL) {
 
-    
+    if (missing(weights)) {NoWeights <- TRUE} else {NoWeights <- FALSE}  
     if (missing(data)) {data <- environment(formula)}
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "weights", "etastart", "mustart", "offset"), names(mf), 0L)
@@ -171,6 +171,7 @@ if(match("method",names(call), 0L)==0L){method<-"logistic"} else {if(!(call$meth
                 mf2 <- mf2[c(1L, m2)]
                 mf2[[1L]] <- as.name("PLS_glm_wvc")
                 mf2$family <- family
+                mf2$weights <- weights
                 mf2$dataY <- dataY
                 mf2$dataX <- dataX
                 mf2$dataPredictY <- dataX
@@ -182,6 +183,7 @@ if(match("method",names(call), 0L)==0L){mf2$method<-"logistic"} else {if(!(call$
 }
                 temptemp <- eval(mf2, parent.frame())
                 respls_kfolds[[nnkk]][[ii]] <- temptemp$valsPredict
+                if(!NoWeights) {attr(respls_kfolds[[nnkk]],"XWeights")=weights; attr(respls_kfolds[[nnkk]],"YWeights")=NULL}
                 if (keepcoeffs) {coeffskfolds[[nnkk]][[ii]] = temptemp$coeffs}
                 if (keepdataY) {dataY_kfolds[[nnkk]][[ii]] = NULL}
                 }
@@ -192,11 +194,13 @@ if(match("method",names(call), 0L)==0L){mf2$method<-"logistic"} else {if(!(call$
                   mf2 <- mf2[c(1L, m2)]
                   mf2[[1L]] <- as.name("PLS_glm_wvc")
                   mf2$family <- family
+                  mf2$weights <- weights[-nofolds]
                   mf2$dataY <- dataY[-nofolds]
                   mf2$dataX <- dataX[-nofolds,]
                   mf2$dataPredictY <- dataX[nofolds,]
                   temptemp <- eval(mf2, parent.frame())
                   respls_kfolds[[nnkk]][[ii]] <- temptemp$valsPredict
+                  if(!NoWeights) {attr(respls_kfolds[[nnkk]][[ii]],"XWeights")=weights[-nofolds]; attr(respls_kfolds[[nnkk]][[ii]],"YWeights")=weights[nofolds]}
                   if (keepcoeffs) {coeffs_kfolds[[nnkk]][[ii]] = temptemp$coeffs}
                   if (keepdataY) {dataY_kfolds[[nnkk]][[ii]] = dataY[nofolds]}
                   }

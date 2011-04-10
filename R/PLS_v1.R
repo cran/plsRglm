@@ -102,7 +102,7 @@ print(paste("Warning : ",paste(names(which(temptest<tol_Xi)),sep="",collapse=" "
 } else {
 print(paste("Warning : ",paste((which(temptest<tol_Xi)),sep="",collapse=" ")," < 10^{-12}",sep=""))
 }
-print(paste("Warning only ",res$computed_nt," components could thus be extracted",sep=""))
+cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 rm(temptest)
 break
 }
@@ -144,10 +144,9 @@ res$residXX <- XXwotNA-temptt%*%temppp
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
-break_nt <- TRUE
-res$computed_nt <- kk-1
-cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[XXNA[ii,],,drop=FALSE])<tol_Xi) {
+break_nt <- TRUE; res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],,drop=FALSE])%*%cbind(res$pp,temppp)[XXNA[",ii,",],,drop=FALSE] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -158,10 +157,9 @@ if(break_nt==TRUE) {break}
 
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
-break_nt <- TRUE
-res$computed_nt <- kk-1
-cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
+break_nt <- TRUE; res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",,drop=FALSE],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",,drop=FALSE],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
@@ -277,9 +275,8 @@ for (i in 1:(res$nr)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
                 if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
-                break_nt_vc <- TRUE
-                res$computed_nt_vc <- kk-1
-                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                break_nt_vc <- TRUE; res$computed_nt_vc <- kk-1
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],,drop=FALSE])%*%temppp.cv[XXNA[",i,",],,drop=FALSE]) < 10^{-12}\n",sep=""))
                 cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
@@ -292,7 +289,7 @@ res$press.ind2 <- cbind(res$press.ind2,(dataYwotNA-res$YChapeau-attr(res$RepY,"s
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 }
 }
 }
@@ -354,9 +351,8 @@ for (i in 1:(res$nr)) {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
                 if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
-                break_nt_vc <- TRUE
-                res$computed_nt_vc <- kk-1
-                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                break_nt_vc <- TRUE; res$computed_nt_vc <- kk-1
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],,drop=FALSE])%*%temppp.cv[XXNA[",i,",],,drop=FALSE]) < 10^{-12}\n",sep=""))
                 cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
@@ -391,9 +387,8 @@ else {
                      temppp.cv[jj,kk] <- crossprod(temptt.cv,(XXwotNA[-i,])[,jj])/drop(crossprod((XXNA[-i, ])[,jj],temptt.cv^2))
                 }
                 if(rcond(t(temppp.cv[XXNA[i,],,drop=FALSE])%*%temppp.cv[XXNA[i,],,drop=FALSE])<tol_Xi) {
-                break_nt_vc <- TRUE
-                res$computed_nt_vc <- kk-1
-                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],])%*%temppp.cv[XXNA[",i,",],]) < 10^{-12}\n",sep=""))
+                break_nt_vc <- TRUE; res$computed_nt_vc <- kk-1
+                cat(paste("Warning : reciprocal condition number of t(temppp.cv[XXNA[",i,",],,drop=FALSE])%*%temppp.cv[XXNA[",i,",],,drop=FALSE]) < 10^{-12}\n",sep=""))
                 cat(paste("Please choose a smaller number of components to cross validate\n",sep=""))
                 break
                 }
@@ -406,7 +401,7 @@ res$press.ind2 <- cbind(res$press.ind2,(dataYwotNA-res$YChapeau-attr(res$RepY,"s
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 }
 }
 }

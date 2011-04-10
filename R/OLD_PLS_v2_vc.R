@@ -427,7 +427,7 @@ res$press.ind2 <- cbind(res$press.ind2,(dataYwotNA-res$YChapeau-attr(res$RepY,"s
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 }
 }
 }
@@ -466,7 +466,7 @@ cat(paste("____TypeVC____",typeVC,"____\n"))
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 cat("Not available, please use PLS_v2_kfoldcv\n")
 }
 }
@@ -571,7 +571,7 @@ res$press.ind2 <- cbind(res$press.ind2,(dataYwotNA-res$YChapeau-attr(res$RepY,"s
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 }
 }
 }
@@ -599,20 +599,20 @@ if (modele %in% c("pls-glm-gaussian","pls-glm-logistic")) {
 if (typeVC == "none") {} else {
 if (typeVC %in% c("standard","missingdata")) {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 cat("Not available, please use PLS_v2_kfoldcv\n")
 }
 }
 else {
 if (typeVC == "adaptative") {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 cat("Not available, please use PLS_v2_kfoldcv\n")
 }
 }
 else {
 if (kk==1) {
-cat(paste("____TypeVC____",typeVC,"____inexistant____\n"))
+cat(paste("____TypeVC____",typeVC,"____unknown____\n"))
 cat("Not available, please use PLS_v2_kfoldcv\n")
 }
 }

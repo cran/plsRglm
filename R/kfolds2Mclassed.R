@@ -50,7 +50,7 @@ if (!(pls_kfolds$call$modele=="pls-glm-polr")) {
             else
             {
                 if(is.null(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights"))){
-                Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+colSums(apply(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]] < 0.5, 0, 1),2,'!=',unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))) 
+                Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+colSums(apply(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk],drop=FALSE] < 0.5, 0, 1),2,'!=',unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))) 
                 } else {
                 Mclassed_kfolds[[nnkk]] <- Mclassed_kfolds[[nnkk]]+colSums(attr(pls_kfolds$results_kfolds[[nnkk]][[ii]],"YWeights")*apply(ifelse(pls_kfolds$results_kfolds[[nnkk]][[ii]][,1:max_nt[nnkk]] < 0.5, 0, 1),2,'!=',unclass(pls_kfolds$dataY_kfolds[[nnkk]][[ii]]))) 
                 }

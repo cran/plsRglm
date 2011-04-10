@@ -9,7 +9,13 @@ PLS_lm_wvc <- function(dataY,dataX,nt=2,dataPredictY=dataX,modele="pls",scaleX=T
 ##################################################
 
 cat("____************************************************____\n")
+if(any(apply(is.na(dataX),MARGIN=2,"all"))){return(vector("list",0)); cat("One of the columns of dataX is completely filled with missing data"); stop()}
+if(any(apply(is.na(dataX),MARGIN=1,"all"))){return(vector("list",0)); cat("One of the rows of dataX is completely filled with missing data"); stop()}
 if(identical(dataPredictY,dataX)){PredYisdataX <- TRUE} else {PredYisdataX <- FALSE}
+if(!PredYisdataX){
+if(any(apply(is.na(dataPredictY),MARGIN=2,"all"))){return(vector("list",0)); cat("One of the columns of dataPredictY is completely filled with missing data"); stop()}
+if(any(apply(is.na(dataPredictY),MARGIN=1,"all"))){return(vector("list",0)); cat("One of the rows of dataPredictY is completely filled with missing data"); stop()}
+}
 if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
 if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
@@ -105,6 +111,7 @@ cat(paste("Warning : ",paste(names(which(temptest<tol_Xi)),sep="",collapse=" "),
 cat(paste("Warning : ",paste((which(temptest<tol_Xi)),sep="",collapse=" ")," < 10^{-12}\n",sep=""))
 }
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
+rm(temptest)
 break
 }
 
@@ -156,29 +163,29 @@ res$residXX <- XXwotNA-temptt%*%temppp
 #Search for singularities in t(pp)%*%pp if there is any missing value in dataX
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:res$nr) {
-if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],])%*%cbind(res$pp,temppp)[XXNA[ii,],])<tol_Xi) {
-break_nt <- TRUE
-cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],])%*%cbind(res$pp,temppp)[XXNA[",ii,",],] < 10^{-12}\n",sep=""))
+if(rcond(t(cbind(res$pp,temppp)[XXNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[XXNA[ii,],,drop=FALSE])<tol_Xi) {
+break_nt <- TRUE; res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[XXNA[",ii,",],,drop=FALSE])%*%cbind(res$pp,temppp)[XXNA[",ii,",],,drop=FALSE] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
+if(break_nt==TRUE) {break}
 }
 
 if(!PredYisdataX){
 if (na.miss.X & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
-if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],])%*%cbind(res$pp,temppp)[PredictYNA[ii,],])<tol_Xi) {
-break_nt <- TRUE
-cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",],] < 10^{-12}\n",sep=""))
+if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
+break_nt <- TRUE; res$computed_nt <- kk-1
+cat(paste("Warning : reciprocal condition number of t(cbind(res$pp,temppp)[PredictYNA[",ii,",,drop=FALSE],])%*%cbind(res$pp,temppp)[PredictYNA[",ii,",,drop=FALSE],] < 10^{-12}\n",sep=""))
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
 break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
+if(break_nt==TRUE) {break}
 }
 }
 
@@ -333,6 +340,9 @@ rm(tempConstante)
 }
 
 
+if(res$computed_nt==0){
+cat("No component could be extracted please check the data for NA only lines or columns\n"); stop()
+}
 
 
 ##############################################
@@ -341,7 +351,7 @@ rm(tempConstante)
 #                                            #
 ##############################################
 
-if (!(na.miss.X | na.miss.Y)) {
+if (!(na.miss.PredictY | na.miss.Y)) {
 if(kk==1){
 cat("____Predicting X without NA neither in X nor in Y____\n")
 }
@@ -349,7 +359,7 @@ res$ttPredictY <- PredictYwotNA%*%res$wwetoile
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")
 }
 else {
-if (na.miss.X & !na.miss.Y) {
+if (na.miss.PredictY & !na.miss.Y) {
 if(kk==1){
 cat("____Predicting X with NA in X and not in Y____\n")
 }

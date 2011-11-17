@@ -7,8 +7,6 @@ PLS_lm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=da
 ##################################################
 
 cat("____************************************************____\n")
-if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
-if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS\n",sep=""))} else {NoWeights=TRUE}
 if(sparse){pvals.expli=TRUE}
 
 if (missing(data)) {data <- environment(formula)}
@@ -23,6 +21,8 @@ mf <- eval(mf, parent.frame())
 mt <- attr(mf, "terms")
 attr(mt,"intercept")<-0L
 dataY <- model.response(mf, "any")
+if(missing(weights)){NoWeights=TRUE} else {if(all(weights==rep(1,length(dataY)))){NoWeights=TRUE} else {NoWeights=FALSE}}
+if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS\n",sep=""))} else {NoWeights=TRUE}
 if (length(dim(dataY)) == 1L) {
     nm <- rownames(dataY)
     dim(dataY) <- NULL
@@ -53,14 +53,14 @@ scaleY <- NULL
 if (is.null(scaleY)) {
 if (!(modele %in% c("pls"))) {scaleY <- FALSE} else {scaleY <- TRUE}
 }
-if (scaleY) {if(is.null(weights)){RepY <- scale(dataY)} else {meanY <- weighted.mean(dataY,weights); stdevY <- sqrt((length(dataY)-1)/length(dataY)*weighted.mean((dataY-meanY)^2,weights)); RepY <- (dataY-meanY)/stdevY; attr(RepY,"scaled:center") <- meanY ; attr(RepY,"scaled:scale") <- stdevY}}
+if (scaleY) {if(NoWeights){RepY <- scale(dataY)} else {meanY <- weighted.mean(dataY,weights); stdevY <- sqrt((length(dataY)-1)/length(dataY)*weighted.mean((dataY-meanY)^2,weights)); RepY <- (dataY-meanY)/stdevY; attr(RepY,"scaled:center") <- meanY ; attr(RepY,"scaled:scale") <- stdevY}}
 else {
     RepY <- dataY
     attr(RepY,"scaled:center") <- 0
     attr(RepY,"scaled:scale") <- 1
 }
-if (scaleX) {if(is.null(weights)){ExpliX <- scale(dataX)} else {meanX <- apply(dataX,2,weighted.mean,weights); stdevX <- sqrt((length(dataY)-1)/length(dataY)*apply((sweep(dataX,2,meanX))^2,2,weighted.mean,weights)); ExpliX <- sweep(sweep(dataX, 2, meanX), 2 ,stdevX, "/"); attr(ExpliX,"scaled:center") <- meanX ; attr(ExpliX,"scaled:scale") <- stdevX}
-    PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")
+if (scaleX) {if(NoWeights){ExpliX <- scale(dataX)} else {meanX <- apply(dataX,2,weighted.mean,weights); stdevX <- sqrt((length(dataY)-1)/length(dataY)*apply((sweep(dataX,2,meanX))^2,2,weighted.mean,weights)); ExpliX <- sweep(sweep(dataX, 2, meanX), 2 ,stdevX, "/"); attr(ExpliX,"scaled:center") <- meanX ; attr(ExpliX,"scaled:scale") <- stdevX}
+    if(PredYisdataX){PredictY <- ExpliX} else {PredictY <- sweep(sweep(dataPredictY, 2, attr(ExpliX,"scaled:center")), 2 ,attr(ExpliX,"scaled:scale"), "/")}
 }
 else {
     ExpliX <- dataX
@@ -187,12 +187,12 @@ res$pvalstep <- cbind(res$pvalstep,temppvalstep)
 # Computation of the components (model free) #
 #                                            #
 ##############################################
-if((break_nt_sparse==TRUE)&(kk==1L)){
+if((break_nt_sparse)&(kk==1L)){
 cat(paste("No significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
 cat(paste("Warning only one standard component (without sparse option) was thus extracted\n",sep=""))
 break_nt_sparse1 <- TRUE
 }
-if((break_nt_sparse==TRUE)&!(kk==1L)){
+if((break_nt_sparse)&!(kk==1L)){
 res$computed_nt <- kk-1
 if(!(break_nt_sparse1)){
 cat(paste("No more significant predictors (<",alpha.pvals.expli,") found\n",sep=""))
@@ -220,11 +220,11 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
 if(!PredYisdataX){
-if (na.miss.X & !na.miss.Y) {
+if (na.miss.PredictY & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
 if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
 break_nt <- TRUE; res$computed_nt <- kk-1
@@ -234,14 +234,15 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 }
 
+
 res$ww <- cbind(res$ww,tempww)
 res$wwnorm <- cbind(res$wwnorm,tempwwnorm)
+res$tt <- cbind(res$tt,temptt)       
 res$pp <- cbind(res$pp,temppp)   
-res$tt <- cbind(res$tt,temptt)   
 
 
 

@@ -100,8 +100,7 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
 }
-\note{Work for complete and incomplete datasets.\cr
-You should use \code{\link{PLS_lm_kfoldcv}} instead.}
+\note{Work for complete and incomplete datasets.}
 \seealso{\code{\link{kfolds2coeff}}, \code{\link{kfolds2Pressind}}, \code{\link{kfolds2Press}}, \code{\link{kfolds2Mclassedind}}, \code{\link{kfolds2Mclassed}} and \code{\link{kfolds2CVinfos_glm}} to extract and transform results from kfold cross validation.}
 \examples{
 data(Cornell)

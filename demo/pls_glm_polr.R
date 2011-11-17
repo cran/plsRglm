@@ -63,8 +63,7 @@ plots.confints.bootpls(confints.bootpls(bordeaux.boot5))
 
 
 #install.packages("chemometrics")
-library(chemometrics)
-
+if("chemometrics" %in% installed.packages()){
 library(chemometrics)
 data(hyptis)
 hyptis
@@ -83,7 +82,7 @@ table(yhyptis,predict(modpls2$FinalModel,type="class"))
 
 modpls3 <- PLS_glm(yhyptis[-c(1,2,3)],Xhyptis[-c(1,2,3),],3,modele="pls-glm-polr",dataPredictY=Xhyptis[c(1,2,3),])
 bbb <- PLS_glm_kfoldcv(yhyptis,Xhyptis,nt=4,K=10,random=TRUE,modele="pls-glm-polr",keepcoeffs=T)
-kfolds2CVinfos_v2(bbb,MClassed=TRUE)
+kfolds2CVinfos_glm(bbb,MClassed=TRUE)
 
 
 
@@ -95,14 +94,6 @@ boxplots.bootpls(hyptis.boot3)
 boxplots.bootpls(hyptis.boot3,xaxisticks=FALSE)
 boxplots.bootpls(hyptis.boot3,ranget0=TRUE)
 boxplots.bootpls(hyptis.boot3,ranget0=TRUE,xaxisticks=FALSE)
-
-hyptis.boot2<- bootplsglm(plsRglm(yhyptis,Xhyptis,3,modele="pls-glm-polr"), sim="permutation", stype="i", R=250, strata=unclass(yhyptis))
-#hyptis.boot2 <- boot(data=dataset, statistic=permcoefs.plsRglm, sim="permutation", stype="i", R=250, nt=3, modele="pls-glm-polr", strata=unclass(yhyptis))
-rownames(hyptis.boot2$t0)<-c("1|2\n","2|3\n","3|4\n","Sabi\nnene","Pin\nene","Cine\nole","Terpi\nnene","Fenc\nhone","Terpi\nnolene")
-boxplots.bootpls(hyptis.boot2)
-boxplots.bootpls(hyptis.boot2,xaxisticks=FALSE)
-boxplots.bootpls(hyptis.boot2,ranget0=TRUE)
-boxplots.bootpls(hyptis.boot2,ranget0=TRUE,xaxisticks=FALSE)
 
 hyptis.boot4<- bootplsglm(plsRglm(yhyptis,Xhyptis,3,modele="pls-glm-polr"), sim="balanced", stype="i", R=250)
 #hyptis.boot4 <- boot(data=dataset, statistic=coefs.plsRglm, sim="balanced", stype="i", R=500, nt=3, modele="pls-glm-polr")
@@ -118,18 +109,3 @@ boxplots.bootpls(hyptis.boot4,xaxisticks=FALSE)
 confints.bootpls(hyptis.boot4)
 plots.confints.bootpls(confints.bootpls(hyptis.boot4),legendpos = "bottomleft",xaxisticks=TRUE)
 plots.confints.bootpls(confints.bootpls(hyptis.boot4),legendpos = "bottomleft",xaxisticks=FALSE)
-
-
-hyptis.boot5 <- boot(data=dataset, statistic=coefs.plsRglm, sim="balanced", stype="i", R=250, nt=3, modele="pls-glm-polr", strata=unclass(yhyptis))
-#tempboot5 <- hyptis.boot5
-#tempboot5$t0=hyptis.boot5$t0
-#tempboot5$t=hyptis.boot5$t[!is.na(hyptis.boot5$t[,1]),]
-#tempboot5$R=sum(!is.na(hyptis.boot5$t[,1]))
-#tempboot5$call$R<-sum(!is.na(hyptis.boot5$t[,1]))
-#tempboot5
-rownames(hyptis.boot5$t0)<-c("1|2\n","2|3\n","3|4\n","Sabi\nnene","Pin\nene","Cine\nole","Terpi\nnene","Fenc\nhone","Terpi\nnolene")
-boxplots.bootpls(hyptis.boot5)
-boxplots.bootpls(hyptis.boot5,xaxisticks=FALSE)
-confints.bootpls(hyptis.boot5)
-plots.confints.bootpls(confints.bootpls(hyptis.boot5),legendpos = "bottomleft",xaxisticks=TRUE)
-plots.confints.bootpls(confints.bootpls(hyptis.boot5),legendpos = "bottomleft",xaxisticks=FALSE)

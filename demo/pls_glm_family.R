@@ -96,8 +96,9 @@ modpls4a <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",family=poisson
 modpls4a$InfCrit
 modpls4b <- PLS_glm(round(ypine)+1,Xpine,10,modele="pls-glm-family",family=poisson(link=identity))
 modpls4b$InfCrit
-modpls4c <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",family=poisson(link=sqrt))
-modpls4c$InfCrit
+#Fails
+#modpls4c <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",family=poisson(link=sqrt))
+#modpls4c$InfCrit
 
 
 data(Cornell)
@@ -172,7 +173,7 @@ PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",famil
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 
-\donttest{
+
 bbb2 <- PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=10,modele="pls-glm-gaussian",keepcoeffs=TRUE)
 bbb2 <- PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,keepcoeffs=TRUE)
 
@@ -190,8 +191,8 @@ data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
 bbb <- PLS_glm_kfoldcv(dataY=ypine,dataX=Xpine,nt=10,modele="pls-glm-family",family=gaussian(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
- bb <- PLS_glm_kfoldcv(dataY=ypine,dataX=Xpine,nt=10,modele="pls-glm-gaussian",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-b
+bb <- PLS_glm_kfoldcv(dataY=ypine,dataX=Xpine,nt=10,modele="pls-glm-gaussian",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+
 #For Jackknife computations
 kfolds2coeff(bbb)
 boxplot(kfolds2coeff(bbb)[,1])
@@ -225,8 +226,8 @@ bbb <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls",keepcoeffs=
 kfolds2coeff(bbb)
 bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls-glm-family",family=binomial(probit),keepcoeffs=TRUE)
 bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls-glm-logistic",keepcoeffs=TRUE)
-kfolds2CVinfos_v2(bbb,MClassed=TRUE)
-kfolds2CVinfos_v2(bbb2,MClassed=TRUE)
+kfolds2CVinfos_glm(bbb,MClassed=TRUE)
+kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
 kfolds2coeff(bbb2)
 
 kfolds2Chisqind(bbb2)

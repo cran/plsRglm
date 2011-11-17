@@ -79,21 +79,6 @@ data(Cornell)
 
 
 cleanEx()
-nameEx("OLD_PLS_v2_vc")
-### * OLD_PLS_v2_vc
-
-flush(stderr()); flush(stdout())
-
-### Name: OLD_PLS_v2_vc
-### Title: Former plsRglm function
-### Aliases: OLD_PLS_v2_vc
-### Keywords: internal models regression
-
-### ** Examples
-
-
-
-cleanEx()
 nameEx("PLS_glm")
 ### * PLS_glm
 
@@ -446,105 +431,6 @@ PLS_lm_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3,dataPredictY=XpineNAX
 PLS_lm_wvc(dataY=log(ypine)[-2],dataX=XpineNAX21[-2,],nt=3,dataPredictY=XpineNAX21[2,])
 PLS_lm_wvc(dataY=log(ypine),dataX=XpineNAX21,nt=3)
 rm("XpineNAX21","ypine")
-
-
-
-cleanEx()
-nameEx("PLS_v1")
-### * PLS_v1
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v1
-### Title: Partial least squares Regression models with leave one out cross
-###   validation
-### Aliases: PLS_v1
-### Keywords: models regression
-
-### ** Examples
-
-
-
-
-cleanEx()
-nameEx("PLS_v1_kfoldcv")
-### * PLS_v1_kfoldcv
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v1_kfoldcv
-### Title: Partial least squares regression models with kfold cross
-###   validation
-### Aliases: PLS_v1_kfoldcv
-### Keywords: models regression
-
-### ** Examples
-
-
-
-
-cleanEx()
-nameEx("PLS_v1_wvc")
-### * PLS_v1_wvc
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v1_wvc
-### Title: Light version of PLS\_v1 for cross validation purposes
-### Aliases: PLS_v1_wvc
-### Keywords: models regression
-
-### ** Examples
-
-
-
-
-cleanEx()
-nameEx("PLS_v2")
-### * PLS_v2
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v2
-### Title: Partial least squares Regression generalized linear models
-### Aliases: PLS_v2
-### Keywords: models regression
-
-### ** Examples
-
-
-
-
-cleanEx()
-nameEx("PLS_v2_kfoldcv")
-### * PLS_v2_kfoldcv
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v2_kfoldcv
-### Title: Partial least squares regression glm models with kfold cross
-###   validation
-### Aliases: PLS_v2_kfoldcv
-### Keywords: models regression
-
-### ** Examples
-
-
-
-
-cleanEx()
-nameEx("PLS_v2_wvc")
-### * PLS_v2_wvc
-
-flush(stderr()); flush(stdout())
-
-### Name: PLS_v2_wvc
-### Title: Light version of PLS\_v2 for cross validation purposes
-### Aliases: PLS_v2_wvc
-### Keywords: models regression
-
-### ** Examples
-
 
 
 
@@ -913,38 +799,6 @@ flush(stderr()); flush(stdout())
 
 
 cleanEx()
-nameEx("kfolds2CVinfos_v1")
-### * kfolds2CVinfos_v1
-
-flush(stderr()); flush(stdout())
-
-### Name: kfolds2CVinfos_v1
-### Title: Extracts and computes information criteria and fits statistics
-###   for kfold cross validated partial least squares models
-### Aliases: kfolds2CVinfos_v1
-### Keywords: internal models regression
-
-### ** Examples
-
-
-
-cleanEx()
-nameEx("kfolds2CVinfos_v2")
-### * kfolds2CVinfos_v2
-
-flush(stderr()); flush(stdout())
-
-### Name: kfolds2CVinfos_v2
-### Title: Extracts and computes information criteria and fits statistics
-###   for kfold cross validated partial least squares glm models
-### Aliases: kfolds2CVinfos_v2
-### Keywords: models regression
-
-### ** Examples
-
-
-
-cleanEx()
 nameEx("kfolds2Chisq")
 ### * kfolds2Chisq
 
@@ -1086,8 +940,8 @@ yaze_compl<-aze_compl$y
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
-bbb <- PLS_v1_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,keepcoeffs=TRUE)
-bbb2 <- PLS_v1_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=4,keepcoeffs=TRUE)
+bbb <- PLS_lm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,keepcoeffs=TRUE)
+bbb2 <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=4,keepcoeffs=TRUE)
 kfolds2coeff(bbb)
 boxplot(kfolds2coeff(bbb)[,1])
 kfolds2coeff(bbb2)

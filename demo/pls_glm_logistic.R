@@ -113,8 +113,8 @@ bbb <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls",keepcoeffs=
 kfolds2coeff(bbb)
 bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls-glm-family",family=binomial(probit),keepcoeffs=TRUE)
 bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=10,modele="pls-glm-logistic",keepcoeffs=TRUE)
-kfolds2CVinfos_v2(bbb,MClassed=TRUE)
-kfolds2CVinfos_v2(bbb2,MClassed=TRUE)
+kfolds2CVinfos_glm(bbb,MClassed=TRUE)
+kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
 kfolds2coeff(bbb2)
 
 kfolds2Chisqind(bbb2)
@@ -137,15 +137,6 @@ plsRglmmodel.default(yaze_compl,Xaze_compl,nt=10,modele="pls",MClassed=TRUE)$Inf
 modpls <- plsRglm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 
-
-
-
-
-
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
 bbb <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls")
 kfolds2CVinfos_glm(bbb,MClassed=TRUE)
 bbba <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-family",family=gaussian())
@@ -155,64 +146,24 @@ kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
 bbb2a <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-family",family=binomial())
 kfolds2CVinfos_glm(bbb2a,MClassed=TRUE)
 
+bbb.lo <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-family",family="binomial")
+bbb2.lo <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-logistic")
+kfolds2Chisq(bbb.lo)
+kfolds2Chisq(bbb2.lo)
 
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
-bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-family",family="binomial")
-bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-logistic")
-bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(),K=10)
-bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-logistic",K=10)
-kfolds2Chisq(bbb)
-kfolds2Chisq(bbb2)
-
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
-bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-family",family=binomial())
-bbb <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=4,modele="pls-glm-logistic")
-bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(),K=10)
-bbb2 <- PLS_glm_kfoldcv(dataY=yaze_compl,dataX=Xaze_compl,nt=10,modele="pls-glm-logistic",K=10)
-kfolds2Chisqind(bbb)
-kfolds2Chisqind(bbb2)
-
-
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
 
 #should be run with R=1000 but takes much longer time
 aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+
 (temp.ci <- confints.bootpls(aze_compl.boot3))
 (temp.ci <- confints.bootpls(aze_compl.boot3,1:34,typeBCa=FALSE))
 (temp.ci <- confints.bootpls(aze_compl.boot3,c(2,4,6)))
 
-
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
-
-#should be run with R=1000 but takes much longer time
-aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
 boxplots.bootpls(aze_compl.boot3)
 boxplots.bootpls(aze_compl.boot3,prednames=FALSE)
 boxplots.bootpls(aze_compl.boot3,prednames=FALSE,articlestyle=FALSE,main="Bootstrap distribution for the bj")
 boxplots.bootpls(aze_compl.boot3,indices=1:34,prednames=FALSE)
 boxplots.bootpls(aze_compl.boot3,indices=c(2,4,6),prednames=FALSE)
-
-
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
-
-#should be run with R=1000 but takes much longer time
-aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
-temp.ci <- confints.bootpls(aze_compl.boot3)
 
 plots.confints.bootpls(temp.ci)
 plots.confints.bootpls(temp.ci,prednames=FALSE)
@@ -230,15 +181,12 @@ plots.confints.bootpls(temp.ci,indices=1:33,prednames=FALSE)
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
-
 dataset <- cbind(y=yaze_compl,Xaze_compl)
-
 library(boot)
 # Lazraq-Cléroux PLS bootstrap Classic
-
-aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
+#aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 # The same
-aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-family",family=binomial)
+#aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-family",family=binomial)
 aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
 # The same
 aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), sim="ordinary", stype="i", R=250)
@@ -253,7 +201,6 @@ boxplots.bootpls(aze_compl.boot)
 confints.bootpls(aze_compl.boot)
 plots.confints.bootpls(confints.bootpls(aze_compl.boot))
 
-
 plot(aze_compl.boot,index=2)
 jack.after.boot(aze_compl.boot, index=2, useJ=TRUE, nt=3)
 plot(aze_compl.boot, index=2,jack=TRUE)
@@ -262,7 +209,7 @@ aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="
 
 # PLS bootstrap balanced
 
-aze_compl.boot <- boot(data=dataset, statistic=coefs.plsRglm, sim="balanced", stype="i", R=250, nt=3, modele="pls-glm-logistic")
+#aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="balanced", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="balanced", stype="i", R=250)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=1)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=2)
@@ -287,7 +234,7 @@ aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="
 
 # PLS permutation bootstrap
 
-aze_compl.boot <- boot(data=dataset, statistic=permcoefs.plsRglm, sim="permutation", stype="i", R=250, nt=3, modele="pls-glm-logistic")
+#aze_compl.boot2 <- boot(data=dataset, statistic=permcoefs.plsRglm, sim="permutation", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="permutation", stype="i", R=250)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), index=1)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), index=2)
@@ -295,15 +242,11 @@ boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), in
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), index=4)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), index=5)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc"), index=6)
-
-
 boxplots.bootpls(aze_compl.boot)
-
-
 plot(aze_compl.boot)
 
 
-
+#With missing data
 data(aze)
 Xaze<-aze[,2:34]
 yaze<-aze$y
@@ -311,7 +254,7 @@ yaze<-aze$y
 dataset <- cbind(y=yaze,Xaze)
 
 library(boot)
-aze.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
+#aze.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 aze.boot <- bootplsglm(plsRglm(yaze,Xaze,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
 boot.ci(aze.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=1)
 boot.ci(aze.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=2)
@@ -321,14 +264,15 @@ boot.ci(aze.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), in
 boot.ci(aze.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=6)
 
 
-boxplots.bootpls(aze_compl.boot)
-confints.bootpls(aze_compl.boot)
-plots.confints.bootpls(confints.bootpls(aze_compl.boot))
-
-
+boxplots.bootpls(aze.boot)
+confints.bootpls(aze.boot)
+plots.confints.bootpls(confints.bootpls(aze.boot))
 
 plot(aze.boot)
 jack.after.boot(aze.boot, index=1, useJ=TRUE, nt=3)
 plot(aze.boot,jack=TRUE)
+
+
+
 # tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic")
-aze.tilt.boot <- tilt.bootplsglm(plsRglm(yaze,Xaze,3, modele="pls-glm-logistic"), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+aze.tilt.boot <- tilt.bootplsglm(plsRglm(yaze,Xaze,3, modele="pls-glm-logistic"), statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)

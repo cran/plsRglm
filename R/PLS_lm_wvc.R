@@ -16,7 +16,7 @@ if(!PredYisdataX){
 if(any(apply(is.na(dataPredictY),MARGIN=2,"all"))){return(vector("list",0)); cat("One of the columns of dataPredictY is completely filled with missing data"); stop()}
 if(any(apply(is.na(dataPredictY),MARGIN=1,"all"))){return(vector("list",0)); cat("One of the rows of dataPredictY is completely filled with missing data"); stop()}
 }
-if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
+if(missing(weights)){NoWeights=TRUE} else {if(all(weights==rep(1,length(dataY)))){NoWeights=TRUE} else {NoWeights=FALSE}}
 if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
 if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else {na.miss.PredictY <- FALSE}
@@ -111,7 +111,7 @@ cat(paste("Warning : ",paste(names(which(temptest<tol_Xi)),sep="",collapse=" "),
 cat(paste("Warning : ",paste((which(temptest<tol_Xi)),sep="",collapse=" ")," < 10^{-12}\n",sep=""))
 }
 cat(paste("Warning only ",res$computed_nt," components could thus be extracted\n",sep=""))
-rm(temptest)
+#rm(temptest)
 break
 }
 
@@ -171,11 +171,11 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt) {break}
 }
 
 if(!PredYisdataX){
-if (na.miss.X & !na.miss.Y) {
+if (na.miss.PredictY & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
 if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
 break_nt <- TRUE; res$computed_nt <- kk-1
@@ -185,7 +185,7 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt) {break}
 }
 }
 
@@ -364,9 +364,11 @@ if(kk==1){
 cat("____Predicting X with NA in X and not in Y____\n")
 }
 res$ttPredictY <- NULL
+
 for (ii in 1:nrow(PredictYwotNA)) {  
       res$ttPredictY <- rbind(res$ttPredictY,t(solve(t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%res$pp[PredictYNA[ii,],,drop=FALSE])%*%t(res$pp[PredictYNA[ii,],,drop=FALSE])%*%(PredictYwotNA[ii,])[PredictYNA[ii,]]))
 }
+
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")
 }
 else {

@@ -8,9 +8,7 @@ PLS_glm_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=d
 ##################################################
 
 cat("____************************************************____\n")
-if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
 if(is.null(modele)){naive=FALSE} else {if(modele=="pls"){naive=FALSE} else {if(!missing(naive)){cat(paste("Only naive DoF can be used with PLS GLM\n",sep=""))}; naive=TRUE}}
-if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS\n",sep=""))} else {NoWeights=TRUE}
 if(sparse){pvals.expli=TRUE}
 
 if (missing(data)) {data <- environment(formula)}
@@ -37,7 +35,8 @@ mf <- mf[c(1L, m)]
 mf$drop.unused.levels <- TRUE
 mf$na.action <- na.pass    
 mf[[1L]] <- as.name("model.frame")
-mf <- eval(mf, parent.frame())
+mf <- eval(mf, parent.frame(n=sys.nframe()))
+
 if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 if (identical(method, "model.frame")) return(mf)
 if (!is.character(method) && !is.function(method)) stop("invalid 'method' argument")
@@ -46,6 +45,8 @@ if (identical(method, "glm.fit")) control <- do.call("glm.control", control)
 mt <- attr(mf, "terms")
 attr(mt,"intercept")<-0L
 dataY <- model.response(mf, "any")
+if(missing(weights)){NoWeights=TRUE} else {if(all(weights==rep(1,length(dataY)))){NoWeights=TRUE} else {NoWeights=FALSE}}
+if(!NoWeights){naive=TRUE; cat(paste("Only naive DoF can be used with weighted PLS or PLS glms\n",sep=""))} else {NoWeights=TRUE}
 if (length(dim(dataY)) == 1L) {
     nm <- rownames(dataY)
     dim(dataY) <- NULL
@@ -86,7 +87,7 @@ if (modele=="pls-glm-logistic") {family<-binomial(link = "logit")}
 if (modele=="pls-glm-poisson") {family<-poisson(link = "log")}
 if (modele=="pls-glm-polr") {family<-NULL}
 if (!is.null(family)) {
-    if (is.character(family)) {family <- get(family, mode = "function", envir = parent.frame())}
+    if (is.character(family)) {family <- get(family, mode = "function", envir = parent.frame(n=sys.nframe()))}
     if (is.function(family)) {family <- family()}
     if (is.language(family)) {family <- eval(family)}
 }
@@ -237,7 +238,7 @@ if (!pvals.expli) {
 XXwotNA[!XXNA] <- NA
 for (jj in 1:(res$nc)) {
     mf2[[2]]<-YwotNA~cbind(res$tt,XXwotNA[,jj])
-    tempww[jj] <- coef(eval(mf2, parent.frame()))[kk+1]
+    tempww[jj] <- coef(eval(mf2, parent.frame(n=sys.nframe())))[kk+1]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj)}
@@ -247,7 +248,7 @@ tempvalpvalstep <- rep(0,res$nc)
 temppvalstep <- rep(0,res$nc)
 for (jj in 1:(res$nc)) {
     mf2[[2]]<-YwotNA~cbind(res$tt,XXwotNA[,jj])
-    tmww <- summary(eval(mf2, parent.frame()))$coefficients[kk+1,]
+    tmww <- summary(eval(mf2, parent.frame(n=sys.nframe())))$coefficients[kk+1,]
     tempww[jj] <- tmww[1]
     tempvalpvalstep[jj] <- tmww[4]
     temppvalstep[jj] <- (tmww[4] < alpha.pvals.expli)
@@ -275,7 +276,7 @@ library(MASS)
 tts <- res$tt
 for (jj in 1:(res$nc)) {
     mf2[[2]]<-YwotNA~cbind(tts,XXwotNA[,jj])
-    tempww[jj] <- -1*eval(mf2, parent.frame())$coef[kk]
+    tempww[jj] <- -1*eval(mf2, parent.frame(n=sys.nframe()))$coef[kk]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj,tts)}
@@ -287,7 +288,8 @@ tempvalpvalstep <- rep(0,res$nc)
 temppvalstep <- rep(0,res$nc)
 mf2$Hess <- TRUE
 for (jj in 1:(res$nc)) {
-    tmww <- -1*MASS:::summary.polr(eval(mf2, parent.frame()))$coefficients[kk,]
+    mf2[[2]]<-YwotNA~cbind(tts,XXwotNA[,jj])
+    tmww <- -1*MASS:::summary.polr(eval(mf2, parent.frame(n=sys.nframe())))$coefficients[kk,]
     tempww[jj] <- tmww[1]
     tempvalpvalstep[jj] <- 2 * pnorm(-abs(tmww[3])) 
     temppvalstep[jj] <- (tempvalpvalstep[jj] < alpha.pvals.expli)
@@ -350,7 +352,7 @@ if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 
 if(!PredYisdataX){
-if (na.miss.X & !na.miss.Y) {
+if (na.miss.PredictY & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
 if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
 break_nt <- TRUE; res$computed_nt <- kk-1
@@ -363,6 +365,7 @@ rm(ii)
 if(break_nt==TRUE) {res$computed_nt <- kk-1;break}
 }
 }
+
 
 res$ww <- cbind(res$ww,tempww)
 res$wwnorm <- cbind(res$wwnorm,tempwwnorm)
@@ -416,29 +419,29 @@ if (modele %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-i
 if (kk==1) {
 mf2[[2]]<-YwotNA~1
 mf2$model<-TRUE
-tempconstglm <- eval(mf2, parent.frame())
+tempconstglm <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model<-FALSE
 res$AIC <- AIC(tempconstglm)
 res$BIC <- AIC(tempconstglm, k = log(res$nr))
 res$Coeffsmodel_vals <- rbind(summary(tempconstglm)$coefficients,matrix(rep(NA,4*nt),ncol=4))
 res$ChisqPearson <- crossprod(residuals.glm(tempconstglm,type="pearson"))  
-if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
+#if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
 res$MissClassed <- sum(unclass(res$RepY)!=ifelse(predict(tempconstglm,type="response") < 0.5, 0,1))
-}
+#}
 rm(tempconstglm)
 tt<-res$tt
 mf2$model <- TRUE
 mf2[[2]]<-YwotNA~tt
-tempregglm <- eval(mf2, parent.frame())
+tempregglm <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 rm(tt)
 res$AIC <- cbind(res$AIC,AIC(tempregglm))
 res$BIC <- cbind(res$BIC,AIC(tempregglm, k = log(res$nr)))
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregglm)$coefficients,matrix(rep(NA,4*(nt-kk)),ncol=4)))
 res$ChisqPearson <- c(res$ChisqPearson,crossprod(residuals.glm(tempregglm,type="pearson")))
-if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
+#if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(res$RepY)!=ifelse(predict(tempregglm,type="response") < 0.5, 0,1)))
-}
+#}
 tempCoeffC <- as.vector(coef(tempregglm))
 res$CoeffCFull <- matrix(c(tempCoeffC,rep(NA,nt-kk)),ncol=1)
 tempCoeffConstante <- tempCoeffC[1]
@@ -449,16 +452,16 @@ if (!(na.miss.X | na.miss.Y)) {
 tt<-res$tt
 mf2$model <- TRUE
 mf2[[2]]<-YwotNA~tt
-tempregglm <- eval(mf2, parent.frame())
+tempregglm <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 rm(tt)
 res$AIC <- cbind(res$AIC,AIC(tempregglm))
 res$BIC <- cbind(res$BIC,AIC(tempregglm, k = log(res$nr)))
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregglm)$coefficients,matrix(rep(NA,4*(nt-kk)),ncol=4)))
 res$ChisqPearson <- c(res$ChisqPearson,crossprod(residuals.glm(tempregglm,type="pearson")))
-if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
+#if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(res$RepY)!=ifelse(predict(tempregglm,type="response") < 0.5, 0,1)))
-}
+#}
 tempCoeffC <- as.vector(coef(tempregglm))  
 res$CoeffCFull <- cbind(res$CoeffCFull,c(tempCoeffC,rep(NA,nt-kk)))
 tempCoeffConstante <- tempCoeffC[1]
@@ -470,16 +473,16 @@ else
 tt<-res$tt
 mf2$model <- TRUE
 mf2[[2]]<-YwotNA~tt
-tempregglm <- eval(mf2, parent.frame())
+tempregglm <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 rm(tt)
 res$AIC <- cbind(res$AIC,AIC(tempregglm))
 res$BIC <- cbind(res$BIC,AIC(tempregglm, k = log(res$nr)))
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregglm)$coefficients,matrix(rep(NA,4*(nt-kk)),ncol=4)))
 res$ChisqPearson <- c(res$ChisqPearson,crossprod(residuals.glm(tempregglm,type="pearson")))
-if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
+#if ((modele %in% c("pls-glm-logistic"))|(family$family=="binomial")) {
 res$MissClassed <- cbind(res$MissClassed,sum(unclass(res$RepY)!=ifelse(predict(tempregglm,type="response") < 0.5, 0,1)))
-}
+#}
 tempCoeffC <- as.vector(coef(tempregglm))  
 res$CoeffCFull <- cbind(res$CoeffCFull,c(tempCoeffC,rep(NA,nt-kk)))
 tempCoeffConstante <- tempCoeffC[1]
@@ -514,7 +517,7 @@ if (kk==1) {
 mf2$model <- TRUE
 mf2$Hess <- TRUE
 mf2[[2]]<-YwotNA~1
-tempconstpolr <- eval(mf2, parent.frame())
+tempconstpolr <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 mf2$Hess <- FALSE
 res$AIC <- AIC(tempconstpolr)
@@ -531,7 +534,7 @@ tts<-res$tt
 mf2$model <- TRUE
 mf2$Hess <- TRUE
 mf2[[2]]<-YwotNA~tts
-tempregpolr <- eval(mf2, parent.frame())
+tempregpolr <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 mf2$Hess <- FALSE
 rm(tts)
@@ -554,7 +557,7 @@ tts <- res$tt
 mf2$model <- TRUE
 mf2$Hess <- TRUE
 mf2[[2]]<-YwotNA~tts
-tempregpolr <- eval(mf2, parent.frame())
+tempregpolr <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 mf2$Hess <- FALSE
 rm(tts)
@@ -578,7 +581,7 @@ tts<-res$tt
 mf2$model <- TRUE
 mf2$Hess <- TRUE
 mf2[[2]]<-YwotNA~tts
-tempregpolr <- eval(mf2, parent.frame())
+tempregpolr <- eval(mf2, parent.frame(n=sys.nframe()))
 mf2$model <- FALSE
 mf2$Hess <- FALSE
 rm(tts)
@@ -716,6 +719,10 @@ res$RSS <- cbind(res$RSS,crossprod(res$Yresidus,weights*res$Yresidus))
 }
 }
 
+
+##############################################
+######              PLS-GLM-POLR         ######
+##############################################
 if (modele %in% c("pls-glm-polr")) {
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
 tempConstante <- attr(res$RepY,"scaled:center")-sum(tempCoeffs*attr(res$ExpliX,"scaled:center"))+attr(res$RepY,"scaled:scale")*tempCoeffConstante
@@ -829,6 +836,10 @@ res$RSS <- cbind(res$RSS,crossprod(res$Yresidus,weights*res$Yresidus))
 }
 }
 
+
+##############################################
+######              PLS-GLM-POLR         ######
+##############################################
 if (modele %in% c("pls-glm-polr")) {
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
 tempConstante <- attr(res$RepY,"scaled:center")-sum(tempCoeffs*attr(res$ExpliX,"scaled:center"))+attr(res$RepY,"scaled:scale")* tempCoeffConstante

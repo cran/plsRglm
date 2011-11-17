@@ -5,7 +5,7 @@
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets.
 }
 \usage{
-PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12), weights, sparse = FALSE,sparseStop=TRUE,naive=FALSE)
+PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12), weights, method, sparse = FALSE, sparseStop=TRUE, naive=FALSE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -31,6 +31,7 @@ PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = 
   \item{MClassed}{number of missclassified cases, should only be used for binary responses}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
   \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
+  \item{method}{the link function for \code{pls-glm-polr}, logistic, probit, complementary log-log or cauchit (corresponding to a Cauchy latent variable).}
   \item{sparse}{should the coefficients of non-significant predictors (<\code{alpha.pvals.expli}) be set to 0}
   \item{sparseStop}{should component extraction stop when no significant predictors (<\code{alpha.pvals.expli}) are found}
   \item{naive}{Use the naive estimates for the Degrees of Freedom in plsR? Default is \code{FALSE}.}

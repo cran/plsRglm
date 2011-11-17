@@ -5,7 +5,7 @@
 This function implements kfold cross validation on complete or incomplete datasets for partial least squares regression generalized linear models
 }
 \usage{
-PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family = NULL, K = nrow(dataX), NK = 1, grouplist = NULL, random = FALSE, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepfolds = FALSE, keepdataY = TRUE, keepMclassed=FALSE, tol_Xi = 10^(-12), weights)
+PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family = NULL, K = nrow(dataX), NK = 1, grouplist = NULL, random = FALSE, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepfolds = FALSE, keepdataY = TRUE, keepMclassed=FALSE, tol_Xi = 10^(-12), weights, method)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -26,6 +26,7 @@ PLS_glm_kfoldcv(dataY, dataX, nt = 2, limQ2set = 0.0975, modele = "pls", family 
   \item{keepMclassed}{shall the number of miss classed be returned (unavailable)}
   \item{tol_Xi}{minimal value for Norm2(Xi) and \eqn{\mathrm{det}(pp' \times pp)}{det(pp'*pp)} if there is any missing value in the \code{dataX}. It defaults to \eqn{10^{-12}}{10^{-12}}}
   \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
+  \item{method}{for \code{pls-glm-polr} models, logistic, probit, complementary log-log (cloglog) or cauchit (corresponding to a Cauchy latent variable).}
 }
 \details{
 Predicts 1 group with the \code{K-1} other groups. Leave one out cross validation is thus obtained for \code{K==nrow(dataX)}.
@@ -84,8 +85,7 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
 }
-\note{Work for complete and incomplete datasets.\cr
-You should use \code{\link{PLS_lm_kfoldcv}} instead.}
+\note{Work for complete and incomplete datasets.}
 \seealso{\code{\link{kfolds2coeff}}, \code{\link{kfolds2Pressind}}, \code{\link{kfolds2Press}}, \code{\link{kfolds2Mclassedind}}, \code{\link{kfolds2Mclassed}} and \code{\link{kfolds2CVinfos_glm}} to extract and transform results from kfold cross validation.}
 \examples{
 data(Cornell)

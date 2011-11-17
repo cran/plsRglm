@@ -1,5 +1,7 @@
 This file documents software changes.
 
+0.7.6 Demos fixed.
+0.7.5 Minor code enhancements.
 0.7.4 Minor code enhancements.
 0.7.3 Minor code fixes.
 0.7.2 Cross-validation fully compatible with weighted plsR or plsRglm models.

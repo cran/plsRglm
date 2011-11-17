@@ -113,43 +113,30 @@ rm(Cornell.tilt.boot)
 
 
 # Comparing the results with the plspm package and SIMCA results in Tenenhaus's book
-library(plspm)
-
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
-plsreg1(x=XCornell,y=as.vector(yCornell),nc=3)$coeffs
 PLS_lm(yCornell,XCornell,3)$uscores
 PLS_lm(yCornell,XCornell,3)$pp
 PLS_lm(yCornell,XCornell,3)$Coeffs
 
-plsreg1(x=XCornell,y=as.vector(yCornell),nc=4,cv=TRUE)
 PLS_lm(yCornell,XCornell,4,typeVC="standard")$press.ind
 PLS_lm(yCornell,XCornell,4,typeVC="standard")$press.tot
 PLS_lm(yCornell,XCornell,4,typeVC="standard")$CVinfos
-plsreg1(x=XCornell,y=as.vector(yCornell),nc=4,cv=TRUE)$Q2
-
-
 
 PLS_lm_wvc(dataY=yCornell,dataX=XCornell,nt=3,dataPredictY=XCornell[1,])
 PLS_lm_wvc(dataY=yCornell[-c(1,2)],dataX=XCornell[-c(1,2),],nt=3,dataPredictY=XCornell[c(1,2),])
 PLS_lm_wvc(dataY=yCornell[-c(1,2)],dataX=XCornell[-c(1,2),],nt=3,dataPredictY=XCornell[c(1,2),],keepcoeffs=TRUE)
 
 
-
-
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
 PLS_lm(log(ypine),Xpine,4)$Std.Coeffs
-plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4)$std.coef
 PLS_lm(log(ypine),Xpine,4)$Coeffs
-plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4)$coeffs
 PLS_lm(log(ypine),Xpine,1)$Std.Coeffs
 PLS_lm(log(ypine),Xpine,1)$Coeffs
-plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=10)$Q2
 PLS_lm(log(ypine),Xpine,10,typeVC="standard")$CVinfos
-plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4,cv=TRUE)$Q2
 
 
 data(pine_full)
@@ -157,7 +144,6 @@ Xpine_full<-pine_full[,1:10]
 ypine_full<-pine_full[,11]
 PLS_lm(log(ypine_full),Xpine_full,1)$Std.Coeffs
 PLS_lm(log(ypine_full),Xpine_full,1)$Coeffs
-plsreg1(x=Xpine_full,y=log(as.vector(ypine_full)),nc=4)$coeffs
 cor(cbind(Xpine,log(ypine)))
 
 
@@ -170,7 +156,6 @@ PLS_lm(log(ypine),Xpine,4)$YChapeau[1,]
 
 PLS_lm(log(ypine),XpineNAX21,4)$CoeffC
 
-plsreg1(x=XpineNAX21,y=as.vector(log(ypine)),nc=4,cv=TRUE)
 PLS_lm(log(ypine),XpineNAX21,2,dataPredictY=XpineNAX21[1,])$ValsPredictY
 
 PLS_lm(log(ypine),Xpine,10,typeVC="none")$InfCrit
@@ -184,6 +169,20 @@ PLS_lm(log(ypine),XpineNAX21,10,typeVC="missingdata")$CVinfos
 
 PLS_lm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeau
 PLS_lm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeauNA
+
+# The results from plspm were uncorrect
+if ("plspm" %in%  installed.packages()){
+library(plspm)
+plsreg1(x=XCornell,y=as.vector(yCornell),nc=3)$coeffs
+plsreg1(x=XCornell,y=as.vector(yCornell),nc=4,cv=TRUE)
+plsreg1(x=XCornell,y=as.vector(yCornell),nc=4,cv=TRUE)$Q2
+plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4)$std.coef
+plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4)$coeffs
+plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=10)$Q2
+plsreg1(x=Xpine,y=log(as.vector(ypine)),nc=4,cv=TRUE)$Q2
+plsreg1(x=Xpine_full,y=log(as.vector(ypine_full)),nc=4)$coeffs
+plsreg1(x=XpineNAX21,y=as.vector(log(ypine)),nc=4,cv=TRUE)
+}
 
 
 data(pine)
@@ -202,7 +201,6 @@ bbbNA2 <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=XpineNAX21,nt=10,K=6,NK=1)
 kfolds2CVinfos_lm(bbbNA)
 kfolds2CVinfos_lm(bbbNA2)
 PLS_lm(log(ypine),XpineNAX21,10,typeVC="standard")$CVinfos
-rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbbNA","bbbNA2"))
 
 
 data(XpineNAX21)
@@ -210,6 +208,7 @@ PLS_lm_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3)
 PLS_lm_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3,dataPredictY=XpineNAX21[1,])
 PLS_lm_wvc(dataY=log(ypine)[-2],dataX=XpineNAX21[-2,],nt=3,dataPredictY=XpineNAX21[2,])
 PLS_lm_wvc(dataY=log(ypine),dataX=XpineNAX21,nt=3)
+rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2","bbbNA","bbbNA2"))
 
 
 dimX <- 24
@@ -250,7 +249,7 @@ Astar <- 6
 dataAstar6 <- t(replicate(200,simul_data_UniYX(dimX,Astar)))
 ydataAstar6 <- dataAstar6[,1]
 XdataAstar6 <- dataAstar6[,2:(dimX+1)]
-modpls <- PLS_lm(ydataAstar3,XdataAstar6,10,typeVC="standard")
+modpls <- PLS_lm(ydataAstar6,XdataAstar6,10,typeVC="standard")
 modpls$computed_nt
 modpls$CVinfos
 rm(list=c("dimX","Astar","dataAstar6","modpls","ydataAstar6","XdataAstar6"))

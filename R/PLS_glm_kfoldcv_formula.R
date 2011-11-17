@@ -1,6 +1,5 @@
 PLS_glm_kfoldcv_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", family=NULL, K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL) {
 
-    if (missing(weights)) {NoWeights <- TRUE} else {NoWeights <- FALSE}  
     if (missing(data)) {data <- environment(formula)}
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "weights", "etastart", "mustart", "offset"), names(mf), 0L)
@@ -12,6 +11,7 @@ PLS_glm_kfoldcv_formula <- function(formula,data=NULL,nt=2,limQ2set=.0975,modele
     mt <- attr(mf, "terms")
     attr(mt,"intercept")<-0L
     dataY <- model.response(mf, "any")
+    if(missing(weights)){NoWeights=TRUE} else {if(all(weights==rep(1,length(dataY)))){NoWeights=TRUE} else {NoWeights=FALSE}}
     if (length(dim(dataY)) == 1L) {
         nm <- rownames(dataY)
         dim(dataY) <- NULL
@@ -75,7 +75,13 @@ if(match("method",names(call), 0L)==0L){method<-"logistic"} else {if(!(call$meth
     if (as.character(call["method"])=="NULL") {call$method <- NULL}
     if (as.character(call["control"])=="NULL") {call$control <- list()}
     if (as.character(call["contrasts"])=="NULL") {call$contrasts <- NULL}
-    if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
+    if (as.character(call["sparse"])=="NULL") {call$sparse <- FALSE}
+    if (as.character(call["sparseStop"])=="NULL") {call$sparseStop <- FALSE}
+    if (as.character(call["naive"])=="NULL") {call$contrasts <- FALSE}
+    
+    
+    
+if (!is.data.frame(dataX)) {dataX <- data.frame(dataX)}
     folds_kfolds <-vector("list",NK)
     if (NK==1) {respls_kfolds <- list(vector("list", K))}
     else
@@ -190,7 +196,7 @@ if(match("method",names(call), 0L)==0L){mf2$method<-"logistic"} else {if(!(call$
             else {
                   cat(paste(ii,"\n"))
                   mf2 <- match.call(expand.dots = FALSE)
-                  m2 <- match(c("nt","modele","family","scaleX","scaleY","keepcoeffs","tol_Xi","weights","subset","start","etastart","mustart","offset","control","method","contrasts"), names(mf2), 0L)
+                  m2 <- match(c("nt","modele","family","scaleX","scaleY","keepcoeffs","tol_Xi","weights","subset","start","etastart","mustart","offset","control","method","contrasts","sparse","sparseStop","naive"), names(mf2), 0L)
                   mf2 <- mf2[c(1L, m2)]
                   mf2[[1L]] <- as.name("PLS_glm_wvc")
                   mf2$family <- family

@@ -53,9 +53,6 @@ kfolds2coeff            Extracts coefficients from kfold cross
 kfolds2CVinfos_glm      Extracts and computes information criteria and
                         fits statistics for kfold cross validated
                         partial least squares glm models
-kfolds2CVinfos_v2       Extracts and computes information criteria and
-                        fits statistics for kfold cross validated
-                        partial least squares glm models
 kfolds2Mclassed         Number of missclassified individuals for kfold
                         cross validated partial least squares
                         regression models.
@@ -98,18 +95,6 @@ PLS_lm_kfoldcv_formula
                         Partial least squares regression models with
                         kfold cross validation
 PLS_lm_wvc              Light version of PLS\_lm for cross validation
-                        purposes
-PLS_v1                  Partial least squares Regression models with
-                        leave one out cross validation
-PLS_v1_kfoldcv          Partial least squares regression models with
-                        kfold cross validation
-PLS_v1_wvc              Light version of PLS\_v1 for cross validation
-                        purposes
-PLS_v2                  Partial least squares Regression generalized
-                        linear models
-PLS_v2_kfoldcv          Partial least squares regression glm models
-                        with kfold cross validation
-PLS_v2_wvc              Light version of PLS\_v2 for cross validation
                         purposes
 plsR                    Partial least squares Regression models with
                         leave one out cross validation

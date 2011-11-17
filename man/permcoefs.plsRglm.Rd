@@ -5,7 +5,7 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-permcoefs.plsRglm(dataset, ind, nt, modele, family=NULL)
+permcoefs.plsRglm(dataset, ind, nt, modele, family=NULL, method="logistic")
 }
 \arguments{
   \item{dataset}{ ~~Explain \code{dataset} here~~ }
@@ -13,6 +13,7 @@ permcoefs.plsRglm(dataset, ind, nt, modele, family=NULL)
   \item{nt}{ ~~Explain \code{nt} here~~ }
   \item{modele}{ ~~Explain \code{modele} here~~ }
   \item{family}{ ~~Explain \code{family} here~~ }
+  \item{method}{ ~~Explain \code{method} here~~ }
 }
 \details{
   ~~ More details than the description above ~~

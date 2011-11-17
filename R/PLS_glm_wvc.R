@@ -14,7 +14,7 @@ if(!PredYisdataX){
 if(any(apply(is.na(dataPredictY),MARGIN=2,"all"))){return(vector("list",0)); cat("One of the columns of dataPredictY is completely filled with missing data"); stop()}
 if(any(apply(is.na(dataPredictY),MARGIN=1,"all"))){return(vector("list",0)); cat("One of the rows of dataPredictY is completely filled with missing data"); stop()}
 }
-if(missing(weights)){NoWeights=TRUE} else {NoWeights=FALSE}
+if(missing(weights)){NoWeights=TRUE} else {if(all(weights==rep(1,length(dataY)))){NoWeights=TRUE} else {NoWeights=FALSE}}
 if(any(is.na(dataX))) {na.miss.X <- TRUE} else na.miss.X <- FALSE
 if(any(is.na(dataY))) {na.miss.Y <- TRUE} else na.miss.Y <- FALSE
 if(any(is.na(dataPredictY))) {na.miss.PredictY <- TRUE} else {na.miss.PredictY <- FALSE}
@@ -34,7 +34,7 @@ if (modele=="pls-glm-logistic") {family<-binomial(link = "logit")}
 if (modele=="pls-glm-poisson") {family<-poisson(link = "log")}
 if (modele=="pls-glm-polr") {family<-NULL}
 if (!is.null(family)) {
-    if (is.character(family)) {family <- get(family, mode = "function", envir = parent.frame())}
+    if (is.character(family)) {family <- get(family, mode = "function", envir = parent.frame(n=sys.nframe()))}
     if (is.function(family)) {family <- family()}
     if (is.language(family)) {family <- eval(family)}
 }
@@ -219,11 +219,11 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt) {break}
 }
 
 if(!PredYisdataX){
-if (na.miss.X & !na.miss.Y) {
+if (na.miss.PredictY & !na.miss.Y) {
 for (ii in 1:nrow(PredictYwotNA)) {
 if(rcond(t(cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])%*%cbind(res$pp,temppp)[PredictYNA[ii,],,drop=FALSE])<tol_Xi) {
 break_nt <- TRUE; res$computed_nt <- kk-1
@@ -233,9 +233,9 @@ break
 }
 }
 rm(ii)
-if(break_nt==TRUE) {break}
+if(break_nt) {break}
 }
-}
+}  
 
 
 
@@ -437,6 +437,10 @@ res$YChapeau <- tempregglm$fitted.values
 res$Yresidus <- dataY-res$YChapeau
 }
 
+
+##############################################
+######              PLS-POLR             ######
+##############################################
 if (modele %in% c("pls-glm-polr")) {
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
 tempConstante <- attr(res$RepY,"scaled:center")-sum(tempCoeffs*attr(res$ExpliX,"scaled:center"))+attr(res$RepY,"scaled:scale")* tempCoeffConstante
@@ -495,6 +499,10 @@ res$YChapeau <- tempregglm$fitted.values
 res$Yresidus <- dataY-res$YChapeau
 }
 
+
+##############################################
+######              PLS-POLR            ######
+##############################################
 if (modele %in% c("pls-glm-polr")) {
 tempCoeffs <- res$wwetoile%*%res$CoeffC*attr(res$RepY,"scaled:scale")/attr(res$ExpliX,"scaled:scale")
 tempConstante <- attr(res$RepY,"scaled:center")-sum(tempCoeffs*attr(res$ExpliX,"scaled:center"))+attr(res$RepY,"scaled:scale")* tempCoeffConstante
@@ -586,8 +594,8 @@ res$ttPredictY <- PredictYwotNA%*%res$wwetoile
 colnames(res$ttPredictY) <- paste("tt",1:kk,sep="")
 }
 else {
-if(kk==1){
 if (na.miss.PredictY & !na.miss.Y) {
+if(kk==1){
 cat("____Predicting X with NA in X and not in Y____\n")
 }
 res$ttPredictY <- NULL

@@ -33,8 +33,8 @@ yaze_compl<-aze_compl$y
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]
-bbb <- PLS_v1_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,keepcoeffs=TRUE)
-bbb2 <- PLS_v1_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=4,keepcoeffs=TRUE)
+bbb <- PLS_lm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,keepcoeffs=TRUE)
+bbb2 <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=4,keepcoeffs=TRUE)
 kfolds2coeff(bbb)
 boxplot(kfolds2coeff(bbb)[,1])
 kfolds2coeff(bbb2)

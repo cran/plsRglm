@@ -62,7 +62,6 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
 }
-%\note{Use \code{\link{PLS_glm_wvc}} instead.}
 \seealso{\code{\link{PLS_glm}} for more detailed results, \code{\link{PLS_glm_kfoldcv}} for cross validating models and \code{\link{PLS_lm_wvc}} for the same function dedicated to plsR models}
 \examples{
 data(Cornell)

@@ -5,7 +5,7 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-coefs.plsRglm(dataset, ind, nt, modele, family=NULL)
+coefs.plsRglm(dataset, ind, nt, modele, family=NULL, maxcoefvalues,ifbootfail)
 }
 \arguments{
   \item{dataset}{ ~~Explain \code{dataset} here~~ }
@@ -13,6 +13,8 @@ coefs.plsRglm(dataset, ind, nt, modele, family=NULL)
   \item{nt}{ ~~Explain \code{nt} here~~ }
   \item{modele}{ ~~Explain \code{modele} here~~ }
   \item{family}{ ~~Explain \code{family} here~~ }
+  \item{maxcoefvalues}{ ~~Explain \code{maxcoefvalues} here~~ }
+  \item{ifbootfail}{ ~~Explain \code{ifbootfail} here~~ }
 }
 \details{
   ~~ More details than the description above ~~

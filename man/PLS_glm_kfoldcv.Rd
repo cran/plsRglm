@@ -97,13 +97,13 @@ kfolds2CVinfos_glm(bbb)
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=12)
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
 
+\donttest{
 #Different ways of model specifications
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian,K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 
-\donttest{
 bbb2 <- PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=10,modele="pls-glm-gaussian",keepcoeffs=TRUE)
 bbb2 <- PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,keepcoeffs=TRUE)
 

@@ -58,11 +58,18 @@ PLS_lm_formula(Y~.,data=Cornell,6,typeVC="standard")$CVinfos
 rm(list=c("bbb","bbb2"))
 
 data(aze_compl)
-aze_compl.boot <- bootplsglm(plsRglm(y~.,aze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+# Lazraq-Cleroux PLS bootstrap Classic
+aze_compl.boot <- bootplsglm(plsRglm(y~.,aze_compl,3,modele="pls-glm-logistic"), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
 boxplots.bootpls(aze_compl.boot)
 confints.bootpls(aze_compl.boot)
 plots.confints.bootpls(confints.bootpls(aze_compl.boot))
-rm(list=c("aze_compl.boot"))
+
+# Bastien CSDA 2005 Bootstrap
+aze_compl.boot2 <- bootplsglm(plsRglm(y~.,aze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+boxplots.bootpls(aze_compl.boot2)
+confints.bootpls(aze_compl.boot2)
+plots.confints.bootpls(confints.bootpls(aze_compl.boot2))
+rm(list=c("aze_compl.boot","aze_compl.boot2"))
 
 if("plsRcox" %in% installed.packages()){
 # Only to provide an example of use of a factor - should be modeled with survival models
@@ -73,12 +80,19 @@ micro.censure.factor <- cbind(as.data.frame(Xmicro.censure_compl_imp[,-40]),STAD
 str(micro.censure.factor)
 PLS_lm_formula(survyear~.,micro.censure.factor)$Coeffs
 
-library(boot)
-micro.boot <- bootpls(plsR(survyear~STADE,micro.censure.factor,nt=3,modele="pls"), sim="ordinary", stype="i", R=250)
+# Lazraq-Cleroux PLS bootstrap Classic
+micro.boot <- bootpls(plsR(survyear~STADE,micro.censure.factor,nt=3,modele="pls"), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
 boxplots.bootpls(micro.boot,indices=2:6)
 # Confidence intervals plotting
 confints.bootpls(micro.boot,indices=2:6)
 plots.confints.bootpls(confints.bootpls(micro.boot,indices=2:6))
+
+# Bastien CSDA 2005 Bootstrap
+micro.boot2 <- bootpls(plsR(survyear~STADE,micro.censure.factor,nt=3,modele="pls"), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+boxplots.bootpls(micro.boot2,indices=2:6)
+# Confidence intervals plotting
+confints.bootpls(micro.boot2,indices=2:6)
+plots.confints.bootpls(confints.bootpls(micro.boot2,indices=2:6))
 }
 
 

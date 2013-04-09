@@ -152,8 +152,7 @@ kfolds2Chisq(bbb.lo)
 kfolds2Chisq(bbb2.lo)
 
 
-#should be run with R=1000 but takes much longer time
-aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="ordinary", stype="i", R=1000)
 
 (temp.ci <- confints.bootpls(aze_compl.boot3))
 (temp.ci <- confints.bootpls(aze_compl.boot3,1:34,typeBCa=FALSE))
@@ -187,9 +186,9 @@ library(boot)
 #aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 # The same
 #aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-family",family=binomial)
-aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
 # The same
-aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), sim="ordinary", stype="i", R=250)
+aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=1)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=2)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=3)
@@ -205,12 +204,54 @@ plot(aze_compl.boot,index=2)
 jack.after.boot(aze_compl.boot, index=2, useJ=TRUE, nt=3)
 plot(aze_compl.boot, index=2,jack=TRUE)
 # tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic")
-aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), typeboot="plsmodel", statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+
+
+
+
+
+# Bastien CSDA 2005 bootstrap
+#aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+# The same
+aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=1)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=2)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=3)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=4)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=5)
+boot.ci(aze_compl.boot3, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=6)
+
+boxplots.bootpls(aze_compl.boot3)
+confints.bootpls(aze_compl.boot3)
+plots.confints.bootpls(confints.bootpls(aze_compl.boot3))
+
+plot(aze_compl.boot3,index=2)
+jack.after.boot(aze_compl.boot3, index=2, useJ=TRUE, nt=3)
+plot(aze_compl.boot3, index=2,jack=TRUE)
+aze_compl.tilt.boot2 <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), typeboot="fmodel_np", statistic=coefs.plsRnp, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # PLS bootstrap balanced
 
-#aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="balanced", stype="i", R=250, nt=3, modele="pls-glm-logistic")
-aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="balanced", stype="i", R=250)
+aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="balanced", stype="i", R=250)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=1)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=2)
 boot.ci(aze_compl.boot, conf = c(0.90,0.95), type = c("norm","basic","perc","bca"), index=3)

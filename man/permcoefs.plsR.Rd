@@ -5,12 +5,15 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-permcoefs.plsR(dataset, ind, nt)
+permcoefs.plsR(dataset,ind,nt,modele, maxcoefvalues,ifbootfail)
 }
 \arguments{
   \item{dataset}{ ~~Explain \code{dataset} here~~ }
   \item{ind}{ ~~Explain \code{ind} here~~ }
   \item{nt}{ ~~Explain \code{nt} here~~ }
+  \item{modele}{ ~~Explain \code{modele} here~~ }
+  \item{maxcoefvalues}{ ~~Explain \code{maxcoefvalues} here~~ }
+  \item{ifbootfail}{ ~~Explain \code{ifbootfail} here~~ }
 }
 \details{
   ~~ More details than the description above ~~

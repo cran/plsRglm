@@ -4,7 +4,7 @@ options(warn = 1)
 options(pager = "console")
 library('plsRglm')
 
-assign(".oldSearch", search(), pos = 'CheckExEnv')
+base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 cleanEx()
 nameEx("AICpls")
 ### * AICpls
@@ -107,31 +107,6 @@ mod3 <- PLS_glm(yCornell,XCornell,10,sparse=TRUE,sparseStop=FALSE)
 rm(list=c("XCornell","yCornell"))
 
 
-## User specified links can be used.
-## Example of user-specified link, a logit model for p^days
-## See Shaffer, T.  2004. Auk 121(2): 526-540 and ?family.
-logexp <- function(days = 1)
-{
-    linkfun <- function(mu) qlogis(mu^(1/days))
-    linkinv <- function(eta) plogis(eta)^days
-    mu.eta <- function(eta) days * plogis(eta)^(days-1) *
-      .Call("logit_mu_eta", eta, PACKAGE = "stats")
-    valideta <- function(eta) TRUE
-    link <- paste("logexp(", days, ")", sep="")
-    structure(list(linkfun = linkfun, linkinv = linkinv,
-                   mu.eta = mu.eta, valideta = valideta, name = link),
-              class = "link-glm")
-}
-binomial(logexp(3))
-
-data(aze_compl)
-Xaze_compl<-aze_compl[,2:34]
-yaze_compl<-aze_compl$y
-modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
-modpls$InfCrit
-rm(list=c("Xaze_compl","yaze_compl","modpls","logexp","aze_compl"))
-
-
 
 
 
@@ -161,29 +136,6 @@ mod2 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE)
 mod3 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE,sparseStop=FALSE)
 
 
-## User specified links can be used.
-## Example of user-specified link, a logit model for p^days
-## See Shaffer, T.  2004. Auk 121(2): 526-540 and ?family.
-logexp <- function(days = 1)
-{
-    linkfun <- function(mu) qlogis(mu^(1/days))
-    linkinv <- function(eta) plogis(eta)^days
-    mu.eta <- function(eta) days * plogis(eta)^(days-1) *
-      .Call("logit_mu_eta", eta, PACKAGE = "stats")
-    valideta <- function(eta) TRUE
-    link <- paste("logexp(", days, ")", sep="")
-    structure(list(linkfun = linkfun, linkinv = linkinv,
-                   mu.eta = mu.eta, valideta = valideta, name = link),
-              class = "link-glm")
-}
-binomial(logexp(3))
-
-data(aze_compl)
-modpls <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
-modpls$InfCrit
-rm(list=c("modpls","logexp","aze_compl"))
-
-
 
 
 
@@ -210,12 +162,6 @@ kfolds2CVinfos_glm(bbb)
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=12)
 PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
 
-#Different ways of model specifications
-PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian,K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-
 
 
 
@@ -239,12 +185,6 @@ kfolds2CVinfos_glm(bbb)
 
 PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=12)
 PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
-
-#Different ways of model specifications
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian,K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 
 
 
@@ -586,7 +526,7 @@ flush(stderr()); flush(stdout())
 
 
 
-options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
+base::options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
 cleanEx()
 nameEx("bordeaux")
 ### * bordeaux
@@ -672,6 +612,44 @@ yCornell<-Cornell[,8]
 
 
 cleanEx()
+nameEx("coefs.plsRglmnp")
+### * coefs.plsRglmnp
+
+flush(stderr()); flush(stdout())
+
+### Name: coefs.plsRglmnp
+### Title: Coefficients for bootstrap computations
+### Aliases: coefs.plsRglmnp
+### Keywords: models
+
+### ** Examples
+
+data(Cornell)
+XCornell<-Cornell[,1:7]
+yCornell<-Cornell[,8]
+
+
+
+cleanEx()
+nameEx("coefs.plsRnp")
+### * coefs.plsRnp
+
+flush(stderr()); flush(stdout())
+
+### Name: coefs.plsRnp
+### Title: Coefficients for non parametric bootstrap computations
+### Aliases: coefs.plsRnp
+### Keywords: models
+
+### ** Examples
+
+data(Cornell)
+XCornell<-Cornell[,1:7]
+yCornell<-Cornell[,8]
+
+
+
+cleanEx()
 nameEx("confints.bootpls")
 ### * confints.bootpls
 
@@ -683,22 +661,6 @@ flush(stderr()); flush(stdout())
 ### Keywords: regression models
 
 ### ** Examples
-
-data(Cornell)
-XCornell<-Cornell[,1:7]
-yCornell<-Cornell[,8]
-
-# Lazraq-Cléroux PLS ordinary bootstrap
-
-set.seed(250)
-Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), sim="ordinary", stype="i", R=250)
-
-(temp.ci <- confints.bootpls(Cornell.boot,2:8))
-plots.confints.bootpls(temp.ci)
-(temp.ci <- confints.bootpls(Cornell.boot,2:8,typeBCa=FALSE))
-plots.confints.bootpls(temp.ci)
-(temp.ci <- confints.bootpls(Cornell.boot,c(2,4,6)))
-plots.confints.bootpls(temp.ci)
 
 
 
@@ -781,7 +743,7 @@ flush(stderr()); flush(stdout())
 
 
 
-options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
+base::options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
 cleanEx()
 nameEx("kfolds2CVinfos_lm")
 ### * kfolds2CVinfos_lm
@@ -1018,6 +980,36 @@ flush(stderr()); flush(stdout())
 
 
 cleanEx()
+nameEx("permcoefs.plsRglmnp")
+### * permcoefs.plsRglmnp
+
+flush(stderr()); flush(stdout())
+
+### Name: permcoefs.plsRglmnp
+### Title: Coefficients computation for permutation bootstrap
+### Aliases: permcoefs.plsRglmnp
+### Keywords: models
+
+### ** Examples
+
+
+
+cleanEx()
+nameEx("permcoefs.plsRnp")
+### * permcoefs.plsRnp
+
+flush(stderr()); flush(stdout())
+
+### Name: permcoefs.plsRnp
+### Title: Coefficients computation for permutation bootstrap
+### Aliases: permcoefs.plsRnp
+### Keywords: models
+
+### ** Examples
+
+
+
+cleanEx()
 nameEx("pine")
 ### * pine
 
@@ -1091,7 +1083,24 @@ yCornell<-Cornell[,8]
 # Lazraq-Cléroux PLS ordinary bootstrap
 
 set.seed(250)
-Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), sim="ordinary", stype="i", R=250)
+Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
+temp.ci <- confints.bootpls(Cornell.boot,2:8)
+
+plots.confints.bootpls(temp.ci)
+plots.confints.bootpls(temp.ci,prednames=FALSE)
+plots.confints.bootpls(temp.ci,prednames=FALSE,articlestyle=FALSE,main="Bootstrap confidence intervals for the bj")
+plots.confints.bootpls(temp.ci,indices=1:3,prednames=FALSE)
+plots.confints.bootpls(temp.ci,c(2,4,6),"bottomright")
+plots.confints.bootpls(temp.ci,c(2,4,6),articlestyle=FALSE,main="Bootstrap confidence intervals for some of the bj")
+
+temp.ci <- confints.bootpls(Cornell.boot,typeBCa=FALSE)
+plots.confints.bootpls(temp.ci,prednames=TRUE)
+plots.confints.bootpls(temp.ci,prednames=FALSE)
+
+
+# Bastien CSDA 2005 bootstrap
+
+Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
 temp.ci <- confints.bootpls(Cornell.boot,2:8)
 
 plots.confints.bootpls(temp.ci)
@@ -1201,9 +1210,6 @@ yCornell<-Cornell[,8]
 plsRglm(yCornell,XCornell,3)$uscores
 plsRglm(yCornell,XCornell,3)$pp
 plsRglm(yCornell,XCornell,3)$Coeffs
-plsRglm(yCornell,XCornell,10)$InfCrit
-plsRglm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
-rm(list=c("XCornell","yCornell"))
 
 
 data(aze_compl)
@@ -1239,7 +1245,7 @@ rm(list=c("Xbordeaux","XbordeauxNA","ybordeaux","modplsNA"))
 
 
 
-options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
+base::options(contrasts = c(unordered = "contr.treatment",ordered = "contr.poly"))
 cleanEx()
 nameEx("print.plsRglmmodel")
 ### * print.plsRglmmodel
@@ -1329,6 +1335,23 @@ modpls <- plsRglm(yCornell,XCornell,3,modele="pls")
 class(modpls)
 print(summary(modpls))
 rm(list=c("XCornell","yCornell","modpls"))
+
+
+
+cleanEx()
+nameEx("signpred")
+### * signpred
+
+flush(stderr()); flush(stdout())
+
+### Name: signpred
+### Title: Graphical assessment of the stability of selected variables
+### Aliases: signpred
+### Keywords: hplot
+
+### ** Examples
+
+signpred(matrix(rbinom(160,1,.2),ncol=8,dimnames=list(as.character(1:20),as.character(1:8))))
 
 
 
@@ -1496,7 +1519,7 @@ flush(stderr()); flush(stdout())
 
 ### * <FOOTER>
 ###
-cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
 grDevices::dev.off()
 ###
 ### Local variables: ***

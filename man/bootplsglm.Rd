@@ -5,7 +5,7 @@
 Provides a wrapper for the bootstrap function \code{boot} from the \code{boot} R package.\cr Implements non-parametric bootstrap for PLS generalized linear models by case resampling.
 }
 \usage{
-bootplsglm(object, typeboot="plsmodel", R=250, statistic=coefs.plsRglm, sim="ordinary", stype="i", ...)
+bootplsglm(object, typeboot="fmodel_np", R=250, statistic=coefs.plsRglmnp, sim="ordinary", stype="i", stabvalue=1e6,...)
 }
 \arguments{
   \item{object}{ ~~Explain \code{object} here~~ }
@@ -14,6 +14,7 @@ bootplsglm(object, typeboot="plsmodel", R=250, statistic=coefs.plsRglm, sim="ord
   \item{statistic}{ ~~Explain \code{statistic} here~~ }
   \item{sim}{ ~~Explain \code{sim} here~~ }
   \item{stype}{ ~~Explain \code{stype} here~~ }
+  \item{stabvalue}{ ~~Explain \code{stabvalue} here~~ }
   \item{\dots}{ ~~Explain \code{\dots} here~~ }
 }
 \details{

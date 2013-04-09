@@ -357,12 +357,23 @@ dataset <- cbind(y=yaze_compl,Xaze_compl)
 library(boot)
 # Lazraq-Cleroux PLS bootstrap Classic
 
-aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
+#aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-logistic")
 # The same
 aze_compl.boot2 <- boot(data=dataset, statistic=coefs.plsRglm, sim="ordinary", stype="i", R=250, nt=3, modele="pls-glm-family",family=binomial)
-aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+
+#aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
 # The same
-aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), sim="ordinary", stype="i", R=250)
+aze_compl.boot <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), typeboot="plsmodel", sim="ordinary", stype="i", R=250)
+
+# Bastien CSDA 2005 Bootstrap
+
+#aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+# The same
+aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-family",family=binomial), typeboot="fmodel_np", sim="ordinary", stype="i", R=250)
+
+
+
+
 
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
@@ -374,6 +385,15 @@ library(boot)
 # Lazraq-Cleroux PLS bootstrap Classic
 
 tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic", family=NULL)
-aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic", family=NULL), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
-aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
-aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-family", family=binomial), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic", family=NULL), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="plsmodel", sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="plsmodel", sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-family", family=binomial), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="plsmodel", sim="ordinary", stype="i", index=1)
+
+# Bastien CSDA 2005 Bootstrap
+
+aze_compl.tilt.boot2 <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic", family=NULL), statistic=coefs.plsRnp, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="fmodel_np", sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot2 <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-logistic"), statistic=coefs.plsRnp, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="fmodel_np", sim="ordinary", stype="i", index=1)
+aze_compl.tilt.boot2 <- tilt.bootplsglm(plsRglm(yaze_compl,Xaze_compl,3, modele="pls-glm-family", family=binomial), statistic=coefs.plsRnp, R=c(499, 100, 100), alpha=c(0.025, 0.975), typeboot="fmodel_np", sim="ordinary", stype="i", index=1)
+
+
+

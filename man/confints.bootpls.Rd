@@ -31,6 +31,7 @@ confints.bootpls(bootobject, indices = NULL, typeBCa=TRUE)
 }
 \seealso{\code{\link{bootpls}}}
 \examples{
+\donttest{
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
@@ -47,7 +48,6 @@ plots.confints.bootpls(temp.ci)
 (temp.ci <- confints.bootpls(Cornell.boot,c(2,4,6)))
 plots.confints.bootpls(temp.ci)
 
-\donttest{
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y

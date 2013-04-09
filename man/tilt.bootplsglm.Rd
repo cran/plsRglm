@@ -5,7 +5,7 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-tilt.bootplsglm(object, typeboot="plsmodel", statistic=coefs.plsRglm, R=c(499, 250, 250), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+tilt.bootplsglm(object, typeboot="fmodel_np", statistic=coefs.plsRglm, R=c(499, 250, 250), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

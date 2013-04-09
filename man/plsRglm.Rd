@@ -102,11 +102,12 @@ yCornell<-Cornell[,8]
 plsRglm(yCornell,XCornell,3)$uscores
 plsRglm(yCornell,XCornell,3)$pp
 plsRglm(yCornell,XCornell,3)$Coeffs
+
+\donttest{
 plsRglm(yCornell,XCornell,10)$InfCrit
 plsRglm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
 rm(list=c("XCornell","yCornell"))
 
-\donttest{
 data(pine)
 Xpine<-pine[,1:10]
 ypine<-pine[,11]

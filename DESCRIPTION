@@ -1,8 +1,8 @@
 Package: plsRglm
-Version: 0.7.9
-Date: 2011-02-05
+Version: 0.8.2
+Date: 2013-04-09
 Depends: R (>= 2.4.0)
-Imports: mvtnorm, boot
+Imports: mvtnorm, boot, bipartite
 Enhances: pls
 Suggests: MASS, plsdof
 Title: Partial least squares Regression for generalized linear models
@@ -19,6 +19,7 @@ License: GPL-3
 Encoding: latin1
 URL: http://www-irma.u-strasbg.fr/~fbertran/
 Classification/MSC: 62J12, 62J99
-Packaged: 2012-08-26 21:03:48 UTC; Bertrand
+Packaged: 2013-04-09 21:25:48 UTC; Bertrand
+NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2012-08-27 07:02:41
+Date/Publication: 2013-04-10 08:55:46

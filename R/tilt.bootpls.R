@@ -6,7 +6,7 @@ if(typeboot=="plsmodel"){
 return(tilt.boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt))
 }
 if(typeboot=="fmodel_np"){
-return(tilt.boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt))
+return(tilt.boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsRnp} else {permcoefs.plsRnp}, sim=sim, stype=stype, R=R, nt=nt))
 }
 if(typeboot=="fmodel_par"){
 return(tilt.boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt))

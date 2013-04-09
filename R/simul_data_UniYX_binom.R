@@ -241,7 +241,7 @@ sigmaScarre <- .001
 lambda <- .6
 
 sigmaPsi <- sigmaScarre*((1-lambda)*diag(rep(1,HH))+lambda*rep(1,HH)%*%t(rep(1,HH)))
-Psi <- mvtnorm:::rmvnorm(1,mean=rep(0,HH),sigma=sigmaPsi)
+Psi <- mvtnorm::rmvnorm(1,mean=rep(0,HH),sigma=sigmaPsi)
 
 
 linearYbin <- (z%*%t(eta)+Psi+offset)[1]

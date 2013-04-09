@@ -5,7 +5,10 @@
 This function implements kfold cross validation on complete or incomplete datasets for partial least squares regression models (formula specification of the model).
 }
 \usage{
-PLS_lm_kfoldcv_formula(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12), weights,subset,contrasts=NULL)
+PLS_lm_kfoldcv_formula(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", 
+K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, 
+scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, 
+keepMclassed=FALSE, tol_Xi=10^(-12), weights,subset,contrasts=NULL)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}

@@ -5,7 +5,9 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-tilt.bootpls(object, typeboot="plsmodel", statistic=coefs.plsR, R=c(499, 250, 250), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+tilt.bootpls(object, typeboot="plsmodel", statistic=coefs.plsR, 
+R=c(499, 250, 250), alpha=c(0.025, 0.975), sim="ordinary", 
+stype="i", index=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,7 +47,8 @@ XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
 
 set.seed(1385)
-Cornell.tilt.boot <- tilt.bootpls(plsR(yCornell,XCornell,3), statistic=coefs.plsR, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
+Cornell.tilt.boot <- tilt.bootpls(plsR(yCornell,XCornell,3), statistic=coefs.plsR, 
+R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)
 Cornell.tilt.boot
 str(Cornell.tilt.boot)
 

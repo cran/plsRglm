@@ -5,7 +5,8 @@
 Provides a wrapper for the bootstrap function \code{boot} from the \code{boot} R package.\cr Implements non-parametric bootstrap for PLS generalized linear models by case resampling.
 }
 \usage{
-bootpls(object, typeboot="plsmodel", R=250, statistic=coefs.plsR, sim="ordinary", stype="i", stabvalue=1e6,...)
+bootpls(object, typeboot="plsmodel", R=250, statistic=coefs.plsR, sim="ordinary", 
+stype="i", stabvalue=1e6,...)
 }
 \arguments{
   \item{object}{ ~~Explain \code{object} here~~ }
@@ -47,7 +48,8 @@ Cornell.boot <- bootpls(plsR(yCornell,XCornell,3), sim="ordinary", stype="i", R=
 boot::boot.array(Cornell.boot, indices=TRUE)
 
 # Graph similar to the one of Bastien et al. in CSDA 2005
-boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(250,7))), main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
+boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(250,7))), 
+main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
 points(c(1:7),Cornell.boot$t0[-1],col="red",pch=19)
 # Using the boxplots.bootpls function
 boxplots.bootpls(Cornell.boot,indices=2:8)
@@ -83,7 +85,8 @@ boot::boot.array(Cornell.boot, indices=TRUE)
 
 
 # Graph similar to the one of Bastien et al. in CSDA 2005
-boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(250,7))), main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
+boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(250,7))), 
+main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
 points(c(1:7),Cornell.boot$t0[-1],col="red",pch=19)
 # Using the boxplots.bootpls function
 boxplots.bootpls(Cornell.boot,indices=2:8)
@@ -115,7 +118,8 @@ boot::boot.array(Cornell.boot, indices=TRUE)
 
 
 # Graph of bootstrap distributions
-boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(1000,7))),main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
+boxplot(as.vector(Cornell.boot$t[,-1])~factor(rep(1:7,rep(1000,7))),
+main="Bootstrap distributions of standardised bj (j = 1, ..., 7).")
 points(c(1:7),Cornell.boot$t0[-1],col="red",pch=19)
 # Using the boxplots.bootpls function
 boxplots.bootpls(Cornell.boot,indices=2:8)

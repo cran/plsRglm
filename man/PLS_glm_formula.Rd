@@ -5,7 +5,11 @@
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets (formula specification of the model).
 }
 \usage{
-PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+PLS_glm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,
+modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,
+scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,
+tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,
+control= list(),contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
@@ -96,7 +100,10 @@ PLS_glm_formula(Y~.,data=Cornell,3)$pp
 PLS_glm_formula(Y~.,data=Cornell,3)$Coeffs
 PLS_glm_formula(Y~.,data=Cornell,10)$InfCrit
 PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-gaussian")$InfCrit
-data.frame(pls=PLS_glm_formula(Y~.,data=Cornell,3)$Coeffs,PLS_glm_formula_gaussian=PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-gaussian")$Coeffs,PLS_glm_formula_family_gaussian=PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=gaussian())$Coeffs)
+data.frame(pls=PLS_glm_formula(Y~.,data=Cornell,3)$Coeffs,PLS_glm_formula_gaussian=
+PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-gaussian")$Coeffs,
+PLS_glm_formula_family_gaussian=PLS_glm_formula(Y~.,data=Cornell,10,
+modele="pls-glm-family",family=gaussian())$Coeffs)
 
 mod <- PLS_glm_formula(Y~.,data=Cornell,10,pvals.expli =TRUE)
 mod2 <- PLS_glm_formula(Y~.,data=Cornell,10,sparse=TRUE)
@@ -122,7 +129,8 @@ logexp <- function(days = 1)
 binomial(logexp(3))
 
 data(aze_compl)
-modpls <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
+modpls <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 rm(list=c("modpls","logexp","aze_compl"))
 
@@ -147,58 +155,96 @@ PLS_glm_formula(log(x11)~.,data=pineNAX21,4,EstimXNA=TRUE)$XChapeau
 PLS_glm_formula(log(x11)~.,data=pineNAX21,4,EstimXNA=TRUE)$XChapeauNA
 
 # compare pls-glm-gaussian with classic plsR
-cbind(PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$Std.Coeffs)
+cbind(PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$Std.Coeffs)
 
 # without missing data
-cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$YChapeau,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$YChapeau)
-cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
 
 # with missing data
-cbind((log(pine$x11)),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
-cbind((log(pine$x11)),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$ValsPredictY,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
+cbind((log(pine$x11)),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind((log(pine$x11)),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$ValsPredictY,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
 
 
 # compare pls-glm-gaussian with log link with classic plsR on the log
-cbind(PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$Std.Coeffs,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",family=gaussian(link="identity"))$Std.Coeffs,PLS_glm_formula(x11~.,data=pine,4,modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs)
+cbind(PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$Std.Coeffs,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$Std.Coeffs,PLS_glm_formula(x11~.,data=pine,4,
+modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs)
 
 # without missing data
-cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$YChapeau,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$YChapeau,PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",family=gaussian(link="identity"))$YChapeau,log(PLS_glm_formula(x11~.,data=pineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
+cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-gaussian")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$YChapeau,log(PLS_glm_formula(x11~.,data=pineNAX21,
+4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
 
 # with missing data
-cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-family",family=gaussian(link="identity"))$YChapeau,log(PLS_glm_formula(x11~.,data=pineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
-cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$ValsPredictY,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY,PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-family",family=gaussian(link="identity"))$ValsPredictY,log(PLS_glm_formula(x11~.,data=pineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$ValsPredictY))
+cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$YChapeau,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$YChapeau,log(PLS_glm_formula(x11~.,data=pineNAX21,4,
+modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
+cbind(log(pine$x11),PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls")$ValsPredictY,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY,
+PLS_glm_formula(log(x11)~.,data=pineNAX21,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$ValsPredictY,log(PLS_glm_formula(x11~.,data=pineNAX21,4,
+modele="pls-glm-family",family=gaussian(link=log))$ValsPredictY))
 
 
 #other links
-data.frame(pls=PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,identity=PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",family=gaussian(link="identity"))$Std.Coeffs,log=PLS_glm_formula(x11~.,data=pine,4,modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs,inverse=PLS_glm_formula(x11~.,data=pine,4,modele="pls-glm-family",family=gaussian(link=inverse))$Std.Coeffs)
+data.frame(pls=PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls")$Std.Coeffs,
+identity=PLS_glm_formula(log(x11)~.,data=pine,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$Std.Coeffs,log=PLS_glm_formula(x11~.,data=pine,4,
+modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs,
+inverse=PLS_glm_formula(x11~.,data=pine,4,modele="pls-glm-family",
+family=gaussian(link=inverse))$Std.Coeffs)
 
 
 
 data(fowlkes)
-modpls <- PLS_glm_formula(Y~.,data=fowlkes,4,modele="pls-glm-logistic",pvals.expli=TRUE)
+modpls <- PLS_glm_formula(Y~.,data=fowlkes,4,modele="pls-glm-logistic",
+pvals.expli=TRUE)
 modpls$pvalstep
 rm(list=c("modpls"))
 
 
 data(aze_compl)
 PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls",MClassed=TRUE)$InfCrit
-modpls <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,pvals.expli=TRUE)
+modpls <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 modpls$valpvalstep
 modpls$Coeffsmodel_vals
-modpls2 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logit),MClassed=TRUE,pvals.expli=TRUE)
-modpls3 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=probit),MClassed=TRUE,pvals.expli=TRUE)
-modpls4 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=cauchit),MClassed=TRUE,pvals.expli=TRUE)
-#fails modpls5 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=log),MClassed=TRUE,pvals.expli=TRUE)
-modpls6 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",family=binomial(link=cloglog),MClassed=TRUE,pvals.expli=TRUE)
-data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,cauchit=modpls4$Std.Coeffs,log=NA,cloglog=modpls6$Std.Coeffs)
+modpls2 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=logit),MClassed=TRUE,pvals.expli=TRUE)
+modpls3 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=probit),MClassed=TRUE,pvals.expli=TRUE)
+modpls4 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=cauchit),MClassed=TRUE,pvals.expli=TRUE)
+#fails modpls5 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=log),MClassed=TRUE,pvals.expli=TRUE)
+modpls6 <- PLS_glm_formula(y~.,data=aze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=cloglog),MClassed=TRUE,pvals.expli=TRUE)
+data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,
+cauchit=modpls4$Std.Coeffs,log=NA,cloglog=modpls6$Std.Coeffs)
 
 plot(PLS_glm_formula(y~.,data=aze_compl,4,modele="pls-glm-logistic")$FinalModel)
-PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
-plot(PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
+PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,modele="pls-glm-logistic",
+pvals.expli=TRUE)$pvalstep
+plot(PLS_glm_formula(y~.,data=aze_compl[-c(99,72),],4,
+modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
 
-modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE)
-modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
+modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,sparse=TRUE)
+modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
 modpls7$InfCrit
 modpls7$valpvalstep
 modpls7$Coeffs
@@ -212,24 +258,31 @@ rm(list=c("modpls"))
 
 data(bordeaux)
 modpls <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr")
-modpls <- PLS_glm_formula(Quality~Temperature+Sunshine+Heat+Rain,data=bordeaux,10,modele="pls-glm-polr")
+modpls <- PLS_glm_formula(Quality~Temperature+Sunshine+Heat+Rain,
+data=bordeaux,10,modele="pls-glm-polr")
 modpls$Coeffsmodel_vals
 modpls$InfCrit
 
 bordeauxNA<-bordeaux
 bordeauxNA[1,1] <- NA
-modplsNA <- PLS_glm_formula(Quality~Temperature+Sunshine+Heat+Rain,data=bordeauxNA,10,modele="pls-glm-polr")
+modplsNA <- PLS_glm_formula(Quality~Temperature+Sunshine+Heat+Rain,
+data=bordeauxNA,10,modele="pls-glm-polr")
 modplsNA$Coeffsmodel_vals
 modplsNA$InfCrit
 rm(list=c("bordeauxNA"))
 
-modpls2 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",method="logistic")
-modpls3 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",method="probit")
-modpls4 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",method="cloglog")
-modpls5 <- PLS_glm_formula(Quality~.,data=bordeaux,2,modele="pls-glm-polr",method="cauchit")
+modpls2 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",
+method="logistic")
+modpls3 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",
+method="probit")
+modpls4 <- PLS_glm_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",
+method="cloglog")
+modpls5 <- PLS_glm_formula(Quality~.,data=bordeaux,2,modele="pls-glm-polr",
+method="cauchit")
 
 cbind(modpls2$Coeffs,modpls3$Coeffs,modpls4$Coeffs,modpls5$Coeffs)
-rbind(modpls2$InfCrit[,"Chi2_Pearson_Y"],modpls3$InfCrit[,"Chi2_Pearson_Y"],modpls4$InfCrit[,"Chi2_Pearson_Y"],c(modpls5$InfCrit[,"Chi2_Pearson_Y"],NA,NA))
+rbind(modpls2$InfCrit[,"Chi2_Pearson_Y"],modpls3$InfCrit[,"Chi2_Pearson_Y"],
+modpls4$InfCrit[,"Chi2_Pearson_Y"],c(modpls5$InfCrit[,"Chi2_Pearson_Y"],NA,NA))
 
 modpls6 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",pvals.expli=TRUE)
 modpls6$Coeffsmodel_vals
@@ -237,8 +290,10 @@ modpls6$InfCrit
 modpls6$valpvalstep
 modpls6$Coeffs
 
-modpls7 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE)
-modpls8 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE,sparseStop=FALSE)
+modpls7 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",
+alpha.pvals.expli=.15,sparse=TRUE)
+modpls8 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",
+alpha.pvals.expli=.15,sparse=TRUE,sparseStop=FALSE)
 modpls7$Coeffsmodel_vals
 modpls7$InfCrit
 modpls7$valpvalstep
@@ -248,7 +303,8 @@ modpls6$InfCrit
 modpls7$InfCrit
 colSums(modpls6$pvalstep)
 colSums(modpls7$pvalstep)
-rm(list=c("modpls","modplsNA","modpls2","modpls3","modpls4","modpls5","modpls6","modpls7"))
+rm(list=c("modpls","modplsNA","modpls2","modpls3","modpls4","modpls5",
+"modpls6","modpls7"))
 
 
 # Test of other families and links on the same datasets.
@@ -258,44 +314,58 @@ modpls$computed_nt
 modpls$InfCrit
 modpls2 <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-Gamma")
 modpls2$InfCrit
-modpls2a <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",family=Gamma(link=inverse))
+modpls2a <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",
+family=Gamma(link=inverse))
 modpls2a$InfCrit
-modpls2b <- PLS_glm_formula(x11+1~.,data=pine,10,modele="pls-glm-family",family=Gamma(link=identity))
+modpls2b <- PLS_glm_formula(x11+1~.,data=pine,10,modele="pls-glm-family",
+family=Gamma(link=identity))
 modpls2b$InfCrit
-modpls2c <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",family=Gamma(link=log))
+modpls2c <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",
+family=Gamma(link=log))
 modpls2c$InfCrit
 
 
 modpls3 <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-gaussian")
 modpls3$InfCrit
-modpls3a <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",family=gaussian(link=identity))
+modpls3a <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",
+family=gaussian(link=identity))
 modpls3a$InfCrit
-modpls3b <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",family=gaussian(link=log))
+modpls3b <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",
+family=gaussian(link=log))
 modpls3b$InfCrit
-modpls3c <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",family=gaussian(link=inverse))
+modpls3c <- PLS_glm_formula(x11~.,data=pine,10,modele="pls-glm-family",
+family=gaussian(link=inverse))
 modpls3c$InfCrit
 
 
 modpls4 <- PLS_glm_formula(round(x11)~.,data=pine,10,modele="pls-glm-poisson")
 modpls4$InfCrit
-modpls4a <- PLS_glm_formula(round(x11)~.,data=pine,10,modele="pls-glm-family",family=poisson(link=log))
+modpls4a <- PLS_glm_formula(round(x11)~.,data=pine,10,modele="pls-glm-family",
+family=poisson(link=log))
 modpls4a$InfCrit
-modpls4b <- PLS_glm_formula(round(x11)+1~.,data=pine,10,modele="pls-glm-family",family=poisson(link=identity))
+modpls4b <- PLS_glm_formula(round(x11)+1~.,data=pine,10,modele="pls-glm-family",
+family=poisson(link=identity))
 modpls4b$InfCrit
-modpls4c <- PLS_glm_formula(round(x11)+1~.,data=pine,10,modele="pls-glm-family",family=poisson(link=sqrt))
+modpls4c <- PLS_glm_formula(round(x11)+1~.,data=pine,10,modele="pls-glm-family",
+family=poisson(link=sqrt))
 modpls4c$InfCrit
-rm(list=c("pine","modpls","modpls2","modpls3","modpls4","modpls2a","modpls3a","modpls4a","modpls2b","modpls3b","modpls4b","modpls2c","modpls3c","modpls4c"))
+rm(list=c("pine","modpls","modpls2","modpls3","modpls4","modpls2a","modpls3a",
+"modpls4a","modpls2b","modpls3b","modpls4b","modpls2c","modpls3c","modpls4c"))
 
 data(Cornell)
 modpls <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-inverse.gaussian")
 modpls$InfCrit
-modplsa <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=inverse.gaussian(link=1/mu^2))
+modplsa <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=1/mu^2))
 modplsa$InfCrit
-modplsb <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=inverse.gaussian(link=inverse))
+modplsb <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=inverse))
 modplsb$InfCrit
-modplsc <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=inverse.gaussian(link=identity))
+modplsc <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=identity))
 modplsc$InfCrit
-modplsd <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",family=inverse.gaussian(link=log))
+modplsd <- PLS_glm_formula(Y~.,data=Cornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=log))
 modplsd$InfCrit
 rm(list=c("modpls","modplsa","modplsb","modplsc","modplsd"))
 

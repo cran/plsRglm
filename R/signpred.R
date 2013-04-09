@@ -1,4 +1,5 @@
 signpred <- function(matbin,pred.lablength=max(sapply(rownames(matbin),nchar)),labsize=1,plotsize = 12){
+if(is.null(rownames(matbin))){rownames(matbin) <- paste("x",1:nrow(matbin),sep="")}
 lll=max(sapply(rownames(matbin),nchar))
 text = "no"
 ncol <- ncol(matbin)

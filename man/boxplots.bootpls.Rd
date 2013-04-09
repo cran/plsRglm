@@ -5,7 +5,8 @@
 Boxplot plots for bootstrap distributions.
 }
 \usage{
-boxplots.bootpls(bootobject, indices = NULL, prednames = TRUE, articlestyle = TRUE, xaxisticks=TRUE, ranget0= FALSE, ...)
+boxplots.bootpls(bootobject, indices = NULL, prednames = TRUE, 
+articlestyle = TRUE, xaxisticks=TRUE, ranget0= FALSE, ...)
 }
 \arguments{
   \item{bootobject}{ ~~Explain \code{bootobject} here~~ }
@@ -54,10 +55,12 @@ Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
 
 #should be run with R=1000 but takes much longer time
-aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,
+modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
 boxplots.bootpls(aze_compl.boot3)
 boxplots.bootpls(aze_compl.boot3,prednames=FALSE)
-boxplots.bootpls(aze_compl.boot3,prednames=FALSE,articlestyle=FALSE,main="Bootstrap distribution for the bj")
+boxplots.bootpls(aze_compl.boot3,prednames=FALSE,articlestyle=FALSE,
+main="Bootstrap distribution for the bj")
 boxplots.bootpls(aze_compl.boot3,indices=1:34,prednames=FALSE)
 boxplots.bootpls(aze_compl.boot3,indices=c(2,4,6),prednames=FALSE)
 }

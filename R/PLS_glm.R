@@ -225,7 +225,7 @@ XXwotNA[!XXNA] <- NA
 library(MASS)
 tts <- res$tt
 for (jj in 1:(res$nc)) {
-    tempww[jj] <- -1*MASS:::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,method=method)$coef[kk]
+    tempww[jj] <- -1*MASS::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,method=method)$coef[kk]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj,tts)}
@@ -236,7 +236,7 @@ tts <- res$tt
 tempvalpvalstep <- rep(0,res$nc)
 temppvalstep <- rep(0,res$nc)
 for (jj in 1:(res$nc)) {
-    tmww <- -1*MASS:::summary.polr(MASS:::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,Hess=TRUE,method=method))$coefficients[kk,]
+    tmww <- -1*summary(MASS::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,Hess=TRUE,method=method))$coefficients[kk,]
     tempww[jj] <- tmww[1]
     tempvalpvalstep[jj] <- 2 * pnorm(-abs(tmww[3])) 
     temppvalstep[jj] <- (tempvalpvalstep[jj] < alpha.pvals.expli)
@@ -441,13 +441,13 @@ if (modele %in% c("pls-glm-polr")) {
             diag(piVaryy[-length(piVaryy)])-piVaryy[-length(piVaryy)]%*%t(piVaryy[-length(piVaryy)])
             }
             Chisqcomp <- function(yichisq,pichisq) {
-            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%MASS:::ginv(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
+            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%MASS::ginv(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
             }
             Chiscompmatrix <- function(rowspi,rowsyi) {
             sum(mapply(Chisqcomp,rowsyi,rowspi))
             }
 if (kk==1) {
-tempconstpolr <- MASS:::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE,method=method)
+tempconstpolr <- MASS::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE,method=method)
 res$AIC <- AIC(tempconstpolr)
 res$BIC <- AIC(tempconstpolr, k = log(res$nr))
 res$MissClassed <- sum(!(unclass(predict(tempconstpolr,type="class"))==unclass(res$RepY)))
@@ -459,7 +459,7 @@ tempmat <- model.matrix(tempfff, model.frame(tempfff, tempmodord))
 res$ChisqPearson <- sum(Chiscompmatrix(as.list(as.data.frame(t(predict(tempconstpolr,type="probs")))),as.list(as.data.frame(t(tempmat)))))
 rm(tempconstpolr)
 tts<-res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$AIC <- cbind(res$AIC,AIC(tempregpolr))
 res$BIC <- cbind(res$BIC,AIC(tempregpolr, k = log(res$nr)))
@@ -477,7 +477,7 @@ res$CoeffConstante <- tempCoeffConstante
 } else {
 if (!(na.miss.X | na.miss.Y)) {
 tts <- res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$AIC <- cbind(res$AIC,AIC(tempregpolr))
 res$BIC <- cbind(res$BIC,AIC(tempregpolr, k = log(res$nr)))
@@ -496,7 +496,7 @@ res$CoeffConstante <- cbind(res$CoeffConstante,tempCoeffConstante)
 else
 {
 tts<-res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$AIC <- cbind(res$AIC,AIC(tempregpolr))
 res$BIC <- cbind(res$BIC,AIC(tempregpolr, k = log(res$nr)))

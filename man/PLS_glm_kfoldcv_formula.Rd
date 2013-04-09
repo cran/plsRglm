@@ -5,7 +5,11 @@
 This function implements kfold cross validation on complete or incomplete datasets for partial least squares regression generalized linear models (formula specification of the model).
 }
 \usage{
-PLS_glm_kfoldcv_formula(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls", family=NULL, K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, keepMclassed=FALSE, tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method,control= list(),contrasts=NULL)
+PLS_glm_kfoldcv_formula(formula,data=NULL,nt=2,limQ2set=.0975,modele="pls",
+family=NULL, K=nrow(dataX), NK=1, grouplist=NULL, random=FALSE, 
+scaleX=TRUE, scaleY=NULL, keepcoeffs=FALSE, keepfolds=FALSE, keepdataY=TRUE, 
+keepMclassed=FALSE, tol_Xi=10^(-12),weights,subset,start=NULL,etastart,
+mustart,offset,method,control= list(),contrasts=NULL)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}
@@ -108,17 +112,24 @@ bbb <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,NK=1,modele="pls")
 kfolds2CVinfos_glm(bbb)
 
 PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=12)
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,
+NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
 
 \donttest{
 #Different ways of model specifications
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian,K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-gaussian",K=6,
+NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=gaussian,K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=gaussian(),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=gaussian(link=log),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
 
-bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,modele="pls-glm-gaussian",keepcoeffs=TRUE)
-bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=gaussian(link=log),K=6,keepcoeffs=TRUE)
+bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,
+modele="pls-glm-gaussian",keepcoeffs=TRUE)
+bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=gaussian(link=log),K=6,keepcoeffs=TRUE)
 
 #For Jackknife computations
 kfolds2coeff(bbb2)
@@ -132,8 +143,10 @@ rm(list=c("bbb","bbb2"))
 
 
 data(pine)
-bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-family",family=gaussian(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-gaussian",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-family",
+family=gaussian(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-gaussian",
+K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb)
@@ -146,8 +159,10 @@ PLS_lm_formula(log(x11)~.,data=pine,nt=10,typeVC="standard")$CVinfos
 
 pineNAX21 <- pine
 pineNAX21[1,2] <- NA
-bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,modele="pls-glm-family",family=gaussian(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,modele="pls-glm-gaussian",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,
+modele="pls-glm-family",family=gaussian(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,
+modele="pls-glm-gaussian",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb2)
@@ -161,12 +176,15 @@ rm(list=c("pineNAX21","bbb","bbb2"))
 
 
 data(aze_compl)
-bbb <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=10,K=10,modele="pls",keepcoeffs=TRUE)
+bbb <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=10,K=10,modele="pls",
+keepcoeffs=TRUE)
 
 #For Jackknife computations
 kfolds2coeff(bbb)
-bbb2 <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=3,K=10,modele="pls-glm-family",family=binomial(probit),keepcoeffs=TRUE)
-bbb2 <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=3,K=10,modele="pls-glm-logistic",keepcoeffs=TRUE)
+bbb2 <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=3,K=10,
+modele="pls-glm-family",family=binomial(probit),keepcoeffs=TRUE)
+bbb2 <- PLS_glm_kfoldcv_formula(y~.,data=aze_compl,nt=3,K=10,
+modele="pls-glm-logistic",keepcoeffs=TRUE)
 kfolds2CVinfos_glm(bbb,MClassed=TRUE)
 kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
 kfolds2coeff(bbb2)
@@ -179,8 +197,10 @@ rm(list=c("bbb","bbb2"))
 
 
 data(pine)
-bbb <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pine,nt=10,modele="pls-glm-family",family=poisson(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pine,nt=10,modele="pls-glm-poisson",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pine,nt=10,
+modele="pls-glm-family",family=poisson(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pine,nt=10,
+modele="pls-glm-poisson",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb)
@@ -193,8 +213,10 @@ PLS_lm_formula(log(x11)~.,data=pine,10,typeVC="standard")$CVinfos
 
 pineNAX21 <- pine
 pineNAX21[1,2] <- NA
-bbb2 <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pineNAX21,nt=10,modele="pls-glm-family",family=poisson(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb2 <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pineNAX21,nt=10,modele="pls-glm-poisson",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pineNAX21,nt=10,
+modele="pls-glm-family",family=poisson(log),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(round(x11)~.,data=pineNAX21,nt=10,
+modele="pls-glm-poisson",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb2)
@@ -209,8 +231,10 @@ rm(list=c("pineNAX21","bbb","bbb2"))
 
 
 data(pine)
-bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-family",family=Gamma,K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-Gamma",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-family",
+family=Gamma,K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb <- PLS_glm_kfoldcv_formula(x11~.,data=pine,nt=10,modele="pls-glm-Gamma",
+K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb)
@@ -223,8 +247,10 @@ PLS_lm_formula(log(x11)~.,data=pine,10,typeVC="standard")$CVinfos
 
 pineNAX21 <- pine
 pineNAX21[1,2] <- NA
-bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,modele="pls-glm-family",family=Gamma(),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
-bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,modele="pls-glm-Gamma",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,
+modele="pls-glm-family",family=Gamma(),K=10,keepcoeffs=TRUE,keepfolds=FALSE)
+bbb2 <- PLS_glm_kfoldcv_formula(x11~.,data=pineNAX21,nt=10,
+modele="pls-glm-Gamma",K=10,keepcoeffs=TRUE,keepfolds=FALSE)
 
 #For Jackknife computations
 kfolds2coeff(bbb2)
@@ -242,14 +268,23 @@ data(Cornell)
 bbb <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,NK=1,modele="pls")
 kfolds2CVinfos_glm(bbb)
 
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-inverse.gaussian",K=12)
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=inverse.gaussian,K=12)
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-inverse.gaussian",K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=inverse.gaussian(),K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-inverse.gaussian",K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
-PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",family=inverse.gaussian(link = "1/mu^2"),K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,
+modele="pls-glm-inverse.gaussian",K=12)
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=inverse.gaussian,K=12)
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,
+modele="pls-glm-inverse.gaussian",K=6,NK=2,random=TRUE,
+keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=inverse.gaussian(),K=6,NK=2,random=TRUE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-inverse.gaussian",
+K=6,NK=2,random=FALSE,keepfolds=TRUE)$results_kfolds
+PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=3,modele="pls-glm-family",
+family=inverse.gaussian(link = "1/mu^2"),K=6,NK=2,random=FALSE,
+keepfolds=TRUE)$results_kfolds
 
-bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,modele="pls-glm-inverse.gaussian",keepcoeffs=TRUE)
+bbb2 <- PLS_glm_kfoldcv_formula(Y~.,data=Cornell,nt=10,
+modele="pls-glm-inverse.gaussian",keepcoeffs=TRUE)
 
 #For Jackknife computations
 kfolds2coeff(bbb2)
@@ -263,19 +298,25 @@ rm(list=c("bbb","bbb2"))
 
 
 data(bordeaux)
-bbb <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,10,modele="pls-glm-polr",K=7)
+bbb <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,10,
+modele="pls-glm-polr",K=7)
 kfolds2CVinfos_glm(bbb)
 
 bordeauxNA<-bordeaux
 bordeauxNA[1,1] <- NA
-bbbNA <- PLS_glm_kfoldcv_formula(Quality~Temperature+Sunshine+Heat+Rain,data=bordeauxNA,10,modele="pls-glm-polr",K=10)
+bbbNA <- PLS_glm_kfoldcv_formula(Quality~Temperature+Sunshine+Heat+Rain,
+data=bordeauxNA,10,modele="pls-glm-polr",K=10)
 kfolds2CVinfos_glm(bbbNA)
 rm(list=c("bbb","bbbNA"))
 
-bbb2 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,modele="pls-glm-polr",method="logistic")
-bbb3 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,modele="pls-glm-polr",method="probit")
-bbb4 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,modele="pls-glm-polr",method="cloglog")
-bbb5 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,modele="pls-glm-polr",method="cauchit")
+bbb2 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,
+modele="pls-glm-polr",method="logistic")
+bbb3 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,
+modele="pls-glm-polr",method="probit")
+bbb4 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,
+modele="pls-glm-polr",method="cloglog")
+bbb5 <- PLS_glm_kfoldcv_formula(Quality~.,data=bordeaux,nt=2,K=7,
+modele="pls-glm-polr",method="cauchit")
 
 kfolds2CVinfos_glm(bbb2)
 kfolds2CVinfos_glm(bbb3)

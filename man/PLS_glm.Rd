@@ -5,7 +5,11 @@
 This function implements Partial least squares Regression generalized linear models complete or incomplete datasets.
 }
 \usage{
-PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12), weights, method, sparse = FALSE, sparseStop=TRUE, naive=FALSE)
+PLS_glm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, 
+modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, 
+scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, 
+alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12), weights, 
+method, sparse = FALSE, sparseStop=TRUE, naive=FALSE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -80,7 +84,9 @@ PLS_glm(yCornell,XCornell,3)$pp
 PLS_glm(yCornell,XCornell,3)$Coeffs
 PLS_glm(yCornell,XCornell,10)$InfCrit
 PLS_glm(yCornell,XCornell,10,modele="pls-glm-gaussian")$InfCrit
-data.frame(pls=PLS_glm(yCornell,XCornell,3)$Coeffs,pls_glm_gaussian=PLS_glm(yCornell,XCornell,10,modele="pls-glm-gaussian")$Coeffs,pls_glm_family_gaussian=PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=gaussian())$Coeffs)
+data.frame(pls=PLS_glm(yCornell,XCornell,3)$Coeffs,pls_glm_gaussian=PLS_glm(yCornell,XCornell,10,
+modele="pls-glm-gaussian")$Coeffs,pls_glm_family_gaussian=PLS_glm(yCornell,
+XCornell,10,modele="pls-glm-family",family=gaussian())$Coeffs)
 
 mod <- PLS_glm(yCornell,XCornell,10,pvals.expli =TRUE)
 mod2 <- PLS_glm(yCornell,XCornell,10,sparse=TRUE)
@@ -109,7 +115,8 @@ binomial(logexp(3))
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
-modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
+modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=logexp(3)),MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 rm(list=c("Xaze_compl","yaze_compl","modpls","logexp","aze_compl"))
 
@@ -135,30 +142,50 @@ PLS_glm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeau
 PLS_glm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeauNA
 
 # compare pls-glm-gaussian with classic plsR
-cbind(PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$Std.Coeffs)
+cbind(PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,
+modele="pls-glm-gaussian")$Std.Coeffs)
 
 # without missing data
-cbind(log(ypine),PLS_glm(log(ypine),Xpine,4,modele="pls")$YChapeau,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$YChapeau)
-cbind(log(ypine),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(ypine),PLS_glm(log(ypine),Xpine,4,modele="pls")$YChapeau,PLS_glm(log(ypine),
+Xpine,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(ypine),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),
+XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
 
 # with missing data
-cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
-cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
+cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),
+XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,
+PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
 
 
 # compare pls-glm-gaussian with log link with classic plsR on the log
-cbind(PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-family",family=gaussian(link="identity"))$Std.Coeffs,PLS_glm(ypine,Xpine,4,modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs)
+cbind(PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,
+modele="pls-glm-gaussian")$Std.Coeffs,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$Std.Coeffs,PLS_glm(ypine,Xpine,4,
+modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs)
 
 # without missing data
-cbind(log(ypine),PLS_glm(log(ypine),Xpine,4,modele="pls")$YChapeau,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$YChapeau,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-family",family=gaussian(link="identity"))$YChapeau,log(PLS_glm(ypine,XpineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
+cbind(log(ypine),PLS_glm(log(ypine),Xpine,4,modele="pls")$YChapeau,PLS_glm(log(ypine),Xpine,
+4,modele="pls-glm-gaussian")$YChapeau,PLS_glm(log(ypine),Xpine,4,modele="pls-glm-family",
+family=gaussian(link="identity"))$YChapeau,log(PLS_glm(ypine,XpineNAX21,4,modele="pls-glm-family",
+family=gaussian(link=log))$YChapeau))
 
 # with missing data
-cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-family",family=gaussian(link="identity"))$YChapeau,log(PLS_glm(ypine,XpineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
-cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY,PLS_glm(log(ypine),XpineNAX21,4,modele="pls-glm-family",family=gaussian(link="identity"))$ValsPredictY,log(PLS_glm(ypine,XpineNAX21,4,modele="pls-glm-family",family=gaussian(link=log))$ValsPredictY))
+cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,PLS_glm(log(ypine),
+XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau,PLS_glm(log(ypine),XpineNAX21,4,
+modele="pls-glm-family",family=gaussian(link="identity"))$YChapeau,log(PLS_glm(ypine,XpineNAX21,
+4,modele="pls-glm-family",family=gaussian(link=log))$YChapeau))
+cbind((log(ypine)),PLS_glm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,PLS_glm(log(ypine),
+XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY,PLS_glm(log(ypine),XpineNAX21,4,
+modele="pls-glm-family",family=gaussian(link="identity"))$ValsPredictY,log(PLS_glm(ypine,XpineNAX21,
+4,modele="pls-glm-family",family=gaussian(link=log))$ValsPredictY))
 
 
 #other links
-data.frame(pls=PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,identity=PLS_glm(log(ypine),Xpine,4,modele="pls-glm-family",family=gaussian(link="identity"))$Std.Coeffs,log=PLS_glm(ypine,Xpine,4,modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs,inverse=PLS_glm(ypine,Xpine,4,modele="pls-glm-family",family=gaussian(link=inverse))$Std.Coeffs)
+data.frame(pls=PLS_glm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,identity=PLS_glm(log(ypine),
+Xpine,4,modele="pls-glm-family",family=gaussian(link="identity"))$Std.Coeffs,log=PLS_glm(ypine,
+Xpine,4,modele="pls-glm-family",family=gaussian(link=log))$Std.Coeffs,inverse=PLS_glm(ypine,Xpine,
+4,modele="pls-glm-family",family=gaussian(link=inverse))$Std.Coeffs)
 
 rm(list=c("Xpine","ypine"))
 
@@ -175,24 +202,35 @@ data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
 PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls",MClassed=TRUE)$InfCrit
-modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,pvals.expli=TRUE)
+modpls <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 modpls$valpvalstep
 modpls$Coeffsmodel_vals
 modpls$Coeffs
-modpls2 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=logit),MClassed=TRUE,pvals.expli=TRUE)
-modpls3 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=probit),MClassed=TRUE,pvals.expli=TRUE)
-modpls4 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=cauchit),MClassed=TRUE,pvals.expli=TRUE)
-#fails modpls5 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=log),MClassed=TRUE,pvals.expli=TRUE)
-modpls6 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",family=binomial(link=cloglog),MClassed=TRUE,pvals.expli=TRUE)
-data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,cauchit=modpls4$Std.Coeffs,log=NA,cloglog=modpls6$Std.Coeffs)
+modpls2 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=logit),MClassed=TRUE,pvals.expli=TRUE)
+modpls3 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=probit),MClassed=TRUE,pvals.expli=TRUE)
+modpls4 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=cauchit),MClassed=TRUE,pvals.expli=TRUE)
+#fails modpls5 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=log),MClassed=TRUE,pvals.expli=TRUE)
+modpls6 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-family",
+family=binomial(link=cloglog),MClassed=TRUE,pvals.expli=TRUE)
+data.frame(logit=modpls2$Std.Coeffs,probit=modpls3$Std.Coeffs,
+cauchit=modpls4$Std.Coeffs,log=NA,cloglog=modpls6$Std.Coeffs)
 
 plot(PLS_glm(yaze_compl,Xaze_compl,4,modele="pls-glm-logistic")$FinalModel)
-PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
-plot(PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
+PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",
+pvals.expli=TRUE)$pvalstep
+plot(PLS_glm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,
+modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
 
-modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE)
-modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
+modpls7 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,sparse=TRUE)
+modpls8 <- PLS_glm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,sparse=TRUE,sparseStop=FALSE)
 modpls7$InfCrit
 modpls7$valpvalstep
 modpls7$Coeffs
@@ -201,7 +239,8 @@ modpls$InfCrit
 modpls7$InfCrit
 colSums(modpls$pvalstep)
 colSums(modpls7$pvalstep)
-rm(list=c("Xaze_compl","yaze_compl","modpls","modpls2","modpls3","modpls4","modpls5","modpls6","modpls7"))
+rm(list=c("Xaze_compl","yaze_compl","modpls","modpls2","modpls3","modpls4",
+"modpls5","modpls6","modpls7"))
 
 
 data(bordeaux)
@@ -223,8 +262,10 @@ modpls2$InfCrit
 modpls2$valpvalstep
 modpls2$Coeffs
 
-modpls3 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparse=TRUE)
-modpls4 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",alpha.pvals.expli=.15,sparseStop=FALSE)
+modpls3 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",
+alpha.pvals.expli=.15,sparse=TRUE)
+modpls4 <- PLS_glm(ybordeaux,Xbordeaux,10,modele="pls-glm-polr",
+alpha.pvals.expli=.15,sparseStop=FALSE)
 modpls3$Coeffsmodel_vals
 modpls3$InfCrit
 modpls3$valpvalstep
@@ -246,46 +287,61 @@ modpls$computed_nt
 modpls$InfCrit
 modpls2 <- PLS_glm(ypine,Xpine,10,modele="pls-glm-Gamma")
 modpls2$InfCrit
-modpls2a <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",family=Gamma(link=inverse))
+modpls2a <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",
+family=Gamma(link=inverse))
 modpls2a$InfCrit
-modpls2b <- PLS_glm(ypine+1,Xpine,10,modele="pls-glm-family",family=Gamma(link=identity))
+modpls2b <- PLS_glm(ypine+1,Xpine,10,modele="pls-glm-family",
+family=Gamma(link=identity))
 modpls2b$InfCrit
-modpls2c <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",family=Gamma(link=log))
+modpls2c <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",
+family=Gamma(link=log))
 modpls2c$InfCrit
 
 
 modpls3 <- PLS_glm(ypine,Xpine,10,modele="pls-glm-gaussian")
 modpls3$InfCrit
-modpls3a <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",family=gaussian(link=identity))
+modpls3a <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",
+family=gaussian(link=identity))
 modpls3a$InfCrit
-modpls3b <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",family=gaussian(link=log))
+modpls3b <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",
+family=gaussian(link=log))
 modpls3b$InfCrit
-modpls3c <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",family=gaussian(link=inverse))
+modpls3c <- PLS_glm(ypine,Xpine,10,modele="pls-glm-family",
+family=gaussian(link=inverse))
 modpls3c$InfCrit
 
 
 modpls4 <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-poisson")
 modpls4$InfCrit
-modpls4a <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",family=poisson(link=log))
+modpls4a <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",
+family=poisson(link=log))
 modpls4a$InfCrit
-modpls4b <- PLS_glm(round(ypine)+1,Xpine,10,modele="pls-glm-family",family=poisson(link=identity))
+modpls4b <- PLS_glm(round(ypine)+1,Xpine,10,modele="pls-glm-family",
+family=poisson(link=identity))
 modpls4b$InfCrit
-modpls4c <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",family=poisson(link=sqrt))
+modpls4c <- PLS_glm(round(ypine),Xpine,10,modele="pls-glm-family",
+family=poisson(link=sqrt))
 modpls4c$InfCrit
-rm(list=c("Xpine","ypine","pine","modpls","modpls2","modpls3","modpls4","modpls2a","modpls3a","modpls4a","modpls2b","modpls3b","modpls4b","modpls2c","modpls3c","modpls4c"))
+rm(list=c("Xpine","ypine","pine","modpls","modpls2","modpls3","modpls4",
+"modpls2a","modpls3a","modpls4a","modpls2b","modpls3b","modpls4b","modpls2c",
+"modpls3c","modpls4c"))
 
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
 modpls <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-inverse.gaussian")
 modpls$InfCrit
-modplsa <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=inverse.gaussian(link=1/mu^2))
+modplsa <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=1/mu^2))
 modplsa$InfCrit
-modplsb <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=inverse.gaussian(link=inverse))
+modplsb <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=inverse))
 modplsb$InfCrit
-modplsc <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=inverse.gaussian(link=identity))
+modplsc <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=identity))
 modplsc$InfCrit
-modplsd <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",family=inverse.gaussian(link=log))
+modplsd <- PLS_glm(yCornell,XCornell,10,modele="pls-glm-family",
+family=inverse.gaussian(link=log))
 modplsd$InfCrit
 rm(list=c("XCornell","yCornell","modpls","modplsa","modplsb","modplsc","modplsd"))
 

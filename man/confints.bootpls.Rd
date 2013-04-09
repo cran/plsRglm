@@ -53,7 +53,8 @@ Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
 
 #should be run with R=1000 but takes much longer time
-aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
+aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,
+modele="pls-glm-logistic"), sim="ordinary", stype="i", R=250)
 (temp.ci <- confints.bootpls(aze_compl.boot3))
 (temp.ci <- confints.bootpls(aze_compl.boot3,1:34,typeBCa=FALSE))
 (temp.ci <- confints.bootpls(aze_compl.boot3,c(2,4,6)))

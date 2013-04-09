@@ -5,7 +5,11 @@
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets.
 }
 \usage{
-PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),weights,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+PLS_lm(dataY, dataX, nt = 2, limQ2set = 0.0975, dataPredictY = dataX, 
+modele = "pls", family = NULL, typeVC = "none", EstimXNA = FALSE, 
+scaleX = TRUE, scaleY = NULL, pvals.expli = FALSE, 
+alpha.pvals.expli = 0.05, MClassed = FALSE, tol_Xi = 10^(-12),
+weights,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{dataY}{response (training) dataset}

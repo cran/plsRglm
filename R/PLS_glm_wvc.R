@@ -185,7 +185,7 @@ XXwotNA[!XXNA] <- NA
 library(MASS)
 tts <- res$tt
 for (jj in 1:(res$nc)) {
-    tempww[jj] <- -1*MASS:::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,method=method)$coef[kk]
+    tempww[jj] <- -1*MASS::polr(YwotNA~cbind(tts,XXwotNA[,jj]),na.action=na.exclude,method=method)$coef[kk]
 }
 XXwotNA[!XXNA] <- 0
 rm(jj,tts)}
@@ -340,11 +340,11 @@ rownames(res$Std.Coeffs) <- c("Intercept",colnames(ExpliX))
 
 if (modele %in% c("pls-glm-polr")) {
 if (kk==1) {
-tempconstpolr <- MASS:::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE,method=method)
+tempconstpolr <- MASS::polr(YwotNA~1,na.action=na.exclude,Hess=TRUE,method=method)
 res$Coeffsmodel_vals <- rbind(summary(tempconstpolr)$coefficients,matrix(rep(NA,3*nt),ncol=3))
 rm(tempconstpolr)
 tts <- res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)
@@ -354,7 +354,7 @@ res$CoeffConstante <- tempCoeffConstante
 } else {
 if (!(na.miss.X | na.miss.Y)) {
 tts <- res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  
@@ -365,7 +365,7 @@ res$CoeffConstante <- cbind(res$CoeffConstante,tempCoeffConstante)
 else
 {
 tts <- res$tt
-tempregpolr <- MASS:::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
+tempregpolr <- MASS::polr(YwotNA~tts,na.action=na.exclude,Hess=TRUE,method=method)
 rm(tts)
 res$Coeffsmodel_vals <- cbind(res$Coeffsmodel_vals,rbind(summary(tempregpolr)$coefficients,matrix(rep(NA,3*(nt-kk)),ncol=3)))
 tempCoeffC <- -1*as.vector(tempregpolr$coef)  

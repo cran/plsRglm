@@ -5,7 +5,8 @@
   ~~ A (1-5 lines) description of what the function does. ~~
 }
 \usage{
-coefs.plsRglmnp(dataRepYtt, ind, nt, modele, family=NULL, maxcoefvalues, wwetoile,ifbootfail)
+coefs.plsRglmnp(dataRepYtt, ind, nt, modele, family=NULL, 
+maxcoefvalues, wwetoile,ifbootfail)
 }
 \arguments{
   \item{dataRepYtt}{ ~~Explain \code{dataRepYtt} here~~ }

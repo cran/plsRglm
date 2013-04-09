@@ -5,7 +5,9 @@
 Light version of \code{PLS_glm} for cross validation purposes either on complete or incomplete datasets.
 }
 \usage{
-PLS_glm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", family = NULL, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights, method = "logistic")
+PLS_glm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", 
+family = NULL, scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, 
+keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights, method = "logistic")
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -67,10 +69,14 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
-PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",dataPredictY=XCornell[1,])
-PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",family=gaussian(),dataPredictY=XCornell[1,])
-PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-gaussian",dataPredictY=XCornell[1,])
-PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-family",family=gaussian(),dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",
+dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-family",
+family=gaussian(),dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-gaussian",
+dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-family",
+family=gaussian(),dataPredictY=XCornell[1,])
 rm("XCornell","yCornell")
 
 \donttest{
@@ -100,15 +106,18 @@ data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
 PLS_glm_wvc(yCornell,XCornell,10,modele="pls-glm-inverse.gaussian")
-PLS_glm_wvc(yCornell,XCornell,10,modele="pls-glm-family",family=inverse.gaussian())
+PLS_glm_wvc(yCornell,XCornell,10,modele="pls-glm-family",
+family=inverse.gaussian())
 rm(list=c("XCornell","yCornell"))
 
 
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
-PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",dataPredictY=XCornell[1,])
-PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-gaussian",dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell,dataX=XCornell,nt=3,modele="pls-glm-gaussian",
+dataPredictY=XCornell[1,])
+PLS_glm_wvc(dataY=yCornell[-1],dataX=XCornell[-1,],nt=3,modele="pls-glm-gaussian",
+dataPredictY=XCornell[1,])
 rm("XCornell","yCornell")
 
 data(aze_compl)

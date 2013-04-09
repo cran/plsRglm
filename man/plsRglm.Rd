@@ -8,8 +8,17 @@ This function implements Partial least squares Regression generalized linear mod
 }
 \usage{
 plsRglm(x, \dots)
-\method{plsRglmmodel}{default}(dataY,dataX,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
-\method{plsRglmmodel}{formula}(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,start=NULL,etastart,mustart,offset,method="glm.fit",control= list(),contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+\method{plsRglmmodel}{default}(dataY,dataX,nt=2,limQ2set=.0975,
+dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",
+EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,
+alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,
+sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+\method{plsRglmmodel}{formula}(formula,data=NULL,nt=2,limQ2set=.0975,
+dataPredictY,modele="pls",family=NULL,typeVC="none",
+EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,
+alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,
+start=NULL,etastart,mustart,offset,method="glm.fit",control= list(),
+contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{x}{a formula or a response (training) dataset}
@@ -129,15 +138,20 @@ plsRglm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeau
 plsRglm(log(ypine),XpineNAX21,4,EstimXNA=TRUE)$XChapeauNA
 
 # compare pls-glm-gaussian with classic plsR
-cbind(plsRglm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,plsRglm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$Std.Coeffs)
+cbind(plsRglm(log(ypine),Xpine,4,modele="pls")$Std.Coeffs,plsRglm(log(ypine),
+Xpine,4,modele="pls-glm-gaussian")$Std.Coeffs)
 
 # without missing data
-cbind(log(ypine),plsRglm(log(ypine),Xpine,4,modele="pls")$YChapeau,plsRglm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$YChapeau)
-cbind(log(ypine),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(ypine),plsRglm(log(ypine),Xpine,4,modele="pls")$YChapeau,
+plsRglm(log(ypine),Xpine,4,modele="pls-glm-gaussian")$YChapeau)
+cbind(log(ypine),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,
+plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
 
 # with missing data
-cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
-cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
+cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$YChapeau,
+plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$YChapeau)
+cbind((log(ypine)),plsRglm(log(ypine),XpineNAX21,4,modele="pls")$ValsPredictY,
+plsRglm(log(ypine),XpineNAX21,4,modele="pls-glm-gaussian")$ValsPredictY)
 rm(list=c("Xpine","ypine"))
 
 data(fowlkes)
@@ -152,14 +166,17 @@ data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
 plsRglm(yaze_compl,Xaze_compl,nt=10,modele="pls",MClassed=TRUE)$InfCrit
-modpls <- plsRglm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",MClassed=TRUE,pvals.expli=TRUE)
+modpls <- plsRglm(yaze_compl,Xaze_compl,nt=10,modele="pls-glm-logistic",
+MClassed=TRUE,pvals.expli=TRUE)
 modpls$InfCrit
 modpls$valpvalstep
 modpls$Coeffsmodel_vals
 
 plot(plsRglm(yaze_compl,Xaze_compl,4,modele="pls-glm-logistic")$FinalModel)
-plsRglm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
-plot(plsRglm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
+plsRglm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,
+modele="pls-glm-logistic",pvals.expli=TRUE)$pvalstep
+plot(plsRglm(yaze_compl[-c(99,72)],Xaze_compl[-c(99,72),],4,
+modele="pls-glm-logistic",pvals.expli=TRUE)$FinalModel)
 rm(list=c("Xaze_compl","yaze_compl","modpls"))
 
 

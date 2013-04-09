@@ -5,7 +5,11 @@
 This function implements Partial least squares Regression models with leave one out cross validation for complete or incomplete datasets (formula specification of the model).
 }
 \usage{
-PLS_lm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,tol_Xi=10^(-12),weights,subset,contrasts=NULL,sparse=FALSE,sparseStop=TRUE,naive=FALSE)
+PLS_lm_formula(formula,data=NULL,nt=2,limQ2set=.0975,dataPredictY=dataX,
+modele="pls",family=NULL,typeVC="none",EstimXNA=FALSE,scaleX=TRUE,
+scaleY=NULL,pvals.expli=FALSE,alpha.pvals.expli=.05,MClassed=FALSE,
+tol_Xi=10^(-12),weights,subset,contrasts=NULL,sparse=FALSE,
+sparseStop=TRUE,naive=FALSE)
 }
 \arguments{
   \item{formula}{an object of class "\code{\link{formula}}" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under 'Details'.}

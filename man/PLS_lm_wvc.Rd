@@ -5,7 +5,9 @@
 Light version of \code{PLS_lm} for cross validation purposes either on complete or incomplete datasets.
 }
 \usage{
-PLS_lm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights)
+PLS_lm_wvc(dataY, dataX, nt = 2, dataPredictY = dataX, modele = "pls", 
+scaleX = TRUE, scaleY = NULL, keepcoeffs = FALSE, 
+keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights)
 }
 \arguments{
   \item{dataY}{response (training) dataset}
@@ -49,7 +51,8 @@ XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
 PLS_lm_wvc(dataY=yCornell,dataX=XCornell,nt=3,dataPredictY=XCornell[1,])
 PLS_lm_wvc(dataY=yCornell[-c(1,2)],dataX=XCornell[-c(1,2),],nt=3,dataPredictY=XCornell[c(1,2),])
-PLS_lm_wvc(dataY=yCornell[-c(1,2)],dataX=XCornell[-c(1,2),],nt=3,dataPredictY=XCornell[c(1,2),],keepcoeffs=TRUE)
+PLS_lm_wvc(dataY=yCornell[-c(1,2)],dataX=XCornell[-c(1,2),],nt=3,dataPredictY=XCornell[c(1,2),],
+keepcoeffs=TRUE)
 rm("XCornell","yCornell")
 
 ## With an incomplete dataset (X[1,2] is NA)

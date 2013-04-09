@@ -290,7 +290,7 @@ temppvalstep <- rep(0,res$nc)
 mf2$Hess <- TRUE
 for (jj in 1:(res$nc)) {
     mf2[[2]]<-YwotNA~cbind(tts,XXwotNA[,jj])
-    tmww <- -1*MASS:::summary.polr(eval(mf2, parent.frame(n=sys.nframe())))$coefficients[kk,]
+    tmww <- -1*summary(eval(mf2, parent.frame(n=sys.nframe())))$coefficients[kk,]
     tempww[jj] <- tmww[1]
     tempvalpvalstep[jj] <- 2 * pnorm(-abs(tmww[3])) 
     temppvalstep[jj] <- (tempvalpvalstep[jj] < alpha.pvals.expli)
@@ -509,7 +509,7 @@ if (modele %in% c("pls-glm-polr")) {
             diag(piVaryy[-length(piVaryy)])-piVaryy[-length(piVaryy)]%*%t(piVaryy[-length(piVaryy)])
             }
             Chisqcomp <- function(yichisq,pichisq) {#change 2010/12/29 solve -> ginv
-            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%MASS:::ginv(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
+            t(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])%*%MASS::ginv(Varyy(pichisq))%*%(yichisq[-length(yichisq)]-pichisq[-length(pichisq)])
             }
             Chiscompmatrix <- function(rowspi,rowsyi) {
             sum(mapply(Chisqcomp,rowsyi,rowspi))

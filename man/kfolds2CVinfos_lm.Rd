@@ -47,9 +47,11 @@ Xpine<-pine[,1:10]
 ypine<-pine[,11]
 XpineNAX21 <- Xpine
 XpineNAX21[1,2] <- NA
-bbb <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=10,K=12,NK=3,keepfolds=FALSE,keepdataY=TRUE)
+bbb <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=Xpine,nt=10,K=12,NK=3,
+keepfolds=FALSE,keepdataY=TRUE)
 kfolds2CVinfos_lm(bbb)
-bbb2 <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=XpineNAX21,nt=10,K=12,NK=3,random=TRUE,keepfolds=FALSE,keepdataY=TRUE)
+bbb2 <- PLS_lm_kfoldcv(dataY=log(ypine),dataX=XpineNAX21,nt=10,K=12,NK=3,
+random=TRUE,keepfolds=FALSE,keepdataY=TRUE)
 kfolds2CVinfos_lm(bbb2)
 rm(list=c("Xpine","XpineNAX21","ypine","bbb","bbb2"))
 

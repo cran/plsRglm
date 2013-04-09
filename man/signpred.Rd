@@ -7,7 +7,8 @@ Graphical assessment of the stability of selected variables
 This fonctions plots, for each of the model, the 
 }
 \usage{
-signpred(matbin, pred.lablength = max(sapply(rownames(matbin), nchar)), labsize = 1, plotsize = 12)
+signpred(matbin, pred.lablength = max(sapply(rownames(matbin), nchar)), 
+labsize = 1, plotsize = 12)
 }
 \arguments{
   \item{matbin}{Matrix with 0 or 1 entries. Each row per predictor and a column for every model. 0 means the predictor is not significant in the model and 1 that, on the contrary, it is significant.}

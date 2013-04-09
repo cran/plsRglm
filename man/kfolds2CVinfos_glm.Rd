@@ -33,7 +33,8 @@ Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2
 data(Cornell)
 XCornell<-Cornell[,1:7]
 yCornell<-Cornell[,8]
-bbb <- PLS_glm_kfoldcv(dataY=yCornell,dataX=data.frame(scale(as.matrix(XCornell))[,]),nt=6,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls")
+bbb <- PLS_glm_kfoldcv(dataY=yCornell,dataX=data.frame(scale(as.matrix(XCornell))[,]),
+nt=6,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls")
 kfolds2CVinfos_glm(bbb)
 rm(list=c("XCornell","yCornell","bbb"))
 
@@ -41,13 +42,17 @@ rm(list=c("XCornell","yCornell","bbb"))
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
 yaze_compl<-aze_compl$y
-bbb <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls")
+bbb <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,
+keepdataY=TRUE,modele="pls")
 kfolds2CVinfos_glm(bbb,MClassed=TRUE)
-bbba <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-family",family=gaussian())
+bbba <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,
+keepdataY=TRUE,modele="pls-glm-family",family=gaussian())
 kfolds2CVinfos_glm(bbba,MClassed=TRUE)
-bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-logistic")
+bbb2 <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,
+keepdataY=TRUE,modele="pls-glm-logistic")
 kfolds2CVinfos_glm(bbb2,MClassed=TRUE)
-bbb2a <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,keepdataY=TRUE,modele="pls-glm-family",family=binomial())
+bbb2a <- PLS_glm_kfoldcv(yaze_compl,Xaze_compl,nt=10,K=12,NK=1,keepfolds=FALSE,
+keepdataY=TRUE,modele="pls-glm-family",family=binomial())
 kfolds2CVinfos_glm(bbb2a,MClassed=TRUE)
 rm(list=c("Xaze_compl","yaze_compl","bbb","bbb2","bbba","bbb2a"))
 
@@ -67,8 +72,10 @@ modpls2$std.coeffs
 
 table(yhyptis,predict(modpls2$FinalModel,type="class"))
 
-modpls3 <- PLS_glm(yhyptis[-c(1,2,3)],Xhyptis[-c(1,2,3),],3,modele="pls-glm-polr",dataPredictY=Xhyptis[c(1,2,3),])
-bbb <- PLS_glm_kfoldcv(yhyptis,Xhyptis,nt=4,K=10,random=TRUE,modele="pls-glm-polr",keepcoeffs=T)
+modpls3 <- PLS_glm(yhyptis[-c(1,2,3)],Xhyptis[-c(1,2,3),],3,modele="pls-glm-polr",
+dataPredictY=Xhyptis[c(1,2,3),])
+bbb <- PLS_glm_kfoldcv(yhyptis,Xhyptis,nt=4,K=10,random=TRUE,modele="pls-glm-polr",
+keepcoeffs=T)
 kfolds2CVinfos_v2(bbb,MClassed=TRUE)
 }
 }\keyword{models}

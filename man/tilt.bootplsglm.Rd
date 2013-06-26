@@ -7,7 +7,7 @@
 \usage{
 tilt.bootplsglm(object, typeboot="fmodel_np", statistic=coefs.plsRglm, 
 R=c(499, 250, 250), alpha=c(0.025, 0.975), sim="ordinary", 
-stype="i", index=1)
+stype="i", index=1, stabvalue=1e6,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,6 +19,8 @@ stype="i", index=1)
   \item{sim}{ ~~Explain \code{sim} here~~ }
   \item{stype}{ ~~Explain \code{stype} here~~ }
   \item{index}{ ~~Explain \code{index} here~~ }
+  \item{stabvalue}{ ~~Explain \code{stabvalue} here~~ }
+  \item{\dots}{ ~~Explain \code{\dots} here~~ }
 }
 \details{
   ~~ More details than the description above ~~
@@ -30,14 +32,10 @@ stype="i", index=1)
   \item{comp2 }{Description of 'comp2'}
   ...
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{\enc{Frédéric}{Fr\'ed\'eric} Bertrand\cr
+%\references{ ~put references to the literature/web site here ~ }
+\author{\enc{Frederic}{Fr\'ed\'eric} Bertrand\cr
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
-}
-\note{ ~~some notes~~ 
-
-
 }
 \seealso{\code{\link[boot:boot]{tilt.boot}}}
 \examples{\donttest{
@@ -49,7 +47,7 @@ yaze_compl<-aze_compl$y
 dataset <- cbind(y=yaze_compl,Xaze_compl)
 
 library(boot)
-# Lazraq-Cléroux PLS bootstrap Classic
+# Lazraq-Cl?roux PLS bootstrap Classic
 
 tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), 
 sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic", family=NULL)

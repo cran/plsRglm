@@ -23,7 +23,7 @@ keepstd.coeffs=FALSE, tol_Xi = 10^(-12), weights)
   \item{weights}{an optional vector of 'prior weights' to be used in the fitting process. Should be \code{NULL} or a numeric vector.}
 }
 \details{
-This function is called by \code{\link{PLS_lm_kfoldcv}} in order to perform cross validation either on complete or incomplete datasets.
+This function is called by \code{\link{PLS_lm_kfoldcv}} in order to perform cross-validation either on complete or incomplete datasets.
 
 Non-NULL weights can be used to indicate that different observations have different dispersions (with the values in weights being inversely proportional to the dispersions); or equivalently, when the elements of weights are positive integers w_i, that each response y_i is the mean of w_i unit-weight observations. 
 }
@@ -34,17 +34,17 @@ Non-NULL weights can be used to indicate that different observations have differ
         \code{ncol(dataX) * 1} matrix of the coefficients of the the eXplanatory variables}
 }
 \references{
-Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frédéric}{Fr\'ed\'eric} Bertrand (2010). Comparaison de la \enc{régression}{r\'egression} PLS et de la \enc{régression}{r\'egression} logistique PLS : application aux \enc{données}{donn\'ees} \enc{d'allélotypage}{d'all\'elotypage}. \emph{Journal de la Société Française de Statistique}, 151(2), pages 1-18.
+Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frederic}{Fr\'ed\'eric} Bertrand (2010). Comparing the linear and the logistic PLS regression with qualitative predictors: application to allelotyping data. \emph{Journal de la Societe Francaise de Statistique}, 151(2), pages 1-18.
 \url{http://smf4.emath.fr/Publications/JSFdS/151_2/pdf/sfds_jsfds_151_2_1-18.pdf}
 }
-\author{\enc{Frédéric}{Fr\'ed\'eric} Bertrand\cr
+\author{\enc{Frederic}{Fr\'ed\'eric} Bertrand\cr
 \email{frederic.bertrand@math.unistra.fr}\cr
 \url{http://www-irma.u-strasbg.fr/~fbertran/}
 }
 \note{
-Use \code{\link{PLS_lm_kfoldcv}} for a wrapper in view of cross validation.
+Use \code{\link{PLS_lm_kfoldcv}} for a wrapper in view of cross-validation.
 }
-\seealso{\code{\link{PLS_lm}} for more detailed results, \code{\link{PLS_lm_kfoldcv}} for cross validating models and \code{\link{PLS_glm_wvc}} for the same function dedicated to plsRglm models}
+\seealso{\code{\link{PLS_lm}} for more detailed results, \code{\link{PLS_lm_kfoldcv}} for cross-validating models and \code{\link{PLS_glm_wvc}} for the same function dedicated to plsRglm models}
 \examples{
 data(Cornell)
 XCornell<-Cornell[,1:7]
@@ -59,10 +59,10 @@ rm("XCornell","yCornell")
 data(pine)
 ypine <- pine[,11]
 data(XpineNAX21)
-PLS_lm_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3)
-PLS_lm_wvc(dataY=log(ypine)[-1],dataX=XpineNAX21[-1,],nt=3,dataPredictY=XpineNAX21[1,])
-PLS_lm_wvc(dataY=log(ypine)[-2],dataX=XpineNAX21[-2,],nt=3,dataPredictY=XpineNAX21[2,])
-PLS_lm_wvc(dataY=log(ypine),dataX=XpineNAX21,nt=3)
+PLS_lm_wvc(dataY=ypine[-1],dataX=XpineNAX21[-1,],nt=3)
+PLS_lm_wvc(dataY=ypine[-1],dataX=XpineNAX21[-1,],nt=3,dataPredictY=XpineNAX21[1,])
+PLS_lm_wvc(dataY=ypine[-2],dataX=XpineNAX21[-2,],nt=3,dataPredictY=XpineNAX21[2,])
+PLS_lm_wvc(dataY=ypine,dataX=XpineNAX21,nt=3)
 rm("XpineNAX21","ypine")
 }
 \keyword{models}

@@ -1,7 +1,7 @@
 permcoefs.plsRglmnp <- function(dataRepYtt, ind, nt, modele, family = NULL, maxcoefvalues,wwetoile,ifbootfail)
 {
 dataRepYb=dataRepYtt[ind,1]
-Tb=dataRepYtt[ind,-1]
+Tb=dataRepYtt[,-1]
 tempCb=try(solve(t(Tb)%*%Tb)%*%t(Tb)%*%dataRepYb,silent=TRUE)
 tempcoefs <- wwetoile%*%tempCb
     Cond <- FALSE

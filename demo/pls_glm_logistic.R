@@ -1,3 +1,4 @@
+set.seed(12345)
 
 data(aze_compl)
 Xaze_compl<-aze_compl[,2:34]
@@ -154,14 +155,14 @@ kfolds2Chisq(bbb2.lo)
 
 aze_compl.boot3 <- bootplsglm(plsRglm(yaze_compl,Xaze_compl,3,modele="pls-glm-logistic"), typeboot="fmodel_np", sim="ordinary", stype="i", R=1000)
 
-(temp.ci <- confints.bootpls(aze_compl.boot3))
-(temp.ci <- confints.bootpls(aze_compl.boot3,1:34,typeBCa=FALSE))
+(temp.ci <- confints.bootpls(aze_compl.boot3,1:33,typeBCa=FALSE))
 (temp.ci <- confints.bootpls(aze_compl.boot3,c(2,4,6)))
+(temp.ci <- confints.bootpls(aze_compl.boot3))
 
 boxplots.bootpls(aze_compl.boot3)
 boxplots.bootpls(aze_compl.boot3,prednames=FALSE)
 boxplots.bootpls(aze_compl.boot3,prednames=FALSE,articlestyle=FALSE,main="Bootstrap distribution for the bj")
-boxplots.bootpls(aze_compl.boot3,indices=1:34,prednames=FALSE)
+boxplots.bootpls(aze_compl.boot3,indices=1:33,prednames=FALSE)
 boxplots.bootpls(aze_compl.boot3,indices=c(2,4,6),prednames=FALSE)
 
 plots.confints.bootpls(temp.ci)
@@ -170,9 +171,9 @@ plots.confints.bootpls(temp.ci,prednames=FALSE,articlestyle=FALSE,main="Bootstra
 plots.confints.bootpls(temp.ci,indices=1:33,prednames=FALSE)
 plots.confints.bootpls(temp.ci,c(2,4,6),"bottomleft")
 plots.confints.bootpls(temp.ci,c(2,4,6),articlestyle=FALSE,main="Bootstrap confidence intervals for some of the bj")
-plots.confints.bootpls(temp.ci,indices=1:34,prednames=FALSE)
+plots.confints.bootpls(temp.ci,indices=1:33,prednames=FALSE)
 
-temp.ci <- confints.bootpls(aze_compl.boot3,1:34,typeBCa=FALSE)
+temp.ci <- confints.bootpls(aze_compl.boot3,1:33,typeBCa=FALSE)
 plots.confints.bootpls(temp.ci,indices=1:33,prednames=FALSE)
 
 
@@ -314,6 +315,3 @@ jack.after.boot(aze.boot, index=1, useJ=TRUE, nt=3)
 plot(aze.boot,jack=TRUE)
 
 
-
-# tilt.boot(data=dataset, statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1, nt=3, modele="pls-glm-logistic")
-aze.tilt.boot <- tilt.bootplsglm(plsRglm(yaze,Xaze,3, modele="pls-glm-logistic"), statistic=coefs.plsRglm, R=c(499, 100, 100), alpha=c(0.025, 0.975), sim="ordinary", stype="i", index=1)

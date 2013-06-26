@@ -1,19 +1,20 @@
 Package: plsRglm
-Version: 0.8.3
-Date: 2013-04-09
+Version: 1.0.0
+Date: 2013-06-26
 Depends: R (>= 2.4.0)
 Imports: mvtnorm, boot, bipartite
 Enhances: pls
-Suggests: MASS, plsdof
+Suggests: MASS, plsdof, R.rsp
 Title: Partial least squares Regression for generalized linear models
 Author: Frederic Bertrand <frederic.bertrand@math.unistra.fr>, Nicolas Meyer <Nicolas.Meyer@nmeyer@unistra.fr>, Myriam Maumy-Bertrand <myriam.maumy-bertrand@math.unistra.fr>. 
 Maintainer: Frederic Bertrand <frederic.bertrand@math.unistra.fr>
-Description: This package provides Partial least squares Regression for (weighted) generalized linear models and kfold crossvalidation of such models using various criteria. It allows for missing data in the eXplanatory variables. Bootstrap confidence intervals constructions are also available.
+Description: This package provides (weighted) Partial least squares Regression for generalized linear models and repeated k-fold cross-validation of such models using various criteria. It allows for missing data in the explanatory variables. Bootstrap confidence intervals constructions are also available.
 License: GPL-3
 Encoding: latin1
 URL: http://www-irma.u-strasbg.fr/~fbertran/
+VignetteBuilder: R.rsp
 Classification/MSC: 62J12, 62J99
-Packaged: 2014-03-09 23:54:57 UTC; fbertran
+Packaged: 2014-06-26 23:43:19 UTC; fbertran
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-03-10 07:58:46
+Date/Publication: 2014-06-27 06:55:18

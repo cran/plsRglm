@@ -1,5 +1,5 @@
 plots.confints.bootpls = function (ic_bootobject, indices = NULL, legendpos = "topleft", 
-    prednames = TRUE, articlestyle = TRUE, xaxisticks=TRUE, ltyIC=c(2, 4, 5, 1), colIC=c("darkgreen", "blue", "red", "black"), typeIC, ...) 
+    prednames = TRUE, articlestyle = TRUE, xaxisticks=TRUE, ltyIC=c(2, 4, 5, 1), colIC=c("darkgreen", "blue", "red", "black"), typeIC, las=par("las"), mar, mgp, ...) 
 {  
     if(missing(typeIC)){
       if(attr(ic_bootobject, "typeBCa")){
@@ -18,8 +18,11 @@ plots.confints.bootpls = function (ic_bootobject, indices = NULL, legendpos = "t
     }
     plotpos <- (1:nr)[1:length(indices)]
     if (articlestyle) {
-        oldpar <- suppressWarnings(par())
-        par(mar = c(2, 2, 1, 1) + 0.1, mgp = c(2, 1, 0))
+      oldparmar <- par("mar")
+      oldparmgp <- par("mgp")
+      if(missing(mar)){mar=c(2, 2, 1, 1) + 0.1}
+        if(missing(mgp)){mgp=c(2, 1, 0)}
+        par(mar = mar); par(mgp = mgp)
     }
     plot(c(1, 1), xlab = "", ylab = "", type = "n", xlim = c(1, 
         length(indices) + 0.5), ylim = c(min(ic_bootobject[indices,]), 
@@ -61,25 +64,26 @@ plots.confints.bootpls = function (ic_bootobject, indices = NULL, legendpos = "t
         }
         if (prednames) {
             if(xaxisticks){
-              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = rownames(ic_bootobject)[indices])
+              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = rownames(ic_bootobject)[indices], las=las)
             }
             else
             {
-              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = rownames(ic_bootobject)[indices],lwd.ticks=0)
+              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = rownames(ic_bootobject)[indices],lwd.ticks=0, las=las)
             }
         }
         else {
             if(xaxisticks){
-              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = paste("x", (1:nr)[indices], sep = ""))
+              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = paste("x", (1:nr)[indices], sep = ""), las=las)
             }
             else
             {
-              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = paste("x", (1:nr)[indices], sep = ""),lwd.ticks=0)
+              axis(1, at = plotpos + (nbIC-1)*0.15/2, labels = paste("x", (1:nr)[indices], sep = ""),lwd.ticks=0, las=las)
             }
         }
         abline(h = 0, lty = 3, lwd = 2)
         legend(legendpos, legend = legendtxt, lty = ltyIC[indictypeIC], col = colIC[indictypeIC], lwd = 2)
     if (articlestyle) {
-        suppressWarnings(par(oldpar))
+      par(mar=oldparmar)
+      par(mgp=oldparmgp)
     }
 }

@@ -3,6 +3,21 @@ if(!(match("dataY",names(pls_kfolds$call), 0L)==0L)){
 (mf <- pls_kfolds$call)
 (m <- match(c("dataY", "dataX", "nt", "limQ2set", "modele", "family", "scaleX", "scaleY", "weights", "method", "sparse", "naive"), names(pls_kfolds$call), 0))
 (mf <- mf[c(1, m)])
+if(is.null(mf$modele)){mf$modele<-"pls"}
+if (is.null(mf$family)) {
+  if (mf$modele=="pls") {mf$family<-NULL}
+  if (mf$modele=="pls-glm-Gamma") {mf$family<-Gamma(link = "inverse")}
+  if (mf$modele=="pls-glm-gaussian") {mf$family<-gaussian(link = "identity")}
+  if (mf$modele=="pls-glm-inverse.gaussian") {mf$family<-inverse.gaussian(link = "1/mu^2")}
+  if (mf$modele=="pls-glm-logistic") {mf$family<-binomial(link = "logit")}
+  if (mf$modele=="pls-glm-poisson") {mf$family<-poisson(link = "log")}
+  if (mf$modele=="pls-glm-polr") {mf$family<-NULL}
+}
+if (!is.null(mf$family)) {
+  if (is.character(mf$family)) {mf$family <- get(mf$family, mode = "function", envir = parent.frame())}
+  if (is.function(mf$family)) {mf$family <- mf$family()}
+  if (is.language(mf$family)) {mf$family <- eval(mf$family)}
+}
 (mf$typeVC <- "none")
 (mf$MClassed <- MClassed)
 if (!is.null(mf$family)) {mf$modele <- "pls-glm-family"}
@@ -14,14 +29,13 @@ if (MClassed==TRUE) {
 Mclassed_kfolds <- kfolds2Mclassed(pls_kfolds)
 }
 
-if (as.character(pls_kfolds$call["modele"]) == "pls") {
+if (mf$modele == "pls") {
 press_kfolds <- kfolds2Press(pls_kfolds)
 Q2cum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
-
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
             Q2_2 <- 1-press_kfolds[[nnkk]][1:min(length(press_kfolds[[nnkk]]),computed_nt)]/tempres$RSS[1:min(length(press_kfolds[[nnkk]]),computed_nt)]
             for (k in 1:min(length(press_kfolds[[nnkk]]),computed_nt)) {Q2cum_2[k] <- prod(press_kfolds[[nnkk]][1:k])/prod(tempres$RSS[1:k])}
             Q2cum_2 <- 1 - Q2cum_2
@@ -42,18 +56,25 @@ if (MClassed==FALSE) {
 
 
     }
+class(CVinfos) <- "summary.cv.plsRmodel"
 }
+
+
+
+
+
+
 
 if (as.character(pls_kfolds$call["modele"]) %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
 press_kfolds <- kfolds2Press(pls_kfolds)
 preChisq_kfolds <- kfolds2Chisq(pls_kfolds)
 Q2Chisqcum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
 
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
-            Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
+      Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
 
             for (k in 1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)) {Q2Chisqcum_2[k] <- prod(preChisq_kfolds[[nnkk]][1:k])/prod(tempres$ChisqPearson[1:k])}
             Q2Chisqcum_2 <- 1 - Q2Chisqcum_2
@@ -73,17 +94,18 @@ if (MClassed==FALSE) {
 }
 
     }
+class(CVinfos) <- "summary.cv.plsRglmmodel"
 }
 
 if (as.character(pls_kfolds$call["modele"]) == "pls-glm-polr") {
 preChisq_kfolds <- kfolds2Chisq(pls_kfolds)
 Q2Chisqcum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
 
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
-            Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
+      Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
 
             for (k in 1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)) {Q2Chisqcum_2[k] <- prod(preChisq_kfolds[[nnkk]][1:k])/prod(tempres$ChisqPearson[1:k])}
             Q2Chisqcum_2 <- 1 - Q2Chisqcum_2
@@ -103,6 +125,7 @@ if (MClassed==FALSE) {
 }
 
     }
+class(CVinfos) <- "summary.cv.plsRglmmodel"
 }
 return(CVinfos)
 }
@@ -111,6 +134,7 @@ if(!(match("formula",names(pls_kfolds$call), 0L)==0L)){
 (mf <- pls_kfolds$call)
 (m <- match(c("formula", "data", "nt", "limQ2set", "modele", "family", "scaleX", "scaleY", "weights","subset","start","etastart","mustart","offset","control","method","contrasts", "method", "sparse", "naive"), names(pls_kfolds$call), 0))
 (mf <- mf[c(1, m)])
+if(is.null(mf$modele)){mf$modele<-"pls"}
 (mf$typeVC <- "none")
 (mf$MClassed <- MClassed)
 if (mf$modele %in% c("pls","pls-glm-logistic","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-poisson","pls-glm-polr")){mf$family <- NULL}
@@ -122,15 +146,15 @@ if (MClassed==TRUE) {
 Mclassed_kfolds <- kfolds2Mclassed(pls_kfolds)
 }
 
-if (as.character(pls_kfolds$call["modele"]) == "pls") {
+if (mf$modele == "pls") {
 press_kfolds <- kfolds2Press(pls_kfolds)
 Q2cum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
 
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
-            Q2_2 <- 1-press_kfolds[[nnkk]][1:min(length(press_kfolds[[nnkk]]),computed_nt)]/tempres$RSS[1:min(length(press_kfolds[[nnkk]]),computed_nt)]
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
+      Q2_2 <- 1-press_kfolds[[nnkk]][1:min(length(press_kfolds[[nnkk]]),computed_nt)]/tempres$RSS[1:min(length(press_kfolds[[nnkk]]),computed_nt)]
             for (k in 1:min(length(press_kfolds[[nnkk]]),computed_nt)) {Q2cum_2[k] <- prod(press_kfolds[[nnkk]][1:k])/prod(tempres$RSS[1:k])}
             Q2cum_2 <- 1 - Q2cum_2
             if(length(Q2_2)<computed_nt) {Q2_2 <- c(Q2_2,rep(NA,computed_nt-length(Q2_2)))}
@@ -150,6 +174,7 @@ if (MClassed==FALSE) {
 
 
     }
+class(CVinfos) <- "summary.cv.plsRmodel"
 }
 
 if (as.character(pls_kfolds$call["modele"]) %in% c("pls-glm-family","pls-glm-Gamma","pls-glm-gaussian","pls-glm-inverse.gaussian","pls-glm-logistic","pls-glm-poisson")) {
@@ -157,11 +182,11 @@ press_kfolds <- kfolds2Press(pls_kfolds)
 preChisq_kfolds <- kfolds2Chisq(pls_kfolds)
 Q2Chisqcum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
 
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
-            Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
+      Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
 
             for (k in 1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)) {Q2Chisqcum_2[k] <- prod(preChisq_kfolds[[nnkk]][1:k])/prod(tempres$ChisqPearson[1:k])}
             Q2Chisqcum_2 <- 1 - Q2Chisqcum_2
@@ -181,17 +206,18 @@ if (MClassed==FALSE) {
 }
 
     }
+class(CVinfos) <- "summary.cv.plsRglmmodel"
 }
 
 if (as.character(pls_kfolds$call["modele"]) == "pls-glm-polr") {
 preChisq_kfolds <- kfolds2Chisq(pls_kfolds)
 Q2Chisqcum_2=rep(NA, nt)
 CVinfos <- vector("list",length(pls_kfolds[[1]]))
-limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)
+if(is.numeric(pls_kfolds$call["limQ2set"])){limQ2 <- rep(as.numeric(as.character(pls_kfolds$call["limQ2set"])),computed_nt)} else {limQ2=rep(as.numeric(as.character(0.0975)),computed_nt)}
 
     for (nnkk in 1:length(pls_kfolds[[1]])) {
-            cat(paste("NK:", nnkk, "\n"))
-            Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
+      if(nnkk%%10==1){cat("\n");cat(paste("NK:", nnkk))} else {cat(paste(", ", nnkk))}
+      Q2Chisq_2 <- 1-preChisq_kfolds[[nnkk]][1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]/tempres$ChisqPearson[1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)]
 
             for (k in 1:min(length(preChisq_kfolds[[nnkk]]),computed_nt)) {Q2Chisqcum_2[k] <- prod(preChisq_kfolds[[nnkk]][1:k])/prod(tempres$ChisqPearson[1:k])}
             Q2Chisqcum_2 <- 1 - Q2Chisqcum_2
@@ -211,7 +237,9 @@ if (MClassed==FALSE) {
 }
 
     }
+class(CVinfos) <- "summary.cv.plsRglmmodel"
 }
+cat("\n");
 return(CVinfos)
 }
 }

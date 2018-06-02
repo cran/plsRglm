@@ -1,8 +1,8 @@
 \name{predict.plsRmodel}
 \alias{predict.plsRmodel}
-\title{Print method for plsRcox models}
+\title{Print method for plsR models}
 \description{
-This function provides a predict method for the class \code{"plsRcoxmodel"}
+This function provides a predict method for the class \code{"plsRmodel"}
 }
 \usage{
 \method{predict}{plsRmodel}(object,newdata,comps=object$computed_nt,
@@ -24,7 +24,7 @@ When type is "\code{scores}", a score matrix is returned.
 }
 \references{
 Nicolas Meyer, Myriam Maumy-Bertrand et \enc{Frederic}{Fr\'ed\'eric} Bertrand (2010). Comparing the linear and the logistic PLS regression with qualitative predictors: application to allelotyping data. \emph{Journal de la Societe Francaise de Statistique}, 151(2), pages 1-18.
-\url{http://smf4.emath.fr/Publications/JSFdS/151_2/pdf/sfds_jsfds_151_2_1-18.pdf}
+\url{http://publications-sfds.math.cnrs.fr/index.php/J-SFdS/article/view/47}
 }
 \author{\enc{Frederic}{Fr\'ed\'eric} Bertrand\cr
 \email{frederic.bertrand@math.unistra.fr}\cr

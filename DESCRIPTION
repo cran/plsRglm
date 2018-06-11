@@ -1,6 +1,6 @@
 Package: plsRglm
-Version: 1.2.1
-Date: 2018-05-30
+Version: 1.2.3
+Date: 2018-06-11
 Depends: R (>= 2.4.0)
 Imports: mvtnorm, boot, bipartite, car
 Enhances: pls
@@ -19,6 +19,6 @@ URL: http://www-irma.u-strasbg.fr/~fbertran/
 VignetteBuilder: R.rsp
 Classification/MSC: 62J12, 62J99
 NeedsCompilation: no
-Packaged: 2018-06-01 22:05:31 UTC; fbertran
+Packaged: 2018-06-11 20:24:14 UTC; fbertran
 Repository: CRAN
-Date/Publication: 2018-06-02 06:53:03 UTC
+Date/Publication: 2018-06-11 21:12:53 UTC

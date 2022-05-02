@@ -41,7 +41,7 @@
 #' @return An object of class \code{"boot"}. See the Value part of the help of
 #' the function \code{\link[boot:boot]{boot}}.
 #' @author Frédéric Bertrand\cr
-#' \email{frederic.bertrand@@math.unistra.fr}\cr
+#' \email{frederic.bertrand@@utt.fr}\cr
 #' \url{https://fbertran.github.io/homepage/}
 #' @seealso \code{\link[boot:boot]{boot}}
 #' @references A. Lazraq, R. Cleroux, and J.-P. Gauchi. (2003). Selecting both
@@ -143,7 +143,7 @@
 #' }
 #' 
 #' @export bootpls
-bootpls <- function(object, typeboot="plsmodel", R=250, statistic=coefs.plsR, sim="ordinary", stype="i", stabvalue=1e6, verbose=TRUE,...){
+bootpls <- function(object, typeboot="plsmodel", R=250, statistic=NULL, sim="ordinary", stype="i", stabvalue=1e6, verbose=TRUE,...){
 callplsR <- object$call
 maxcoefvalues <- stabvalue*abs(object$Coeffs)
 dataset <- cbind(y = object$dataY,object$dataX)
@@ -151,9 +151,8 @@ nt <- eval(callplsR$nt)
 ifbootfail <- as.matrix(as.numeric(rep(NA, ncol(dataset))))
 
 if(typeboot=="plsmodel"){
-#return(boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt, ...))
-temp.bootplsR <- if(!(sim=="permutation")){boot(data=dataset, statistic=coefs.plsR, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose, ...)} else {
-boot(data=dataset, statistic=permcoefs.plsR, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose)}
+temp.bootplsR <- if(!(sim=="permutation")){if(is.null(statistic)){statistic=coefs.plsR};boot(data=dataset, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose, ...)} else {
+  if(is.null(statistic)){statistic=permcoefs.plsR};boot(data=dataset, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose)}
 indices.temp.bootplsR <- !is.na(temp.bootplsR$t[,1])
 temp.bootplsR$t=temp.bootplsR$t[indices.temp.bootplsR,]
 temp.bootplsR$R=sum(indices.temp.bootplsR)
@@ -164,9 +163,8 @@ return(temp.bootplsR)
 if(typeboot=="fmodel_np"){
 dataRepYtt <- cbind(y = object$RepY,object$tt)
 wwetoile <- object$wwetoile
-#return(boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt, ...))
-temp.bootplsR <- if(!(sim=="permutation")){boot(data=dataRepYtt, statistic=coefs.plsRnp, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, wwetoile = wwetoile, ifbootfail = ifbootfail, ...)} else {
-boot(data=dataRepYtt, statistic=permcoefs.plsRnp, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, wwetoile = wwetoile, ifbootfail = ifbootfail)}
+temp.bootplsR <- if(!(sim=="permutation")){if(is.null(statistic)){statistic=coefs.plsRnp};boot(data=dataRepYtt, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, wwetoile = wwetoile, ifbootfail = ifbootfail, ...)} else {
+  if(is.null(statistic)){statistic=permcoefs.plsRnp};boot(data=dataRepYtt, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, wwetoile = wwetoile, ifbootfail = ifbootfail)}
 indices.temp.bootplsR <- !is.na(temp.bootplsR$t[,1])
 temp.bootplsR$t=temp.bootplsR$t[indices.temp.bootplsR,]
 temp.bootplsR$R=sum(indices.temp.bootplsR)
@@ -176,8 +174,8 @@ return(temp.bootplsR)
 
 if(typeboot=="fmodel_par"){
 #return(boot(data=dataset, statistic=if(!(sim=="permutation")){coefs.plsR} else {permcoefs.plsR}, sim=sim, stype=stype, R=R, nt=nt, ...))
-temp.bootplsR <- if(!(sim=="permutation")){boot(data=dataset, statistic=coefs.plsR, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose, ...)} else {
-boot(data=dataset, statistic=permcoefs.plsR, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose)}
+temp.bootplsR <- if(!(sim=="permutation")){if(is.null(statistic)){statistic=coefs.plsR};boot(data=dataset, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose, ...)} else {
+  if(is.null(statistic)){statistic=permcoefs.plsR};boot(data=dataset, statistic=statistic, sim=sim, stype=stype, R=R, nt=nt, maxcoefvalues = maxcoefvalues, ifbootfail = ifbootfail, verbose=verbose)}
 indices.temp.bootplsR <- !is.na(temp.bootplsR$t[,1])
 temp.bootplsR$t=temp.bootplsR$t[indices.temp.bootplsR,]
 temp.bootplsR$R=sum(indices.temp.bootplsR)

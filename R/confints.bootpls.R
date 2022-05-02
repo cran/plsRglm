@@ -15,7 +15,7 @@
 #' in that order: Normal Lower then Upper Limit, Basic Lower then Upper Limit,
 #' Percentile Lower then Upper Limit, BCa Lower then Upper Limit.
 #' @author Frédéric Bertrand\cr
-#' \email{frederic.bertrand@@math.unistra.fr}\cr
+#' \email{frederic.bertrand@@utt.fr}\cr
 #' \url{https://fbertran.github.io/homepage/}
 #' @seealso See also \code{\link{bootpls}} and \code{\link{bootplsglm}}.
 #' @keywords regression models
@@ -38,14 +38,14 @@ nr <- length(bootobject$t0)
 if(is.null(indices)){indices <- 1:nr}
 ii <- indices[1]
 if(typeBCa){
-temptemp.ci <- c(boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("bca"), index=ii)$bca[,-c(1,2,3)])
+temptemp.ci <- c(boot::boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot::boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("bca"), index=ii)$bca[,-c(1,2,3)])
 for(ii in indices[-1]){
-temptemp.ci <- rbind(temptemp.ci,c(boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("bca"), index=ii)$bca[,-c(1,2,3)]))
+temptemp.ci <- rbind(temptemp.ci,c(boot::boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot::boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("bca"), index=ii)$bca[,-c(1,2,3)]))
 }
 } else {
-temptemp.ci <- c(boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)])
+temptemp.ci <- c(boot::boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot::boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)])
 for(ii in indices[-1]){
-temptemp.ci <- rbind(temptemp.ci,c(boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)]))
+temptemp.ci <- rbind(temptemp.ci,c(boot::boot.ci(bootobject, conf = 0.95, type = c("norm"), index=ii)$normal[,-1],boot::boot.ci(bootobject, conf = 0.95, type = c("basic"), index=ii)$basic[,-c(1,2,3)],boot::boot.ci(bootobject, conf = 0.95, type = c("perc"), index=ii)$perc[,-c(1,2,3)]))
 }
 }
 attr(temptemp.ci, "typeBCa") <- typeBCa
